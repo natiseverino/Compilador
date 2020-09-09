@@ -6,10 +6,11 @@ public final class TablaSimbolos {
     private static Map<String, Integer> ids = new HashMap<>();
     private static Map<String, Token> simbolos = new HashMap<>();
 
-
+    //TODO acomodar
     public static void init() {
         ids.put("id", 1);
         ids.put("cte", 29);
+        ids.put("comentarioMult", 30);
         ids.put("+", 2);
         ids.put("-", 3);
         ids.put("*", 4);
@@ -48,8 +49,14 @@ public final class TablaSimbolos {
         return simbolos.get(lexema);
     }
 
-    public static boolean reservada(String palabra) {
-        return ids.containsKey(palabra);
+    public static int reservada(String palabra) {
+        if(!ids.containsKey(palabra))
+            return -1;
+        else
+            if(ids.get(palabra) < 19)
+                return 0;
+            else
+                return 1;
     }
 
     public static void add(Token token) {

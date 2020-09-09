@@ -3,12 +3,14 @@ import java.util.Map;
 
 public class Token {
     private int idToken;
+    private String tipoToken;
     private String lexema;
-    private String atributo;
+
     private Map<String, Object> atributos = new HashMap<>();
 
-    public Token(int idToken, String lexema) {
+    public Token(int idToken, String tipoToken, String lexema) {
         this.idToken = idToken;
+        this.tipoToken = tipoToken;
         this.lexema = lexema;
     }
 
@@ -21,6 +23,10 @@ public class Token {
     }
 
     public int getIdToken() {return this.idToken;}
+
+    public String getTipoToken() {
+        return tipoToken;
+    }
 
     public String getLexema() {return this.lexema;}
 }
