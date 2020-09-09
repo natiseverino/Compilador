@@ -1,1 +1,2 @@
-IF a > b THEN a = 4
+IF a > b THEN a = 4. END_IF
+
