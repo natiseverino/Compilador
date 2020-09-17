@@ -1,4 +1,10 @@
+package compilador;
+
 public class AnalizadorLexico {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_RED = "\u001B[31m";
 
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
@@ -28,7 +34,7 @@ public class AnalizadorLexico {
 
 
     public AnalizadorLexico() {
-        this.codigoFuente = FileManager.loadCodigoFuente("CasosDePrueba/Test1.txt");
+        this.codigoFuente = FileManager.loadCodigoFuente("CasosDePrueba/Test3.txt");
         this.asignarAS();
         while(!endOfFile())
             getSigToken();
@@ -118,14 +124,18 @@ public class AnalizadorLexico {
             estado = estados[estado][indiceCaracter];
         }
 
-        if(token != null)
-            if(!token.getTipoToken().isEmpty())
-                System.out.println(String.format("[%d]- %s %s", nroLinea, token.getTipoToken(), token.getLexema()));
+        if(token != null) {
+            //yylval = new ParserVal(token.getLexema());
+            if (!token.getTipoToken().isEmpty())
+                System.out.printf("%s %s%n", token.getTipoToken(), token.getLexema());
             else
-                System.out.println(String.format("[%d]- %s", nroLinea, token.getLexema()));
-
+                System.out.printf("%s%n", token.getLexema());
+        }
         return token;
     }
+
+
+    //ACCIONES SEMANTICAS
 
     public interface AccionSemantica {
         Token execute(StringBuilder lexema, char ultimo);
@@ -142,8 +152,9 @@ public class AnalizadorLexico {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
                 //TODO Anunciar warning al truncar
-                System.err.println(String.format("[%d]- WARNING | Identificador con más de 20 caracteres: %s. Se trunca a: %s", nroLinea, lexemaAnt, lexema));
+                System.out.printf(ANSI_YELLOW + "[Linea %d]- WARNING | Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + ANSI_RESET, nroLinea, lexemaAnt, lexema);
             }
+
 
             Token token = null;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
@@ -177,14 +188,8 @@ public class AnalizadorLexico {
         public Token execute(StringBuilder lexema, char ultimo) {
             lexema.append(ultimo);
 
-            long enteroLargo = -1;
-            try {
-                enteroLargo = Long.parseLong(lexema.substring(0, lexema.length()-2));
-            }
-            catch (NumberFormatException e){
-                //TODO error de formato
-                //arreglar enteroLargo
-            }
+            long enteroLargo = Long.parseLong(lexema.substring(0, lexema.length()-2));
+
 
             //verificar rango
             Token token = null;
@@ -194,8 +199,7 @@ public class AnalizadorLexico {
                 //token.addAtributo("TIPO","LONGINT");
                 TablaSimbolos.add(token);
             } else {
-                //TODO error?? warning?
-                System.err.println(String.format("[%d]- ERROR | Entero largo fuera de rango: %s", nroLinea, lexema.substring(0, lexema.length()-2)));
+                System.out.printf( ANSI_RED + "[Linea %d]- ERROR | Entero largo fuera de rango: %s%n"  + ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
             }
 
             return token;
@@ -208,7 +212,7 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             //TODO print error
-            System.err.println(String.format("[%d]- ERROR | Caracter inválido: %c", nroLinea, ultimo));
+            System.out.printf(ANSI_RED + "[Linea %d]- ERROR | Caracter inválido: %c%n" + ANSI_RESET, nroLinea, ultimo);
             return null;
         }
     }
@@ -221,36 +225,27 @@ public class AnalizadorLexico {
             codigoFuente.insert(0, ultimo);
 
             float flotante, real = -1, exponente = 1;
-            try {
-                if(lexema.toString().contains("f"))
-                    real = Float.parseFloat(lexema.toString().split("f")[0]);
-                else
-                    real = Float.parseFloat(lexema.toString());
-            }
-            catch (NumberFormatException e){
-                //TODO error de formato
-                //arreglar flotante
-            }
-            try {
-                if(lexema.toString().contains("f"))
-                    exponente = Float.parseFloat(lexema.toString().split("f")[1]);
-            }
-            catch (NumberFormatException e){
-                //TODO error de formato
-                //arreglar flotante
-            }
+
+            if(lexema.toString().contains("f"))
+                real = Float.parseFloat(lexema.toString().split("f")[0]);
+            else
+                real = Float.parseFloat(lexema.toString());
+
+            if(lexema.toString().contains("f"))
+                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
+
+
             flotante = (float)Math.pow(real, exponente);
 
-//            //verificar rango
+            //verificar rango
             Token token = null;
             if(((float)Math.pow(1.17549435,-38) < flotante && flotante < (float)Math.pow(3.40282347,38)) || flotante == 0 || ((float)Math.pow(-3.40282347,38) < flotante && flotante < (float)Math.pow(-1.17549435,-38))) {
                 //verificar si esta en TS y agregar
                 token = new Token(TablaSimbolos.getId("cte"), "FLOAT", String.valueOf(flotante));
-                //token.addAtributo("TIPO","LONGINT");
+                //token.addAtributo("TIPO","FLOAT");
                 TablaSimbolos.add(token);
             } else {
-                //TODO error?? warning?
-                System.err.println(String.format("[%d]- ERROR | Flotante fuera de rango: %s", nroLinea, lexema));
+                System.err.printf(ANSI_RED +"[Linea %d]- ERROR | Flotante fuera de rango: %s%n" + ANSI_RESET, nroLinea, lexema);
             }
 
             return token;
@@ -259,6 +254,7 @@ public class AnalizadorLexico {
 
     public class AS6 implements AccionSemantica{
         // Acción semántica vacía
+        // Utilizada para los comentarios
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
@@ -276,7 +272,7 @@ public class AnalizadorLexico {
             //TODO buscar en TS
             Token token = null;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
-                token = new Token(TablaSimbolos.getId("comentarioMult"), "COMENTARIO MULT", lexema.toString());
+                token = new Token(TablaSimbolos.getId("cadenaMult"), "CADENA MULT", lexema.toString());
                 TablaSimbolos.add(token);
             }
             else if(TablaSimbolos.reservada(lexema.toString()) == 0)
