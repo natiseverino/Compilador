@@ -1,0 +1,3 @@
+entero_largo_positivo = 1100000000_l
+fuera_de_rango1 = 2147483648_l
+fuera_de_rango2 = -2147483649_l
