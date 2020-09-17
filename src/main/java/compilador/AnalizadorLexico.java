@@ -9,7 +9,7 @@ public class AnalizadorLexico {
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
 
-    private int[][] estados = {
+    private final int[][] estados = {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $  otro
                 { 1,   2,   3,  16,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
                 { 1,  16,   1,   1,   1,  16,   1,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
@@ -37,7 +37,7 @@ public class AnalizadorLexico {
         this.codigoFuente = FileManager.loadCodigoFuente("CasosDePrueba/Test3.txt");
         this.asignarAS();
         while(!endOfFile())
-            getSigToken();
+            yylex();
     }
 
     private void asignarAS() {
@@ -85,21 +85,24 @@ public class AnalizadorLexico {
             case '+': return 8;
             case '-': return 9;
             case '=': return 10;
-            case '*': return 11;
-            case '/': return 11;
-            case '{': return 11;
-            case '}': return 11;
-            case '(': return 11;
-            case ')': return 11;
-            case ',': return 11;
-            case ';': return 11;
+            case '*':
+            case '/':
+            case '{':
+            case '}':
+            case '(':
+            case ')':
+            case ',':
+            case ';':
+                return 11;
             case '"': return 12;
-            case '>': return 13;
-            case '<': return 13;
+            case '>':
+            case '<':
+                return 13;
             case '!': return 14;
             case '\n': return 15;
-            case ' ': return 16;
-            case '\t': return 16;
+            case ' ':
+            case '\t':
+                return 16;
             case '$': return 17;
             default: return 18;
         }
@@ -107,7 +110,7 @@ public class AnalizadorLexico {
 
     public boolean endOfFile() {return codigoFuente.length() == 0;}
 
-    public Token getSigToken() {
+    public int yylex() {
         StringBuilder lexemaActual = new StringBuilder();
         int estado = 0;
         Token token = null;
@@ -131,7 +134,7 @@ public class AnalizadorLexico {
             else
                 System.out.printf("%s%n", token.getLexema());
         }
-        return token;
+        return token.getIdToken();
     }
 
 
@@ -156,7 +159,7 @@ public class AnalizadorLexico {
             }
 
 
-            Token token = null;
+            Token token;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
                 token = new Token(TablaSimbolos.getId("id"), "IDENTIFICADOR", lexema.toString());
                 TablaSimbolos.add(token);
@@ -176,7 +179,6 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             lexema.append(ultimo);
-
             return null;
         }
     }
@@ -194,7 +196,8 @@ public class AnalizadorLexico {
             //verificar rango
             Token token = null;
             if(enteroLargo >= 0 && enteroLargo <= 2147483648L) {
-                //verificar si esta en TS y agregar
+                //verificar si
+                // esta en TS y agregar
                 token = new Token(TablaSimbolos.getId("cte"), "LONGINT", lexema.substring(0, lexema.length()-2));
                 //token.addAtributo("TIPO","LONGINT");
                 TablaSimbolos.add(token);

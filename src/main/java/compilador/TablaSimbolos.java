@@ -1,5 +1,7 @@
 package compilador;
 
+import com.sun.org.apache.bcel.internal.generic.RET;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,9 +10,28 @@ public final class TablaSimbolos {
     private static Map<String, Integer> ids = new HashMap<>();
     private static Map<String, Token> simbolos = new HashMap<>();
 
-    private static final int ID = 271;
-    private static final int CTE = 272;
-    private static final int CADENA_MULT = 273;
+    public final static int IGUAL=257;
+    public final static int MAYOR_IGUAL=258;
+    public final static int MENOR_IGUAL=259;
+    public final static int DISTINTO=260;
+    public final static int IF=261;
+    public final static int THEN=262;
+    public final static int ELSE=263;
+    public final static int FOR=264;
+    public final static int END_IF=265;
+    public final static int OUT=266;
+    public final static int FUNC=267;
+    public final static int RETURN=268;
+    public final static int LONGINT=269;
+    public final static int FLOAT=270;
+    public final static int ID=271;
+    public final static int CTE=272;
+    public final static int CADENA_MULT=273;
+    public final static int PROC=274;
+    public final static int VAR=275;
+    public final static int NI=276;
+    public final static int UP=277;
+    public final static int DOWN=278;
 
 
     public static void init() {
@@ -28,23 +49,28 @@ public final class TablaSimbolos {
         ids.put(">", 62);
         ids.put("{", 123);
         ids.put("}", 125);
-        ids.put("==", 257);
-        ids.put(">=", 258);
-        ids.put("<=", 259);
-        ids.put("!=", 260);
-        ids.put("IF", 261);
-        ids.put("THEN", 262);
-        ids.put("ELSE", 263);
-        ids.put("FOR", 264);
-        ids.put("END_IF", 265);
-        ids.put("OUT", 266);
-        ids.put("FUNC", 267);
-        ids.put("RETURN", 268);
-        ids.put("LONGINT", 269);
-        ids.put("FLOAT", 270);
+        ids.put("==", IGUAL);
+        ids.put(">=", MAYOR_IGUAL);
+        ids.put("<=", MENOR_IGUAL);
+        ids.put("!=", DISTINTO);
+        ids.put("IF", IF);
+        ids.put("THEN", THEN);
+        ids.put("ELSE", ELSE);
+        ids.put("FOR", FOR);
+        ids.put("END_IF", END_IF);
+        ids.put("OUT", OUT);
+        ids.put("FUNC", FUNC);
+        ids.put("RETURN", RETURN);
+        ids.put("LONGINT", LONGINT);
+        ids.put("FLOAT", FLOAT);
         ids.put("id", ID);
         ids.put("cte", CTE);
         ids.put("cadenaMult", CADENA_MULT);
+        ids.put("PROC", PROC);
+        ids.put("VAR",VAR);
+        ids.put("NI", NI);
+        ids.put("UP",UP);
+        ids.put("DOWN", DOWN);
 
     }
 
