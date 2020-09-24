@@ -134,6 +134,9 @@ public class AnalizadorLexico {
         return token != null ? token.getIdToken() : -1;
     }
 
+    public int getNroLinea() {
+        return nroLinea;
+    }
 
     //ACCIONES SEMANTICAS
 
