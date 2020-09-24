@@ -97,4 +97,8 @@ public final class TablaSimbolos {
             simbolos.put(token.getLexema(), token);
     }
 
+    public static boolean existe(String lexema){
+        return simbolos.containsKey(lexema);
+    }
+
 }
