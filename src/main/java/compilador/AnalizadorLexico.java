@@ -2,9 +2,6 @@ package compilador;
 
 public class AnalizadorLexico {
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_RED = "\u001B[31m";
 
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
@@ -134,7 +131,7 @@ public class AnalizadorLexico {
             else
                 System.out.printf("%s%n", token.getLexema());
         }
-        return token.getIdToken();
+        return token != null ? token.getIdToken() : -1;
     }
 
 
@@ -154,8 +151,7 @@ public class AnalizadorLexico {
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
-                //TODO Anunciar warning al truncar
-                System.out.printf(ANSI_YELLOW + "[Linea %d]- WARNING | Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + ANSI_RESET, nroLinea, lexemaAnt, lexema);
+                System.out.printf(Main.ANSI_YELLOW + "[Linea %d]- WARNING | Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + Main.ANSI_RESET, nroLinea, lexemaAnt, lexema);
             }
 
 
@@ -202,7 +198,7 @@ public class AnalizadorLexico {
                 //token.addAtributo("TIPO","LONGINT");
                 TablaSimbolos.add(token);
             } else {
-                System.out.printf( ANSI_RED + "[Linea %d]- ERROR | Entero largo fuera de rango: %s%n"  + ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
             }
 
             return token;
@@ -214,8 +210,7 @@ public class AnalizadorLexico {
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
-            //TODO print error
-            System.out.printf(ANSI_RED + "[Linea %d]- ERROR | Caracter inválido: %c%n" + ANSI_RESET, nroLinea, ultimo);
+            System.out.printf(Main.ANSI_RED + "[Linea %d]- ERROR | Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
             return null;
         }
     }
@@ -238,17 +233,17 @@ public class AnalizadorLexico {
                 exponente = Float.parseFloat(lexema.toString().split("f")[1]);
 
 
-            flotante = (float)Math.pow(real, exponente);
+            flotante = real * (float)Math.pow(10, exponente);
 
             //verificar rango
             Token token = null;
-            if(((float)Math.pow(1.17549435,-38) < flotante && flotante < (float)Math.pow(3.40282347,38)) || flotante == 0 || ((float)Math.pow(-3.40282347,38) < flotante && flotante < (float)Math.pow(-1.17549435,-38))) {
+            if((1.17549435e-38f < flotante && flotante < 3.40282347e+38f) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
                 token = new Token(TablaSimbolos.getId("cte"), "FLOAT", String.valueOf(flotante));
                 //token.addAtributo("TIPO","FLOAT");
                 TablaSimbolos.add(token);
             } else {
-                System.err.printf(ANSI_RED +"[Linea %d]- ERROR | Flotante fuera de rango: %s%n" + ANSI_RESET, nroLinea, lexema);
+                System.err.printf(Main.ANSI_RED +"[Linea %d]- ERROR | Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
             }
 
             return token;
@@ -272,7 +267,6 @@ public class AnalizadorLexico {
         public Token execute(StringBuilder lexema, char ultimo) {
             lexema.append(ultimo);
 
-            //TODO buscar en TS
             Token token = null;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
                 token = new Token(TablaSimbolos.getId("cadenaMult"), "CADENA MULT", lexema.toString());
@@ -294,5 +288,8 @@ public class AnalizadorLexico {
             return null;
         }
     }
+
+
+
 
 }
