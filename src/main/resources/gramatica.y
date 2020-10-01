@@ -185,37 +185,37 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {System.out.printf( Main.ANSI_
                     | OUT '(' CADENA_MULT ')' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de salida %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-sentencia_asignacion    : ID '=' factor ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                        | error '=' factor ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta lado izquierdo de la asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+sentencia_asignacion    : ID '=' expresion ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                        | error '=' expresion ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta lado izquierdo de la asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                         | ID '=' error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta lado derecho de la asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                        | ID '=' factor error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' al final de la asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                        | ID '=' expresion error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' al final de la asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-sentencia_invocacion : ID '('lista_parametros')' ';' {System.out.println("Sentencia de invocacion con lista de parametros");}
-             | ID '(' ')' ';' {System.out.println("Sentencia de invocacion sin parametros");}
-             | ID '(' error ')' ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Parámetros inválidos " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-             | ID '(' error ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta paréntesis " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-             | ID error ')' ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta paréntesis " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-             | ID '('lista_parametros')' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-             | ID '(' ')' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+sentencia_invocacion : ID'('lista_parametros')' ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocacion con lista de parametros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID'(' ')' ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocacion sin parametros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID'(' error ')' ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Parámetros inválidos %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID'(' error ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta paréntesis %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID error ')' ';' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta paréntesis %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID'('lista_parametros')' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+             | ID'(' ')' {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-lista_parametros     : parametro ',' parametro ',' parametro {System.out.println("Lista de parametros: 3 parametros");}
-            | parametro ',' parametro {System.out.println("Lista de parametros: 2 parametros");}
-            | parametro {System.out.println("Lista de parametros: 1 parametro");}
-            | parametro ',' parametro ',' parametro ',' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Numero de parametros excedido " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-            | parametro ',' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Parametro incorrecto " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-            | parametro parametro parametro {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ',' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-            | parametro parametro {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ',' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+lista_parametros     : parametro ',' parametro ',' parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parametros: 3 %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro ',' parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parametros: 2 %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parametros: 1 %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro ',' parametro ',' parametro ',' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Numero de parametros excedido %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro ',' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Parametro incorrecto %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro parametro parametro {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ',' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+            | parametro parametro {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ',' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 parametro : factor
 ;
 
-condicion    : expresion comparador expresion
-	| expresion error expresion {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta comparador " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-	| expresion comparador error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta la segunda expresion de la condicion " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-	| error comparador expresion {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta la primera expresion de la condicion " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+condicion    : expresion comparador expresion {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Comparacion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+	| expresion error expresion {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta comparador %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+	| expresion comparador error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta la segunda expresion de la condicion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+	| error comparador expresion {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta la primera expresion de la condicion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 comparador    : MAYOR_IGUAL {$$ = $1;}
@@ -226,22 +226,22 @@ comparador    : MAYOR_IGUAL {$$ = $1;}
         | DISTINTO {$$ = $1;}
 ;
 
-expresion       : expresion '+' termino
-                | expresion '-' termino
+expresion       : expresion '+' termino {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Suma %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                | expresion '-' termino {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Resta %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                 | termino
-                | expresion '+' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la suma " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                | expresion '-' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la resta " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                | error '+' termino {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la suma " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                | error '-' termino {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la resta " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                | expresion '+' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la suma %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                | expresion '-' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la resta %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                | error '+' termino {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la suma %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                | error '-' termino {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la resta %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-termino: termino '*' factor
-        | termino '/' factor
+termino: termino '*' factor {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Multiplicacion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+        | termino '/' factor {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Division %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
         | factor
-        | termino '*' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la multiplicacion " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-        | termino '/' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la division " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-        | error '/' factor {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la division " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-        | error '*' factor {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta un termino en la multiplicacion " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+        | termino '*' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la multiplicacion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+        | termino '/' error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la division %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+        | error '/' factor {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la division %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+        | error '*' factor {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Error en la multiplicacion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 factor  : ID { $$ = $1;}
@@ -255,6 +255,8 @@ cte : CTE {String cte = $1.sval;
       | '-' CTE { String cte = $2.sval;
       		  checkRango(cte, true);
       		  $$ = new ParserVal("-" + cte);
+      		  String cte_nueva= "-"+cte;
+      		  System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Constante negativa %s %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte_nueva);
      	 	}
 ;
 
@@ -288,10 +290,20 @@ public void checkRango(String cte, boolean negativo){
 		    System.out.printf(Main.ANSI_RED + "[Linea %d]- ERROR | Entero largo negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
 		}
 		String nuevoLexema = "-" + entero;
+		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
+		if (cont == 0)
+		  TablaSimbolos.remove(cte);
+		else
+		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "LONGINT", nuevoLexema);
+		    nuevoToken.addAtributo("contador", "1");
 		    TablaSimbolos.add(nuevoToken);
 		}
+		else {
+                     cont = Integer.parseInt(TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
+                     TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", String.valueOf(cont));
+                }
 	    }
 	    else{
 		if (Long.parseLong(cte) > 2147483647L){
@@ -308,10 +320,20 @@ public void checkRango(String cte, boolean negativo){
 		    System.out.printf(Main.ANSI_RED + "[Linea %d]- ERROR | Flotante negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
 		}
 		String nuevoLexema = "-" + flotante;
+		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
+		if (cont == 0)
+		  TablaSimbolos.remove(cte);
+		else
+		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "FLOAT", nuevoLexema);
+		    nuevoToken.addAtributo("contador", "1");
 		    TablaSimbolos.add(nuevoToken);
 		}
+		else {
+                      cont = Integer.parseInt(TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
+                      TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", String.valueOf(cont));
+                }
 	    }
 	}
 }

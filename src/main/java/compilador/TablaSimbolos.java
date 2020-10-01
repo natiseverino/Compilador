@@ -93,8 +93,12 @@ public final class TablaSimbolos {
     }
 
     public static void add(Token token) {
-        if (!simbolos.containsKey(token.getLexema()))
             simbolos.put(token.getLexema(), token);
+    }
+
+    public static void remove(String token){
+        if(simbolos.containsKey(token))
+            simbolos.remove(token);
     }
 
     public static boolean existe(String lexema){
@@ -103,10 +107,10 @@ public final class TablaSimbolos {
 
     public static void print() {
         System.out.println("TABLA DE SÍMBOLOS");
-        System.out.printf( "%-5s %-15s %-15s %n", "ID", "Tipo", "Lexema");
+        System.out.printf( "%-5s %-15s %-15s %-15s %n", "ID", "Tipo", "Lexema", "Contador");
         for (String simbolo: simbolos.keySet()
              ) {
-            System.out.printf( "%-5s %-15s %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema());
+            System.out.printf( "%-5s %-15s %-15s %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).getAtributo("contador"));
         }
     }
 

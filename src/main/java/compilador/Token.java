@@ -8,7 +8,7 @@ public class Token {
     private String tipoToken;
     private String lexema;
 
-    private Map<String, Object> atributos = new HashMap<>();
+    private Map<String, String> atributos = new HashMap<>();
 
     public Token(int idToken, String tipoToken, String lexema) {
         this.idToken = idToken;
@@ -20,8 +20,14 @@ public class Token {
         this.idToken = idToken;
     }
 
-    public void addAtributo(String tipo, Object atributo){
+    public void addAtributo(String tipo, String atributo){
         atributos.put(tipo, atributo);
+    }
+
+    public String getAtributo(String tipo){
+        if (atributos.containsKey(tipo))
+            return atributos.get(tipo);
+        return "";
     }
 
     public int getIdToken() {return this.idToken;}
