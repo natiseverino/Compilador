@@ -854,9 +854,9 @@ public void checkRango(String cte, boolean negativo){
 		}
 		String nuevoLexema = "-" + entero;
 		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
-		if (cont == 0)
-		  TablaSimbolos.remove(cte);
-		else
+		//if (cont == 0)
+		//  TablaSimbolos.remove(cte);
+		//else
 		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "LONGINT", nuevoLexema);
@@ -884,9 +884,9 @@ public void checkRango(String cte, boolean negativo){
 		}
 		String nuevoLexema = "-" + flotante;
 		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
-		if (cont == 0)
-		  TablaSimbolos.remove(cte);
-		else
+		//if (cont == 0)
+		//  TablaSimbolos.remove(cte);
+		//else
 		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "FLOAT", nuevoLexema);
