@@ -40,11 +40,12 @@ bloque_declarativo     : bloque_declarativo sentencia_declarativa
 ;
 
 bloque_ejecutable     : bloque_ejecutable sentencia_ejecutable
-| sentencia_ejecutable
+            | sentencia_ejecutable
 ;
 
 bloque_sentencias    : '{' lista_sentencias sentencia '}'
             | sentencia
+            |'{' lista_sentencias sentencia error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal '}' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 lista_sentencias    : lista_sentencias sentencia
@@ -67,10 +68,13 @@ sentencia_ejecutable    : sentencia_seleccion
 ;
 
 declaracion_variables    : tipo lista_variables ';' {System.out.println("Declaración variables");}
+                        | tipo lista_variables error {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                        | tipo error ';'  {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta lista de variables " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 lista_variables    : ID ',' lista_variables
         | ID
+        | ID  lista_variables {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ',' " + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 tipo    : LONGINT
