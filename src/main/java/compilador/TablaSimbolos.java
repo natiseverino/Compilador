@@ -101,4 +101,13 @@ public final class TablaSimbolos {
         return simbolos.containsKey(lexema);
     }
 
+    public static void print() {
+        System.out.println("TABLA DE SÍMBOLOS");
+        System.out.printf( "%-5s %-15s %-15s %n", "ID", "Tipo", "Lexema");
+        for (String simbolo: simbolos.keySet()
+             ) {
+            System.out.printf( "%-5s %-15s %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema());
+        }
+    }
+
 }
