@@ -1,0 +1,15 @@
+%% invocaciones correctas
+inv(a);
+inv(a,b);
+inv(a,2.0,c);
+inv();
+
+%% invocaciones erroneas
+inv(a,b,c,d,e);
+inv a);
+inv (a;
+inv(a b);
+inv(a 4_l 5.0);
+inv(a)
+inv()
+inv(a,);
