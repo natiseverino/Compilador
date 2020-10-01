@@ -1,0 +1,45 @@
+%% Sentencias reconocidas como sentencias de declaración de procedimientos
+%%PROC a() NI = 1. {}
+
+%%PROC a(LONGINT b) NI = 1. {}
+
+%%PROC a(LONGINT b, FLOAT c) NI = 1. {}
+
+%%PROC a(LONGINT b, FLOAT c, LONGINT d) NI = 1. {}
+
+%% Sentencias no reconocidas como sentencias de declaración de procedimientos
+%%a(LONGINT b) NI = 1. {}           NO RECONOCE NADA
+
+%%PROC () NI = 1. {}
+%%PROC (LONGINT b) NI = 1. {}
+
+%%PROC "a"() NI = 1. {}
+%%PROC "a"(LONGINT b) NI = 1. {}
+
+%%PROC a) NI = 1. {}
+%%PROC aLONGINT b) NI = 1. {}
+
+%%PROC a("b") NI = 1. {}
+
+%%PROC a( NI = 1. {}
+%%PROC a(LONGINT b NI = 1. {}      LA REGLA PARA ESTE CASO DA CONFLICTO SHIFT/REDUCE
+%%                                 | PROC ID '(' lista_parametros_formales error NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+
+%%PROC a() = 1. {}
+%%PROC a(LONGINT b) = 1. {}
+
+%%PROC a() NI 1. {}                     NO LAS RECONOCE COMO ERROR
+%%PROC a(LONGINT b) NI 1. {}
+
+%%PROC a() NI = {}                      NO LAS RECONOCE COMO ERROR
+%%PROC a(LONGINT b) NI = {}
+
+%%PROC a() NI = 1. }                      NO LAS RECONOCE COMO ERROR
+%%PROC a(LONGINT b) NI = 1. }
+%%PROC a() NI = 1. b=1.;}                   Estas sí las reconoce
+%%PROC a(LONGINT b) NI = 1. b=1.;}
+
+%%PROC a() NI = 1. { "abc" }            NO LAS RECONOCE COMO ERROR
+%%PROC a(LONGINT b) NI = 1. { "abc" }
+
+

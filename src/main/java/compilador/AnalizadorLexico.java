@@ -30,11 +30,9 @@ public class AnalizadorLexico {
 
 
 
-    public AnalizadorLexico() {
-        this.codigoFuente = FileManager.loadCodigoFuente("CasosDePrueba/Test3.txt");
+    public AnalizadorLexico(StringBuilder codigoFuente) {
+        this.codigoFuente = codigoFuente;
         this.asignarAS();
-        while(!endOfFile())
-            yylex();
     }
 
     private void asignarAS() {
@@ -125,11 +123,11 @@ public class AnalizadorLexico {
         }
 
         if(token != null) {
-            //yylval = new ParserVal(token.getLexema());
+            Parser.yylval = new ParserVal(token.getLexema());
             if (!token.getTipoToken().isEmpty())
-                System.out.printf("%s %s%n", token.getTipoToken(), token.getLexema());
+                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s %s%n" + Main.ANSI_RESET, nroLinea, token.getTipoToken(), token.getLexema());
             else
-                System.out.printf("%s%n", token.getLexema());
+                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s%n" + Main.ANSI_RESET, nroLinea, token.getLexema());
         }
         return token != null ? token.getIdToken() : -1;
     }
@@ -225,7 +223,7 @@ public class AnalizadorLexico {
         public Token execute(StringBuilder lexema, char ultimo) {
             codigoFuente.insert(0, ultimo);
 
-            float flotante, real = -1, exponente = 1;
+            float flotante, real = -1, exponente = 0;
 
             if(lexema.toString().contains("f"))
                 real = Float.parseFloat(lexema.toString().split("f")[0]);

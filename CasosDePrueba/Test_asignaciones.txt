@@ -1,0 +1,9 @@
+%% Sentencia reconocida como asignación
+a = b;
+
+%% Sentencias no reconocidas como asignaciones
+= b;
+
+a = ;
+
+a = b

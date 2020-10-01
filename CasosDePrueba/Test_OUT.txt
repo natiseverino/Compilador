@@ -1,0 +1,20 @@
+%% Sentencias reconocidas como sentencias de salida OUT
+%%OUT("abc-
+def");
+
+%%OUT("");
+
+%%OUT("a");
+
+%% Sentencias no reconocidas como sentencias de salida OUT
+%%("a");
+
+%%OUT"a");
+
+%%OUT();
+
+%%OUT(abc);
+
+%%OUT("a";
+
+%%OUT("a")

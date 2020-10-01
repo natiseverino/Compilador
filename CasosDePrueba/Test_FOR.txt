@@ -1,0 +1,51 @@
+%% Sentencias reconocidas como sentencias de control FOR
+%%FOR(a=1.; a<10_l; UP 1.) { a=b; }
+
+%%FOR(a=1.; a<10_l; UP 1.) { a=b; c=d; }
+
+%%FOR(a=1.; a<10_l; UP 1.) a=b;
+
+%%FOR(a=1.; a<10_l; UP 1.) a=b; c=d;
+
+%% Sentencias no reconocidas como sentencias de control FOR
+%%(a=1.; a<10_l; UP 1.) { a=b; }
+%%(a=1.; a<10_l; UP 1.) a=b;
+
+%%FORa=1.; a<10_l; UP 1.) { a=b; }
+%%FORa=1.; a<10_l; UP 1.) a=b;
+
+%%FOR(=1.; a<10_l; UP 1.) { a=b; }
+%%FOR(=1.; a<10_l; UP 1.) a=b;
+
+%%FOR(a 1.; a<10_l; UP 1.) { a=b; }
+%%FOR(a 1.; a<10_l; UP 1.) a=b;
+
+%%FOR(a=; a<10_l; UP 1.) { a=b; }
+%%FOR(a=; a<10_l; UP 1.) a=b;
+
+%%FOR(a=1. a<10_l; UP 1.) { a=b; }
+%%FOR(a=1. a<10_l; UP 1.) a=b;
+
+%%FOR(a=1.; <10_l; UP 1.) { a=b; }          %%LAS ESTÁ RECONOCIENDO. MAL??
+%%FOR(a=1.; <10_l; UP 1.) a=b;
+
+%%FOR(a=1.; a 10_l; UP 1.) { a=b; }
+%%FOR(a=1.; a 10_l; UP 1.) a=b;
+
+%%FOR(a=1.; a<; UP 1.) { a=b; }             %%LAS ESTÁ RECONOCIENDO. MAL??
+%%FOR(a=1.; a<; UP 1.) a=b;
+
+%%FOR(a=1.; a<10_l UP 1.) { a=b; }          MAL
+%%FOR(a=1.; a<10_l UP 1.) a=b;
+
+%%FOR(a=1.; a<10_l; 1.) { a=b; }
+%%FOR(a=1.; a<10_l; 1.) a=b;
+
+%%FOR(a=1.; a<10_l; UP ) { a=b; }
+%%FOR(a=1.; a<10_l; UP ) a=b;
+
+%%FOR(a=1.; a<10_l; UP 1. { a=b; }
+%%FOR(a=1.; a<10_l; UP 1. a=b;
+
+%%FOR(a=1.; a<10_l; UP 1.) { abc }          MAL
+%%FOR(a=1.; a<10_l; UP 1.) abc
