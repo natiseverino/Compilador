@@ -174,7 +174,7 @@ public class AnalizadorLexico {
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
-                System.out.printf(Main.ANSI_YELLOW + "[Linea %d]- WARNING | Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + Main.ANSI_RESET, nroLinea, lexemaAnt, lexema);
+                System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + Main.ANSI_RESET, nroLinea, lexemaAnt, lexema);
             }
 
 
@@ -219,7 +219,7 @@ public class AnalizadorLexico {
                 token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
 
             } else {
-                System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                System.out.printf( Main.ANSI_RED + "[AL] | Linea %d:  Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
             }
 
             return token;
@@ -231,7 +231,7 @@ public class AnalizadorLexico {
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
-            System.out.printf(Main.ANSI_RED + "[Linea %d]- ERROR | Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
+            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
             return null;
         }
     }
@@ -262,7 +262,7 @@ public class AnalizadorLexico {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), "FLOAT");
             } else {
-                System.err.printf(Main.ANSI_RED +"[Linea %d]- ERROR | Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                System.err.printf( Main.ANSI_RED + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
             }
 
             return token;

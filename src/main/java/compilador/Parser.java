@@ -918,7 +918,7 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 277 "gramatica.y"
+//#line 273 "gramatica.y"
 
 private AnalizadorLexico analizadorLexico;
 private int nroUltimaLinea;
@@ -1154,7 +1154,7 @@ boolean doaction;
 //########## USER-SUPPLIED ACTIONS ##########
 case 5:
 //#line 35 "gramatica.y"
-{System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias. No se reconocen bloques dereclarativos/ejecutables %n" + Main.ANSI_RESET, nroUltimaLinea);}
+{System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias. No se reconocen bloques declarativos/ejecutables %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 23:
 //#line 69 "gramatica.y"
@@ -1265,461 +1265,461 @@ case 53:
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 54:
-//#line 110 "gramatica.y"
+//#line 108 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (3) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 55:
-//#line 111 "gramatica.y"
+//#line 109 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (2) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 56:
-//#line 112 "gramatica.y"
+//#line 110 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (1) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 57:
-//#line 113 "gramatica.y"
+//#line 111 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los primeros dos parámetros formales %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 58:
-//#line 114 "gramatica.y"
+//#line 112 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los últimos dos parámetros formales %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 59:
-//#line 115 "gramatica.y"
+//#line 113 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los parámetros formales %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 60:
-//#line 116 "gramatica.y"
+//#line 114 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Número de parámetros formales permitidos excedido %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 61:
-//#line 117 "gramatica.y"
+//#line 115 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Parámetro formal incorrecto %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 62:
-//#line 120 "gramatica.y"
+//#line 118 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 63:
-//#line 121 "gramatica.y"
+//#line 119 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 64:
-//#line 122 "gramatica.y"
+//#line 120 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el tipo del parámetro formal %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 65:
-//#line 123 "gramatica.y"
+//#line 121 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el tipo del parámetro formal %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 66:
-//#line 126 "gramatica.y"
+//#line 124 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 67:
-//#line 127 "gramatica.y"
+//#line 125 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 68:
-//#line 130 "gramatica.y"
+//#line 126 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 69:
-//#line 131 "gramatica.y"
+//#line 127 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 70:
-//#line 132 "gramatica.y"
+//#line 128 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 71:
-//#line 133 "gramatica.y"
+//#line 129 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 72:
-//#line 134 "gramatica.y"
+//#line 130 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en condición en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 73:
-//#line 135 "gramatica.y"
+//#line 131 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en condición en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 74:
-//#line 136 "gramatica.y"
+//#line 132 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 75:
-//#line 137 "gramatica.y"
+//#line 133 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 76:
-//#line 138 "gramatica.y"
+//#line 134 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 77:
-//#line 139 "gramatica.y"
+//#line 135 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 78:
-//#line 140 "gramatica.y"
+//#line 136 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 79:
-//#line 141 "gramatica.y"
+//#line 137 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 80:
-//#line 142 "gramatica.y"
+//#line 138 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 81:
-//#line 143 "gramatica.y"
+//#line 139 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 82:
-//#line 144 "gramatica.y"
+//#line 140 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 83:
-//#line 145 "gramatica.y"
+//#line 141 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 84:
-//#line 146 "gramatica.y"
+//#line 142 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF y literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 85:
-//#line 147 "gramatica.y"
+//#line 143 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 86:
-//#line 148 "gramatica.y"
+//#line 144 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 87:
-//#line 149 "gramatica.y"
+//#line 145 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 88:
-//#line 150 "gramatica.y"
+//#line 146 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 89:
-//#line 151 "gramatica.y"
+//#line 147 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF y literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 90:
-//#line 152 "gramatica.y"
+//#line 148 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan bloques de sentencias luego de THEN y ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 91:
-//#line 155 "gramatica.y"
+//#line 151 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 92:
-//#line 156 "gramatica.y"
+//#line 152 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 93:
-//#line 157 "gramatica.y"
+//#line 153 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada FOR en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 94:
-//#line 158 "gramatica.y"
+//#line 154 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada FOR en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 95:
-//#line 159 "gramatica.y"
+//#line 155 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 96:
-//#line 160 "gramatica.y"
+//#line 156 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 97:
-//#line 161 "gramatica.y"
+//#line 157 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 98:
-//#line 162 "gramatica.y"
+//#line 158 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 99:
-//#line 163 "gramatica.y"
+//#line 159 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 100:
-//#line 164 "gramatica.y"
+//#line 160 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 101:
-//#line 165 "gramatica.y"
+//#line 161 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 102:
-//#line 166 "gramatica.y"
+//#line 162 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 103:
-//#line 167 "gramatica.y"
+//#line 163 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de expresión de inicialización en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 104:
-//#line 168 "gramatica.y"
+//#line 164 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de expresión de inicialización en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 105:
-//#line 169 "gramatica.y"
+//#line 165 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 106:
-//#line 170 "gramatica.y"
+//#line 166 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 107:
-//#line 171 "gramatica.y"
+//#line 167 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de condición de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 108:
-//#line 172 "gramatica.y"
+//#line 168 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de condición de control en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 109:
-//#line 173 "gramatica.y"
+//#line 169 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 110:
-//#line 174 "gramatica.y"
+//#line 170 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 111:
-//#line 175 "gramatica.y"
+//#line 171 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 112:
-//#line 176 "gramatica.y"
+//#line 172 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 113:
-//#line 177 "gramatica.y"
+//#line 173 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 114:
-//#line 178 "gramatica.y"
+//#line 174 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 115:
-//#line 179 "gramatica.y"
+//#line 175 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 118:
-//#line 186 "gramatica.y"
+//#line 182 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de salida OUT %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 119:
-//#line 187 "gramatica.y"
+//#line 183 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada OUT en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 120:
-//#line 188 "gramatica.y"
+//#line 184 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 121:
-//#line 189 "gramatica.y"
+//#line 185 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta cadena multilínea a imprimir en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 122:
-//#line 190 "gramatica.y"
+//#line 186 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la cadena multilínea a imprimir en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 123:
-//#line 191 "gramatica.y"
+//#line 187 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 124:
-//#line 192 "gramatica.y"
+//#line 188 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 125:
-//#line 195 "gramatica.y"
+//#line 191 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 126:
-//#line 196 "gramatica.y"
+//#line 192 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta lado izquierdo de la asignación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 127:
-//#line 197 "gramatica.y"
+//#line 193 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de asignación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 128:
-//#line 198 "gramatica.y"
+//#line 194 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta lado derecho de la asignación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 129:
-//#line 199 "gramatica.y"
+//#line 195 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' al final de la asignación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 130:
-//#line 202 "gramatica.y"
+//#line 198 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocación con lista de parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 131:
-//#line 203 "gramatica.y"
+//#line 199 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocación sin parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 132:
-//#line 204 "gramatica.y"
+//#line 200 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el identificador del procedimiento a invocar %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 133:
-//#line 205 "gramatica.y"
+//#line 201 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el identificador del procedimiento a invocar %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 134:
-//#line 206 "gramatica.y"
+//#line 202 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 135:
-//#line 207 "gramatica.y"
+//#line 203 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 136:
-//#line 208 "gramatica.y"
+//#line 204 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Parámetros inválidos %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 137:
-//#line 209 "gramatica.y"
+//#line 205 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 138:
-//#line 210 "gramatica.y"
+//#line 206 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 139:
-//#line 211 "gramatica.y"
+//#line 207 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 140:
-//#line 212 "gramatica.y"
+//#line 208 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta literal ';' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 141:
-//#line 215 "gramatica.y"
+//#line 211 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (3) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 142:
-//#line 216 "gramatica.y"
+//#line 212 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (2) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 143:
-//#line 217 "gramatica.y"
+//#line 213 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (1) %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 144:
-//#line 218 "gramatica.y"
+//#line 214 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Número de parámetros permitidos excedido %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 145:
-//#line 219 "gramatica.y"
+//#line 215 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Parámetro incorrecto %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 146:
-//#line 220 "gramatica.y"
+//#line 216 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan literales ',' entre parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 147:
-//#line 221 "gramatica.y"
+//#line 217 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 148:
-//#line 222 "gramatica.y"
+//#line 218 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 149:
-//#line 223 "gramatica.y"
+//#line 219 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 151:
-//#line 229 "gramatica.y"
+//#line 225 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Comparación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 152:
-//#line 230 "gramatica.y"
+//#line 226 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta comparador %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 153:
-//#line 231 "gramatica.y"
+//#line 227 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el segundo operando de la condición %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 154:
-//#line 232 "gramatica.y"
+//#line 228 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el primer operando de la condición %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 157:
-//#line 237 "gramatica.y"
+//#line 233 "gramatica.y"
 {yyval = new ParserVal('>');}
 break;
 case 158:
-//#line 238 "gramatica.y"
+//#line 234 "gramatica.y"
 {yyval = new ParserVal('<');}
 break;
 case 161:
-//#line 243 "gramatica.y"
+//#line 239 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Suma %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 162:
-//#line 244 "gramatica.y"
+//#line 240 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Resta %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 164:
-//#line 246 "gramatica.y"
+//#line 242 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el segundo operando en la suma %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 165:
-//#line 247 "gramatica.y"
+//#line 243 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el segundo operando en la resta %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 166:
-//#line 248 "gramatica.y"
+//#line 244 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el primer operando en la suma %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 167:
-//#line 249 "gramatica.y"
+//#line 245 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el primer operando en la resta %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 168:
-//#line 252 "gramatica.y"
+//#line 248 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Multiplicación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 169:
-//#line 253 "gramatica.y"
+//#line 249 "gramatica.y"
 {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: División %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 171:
-//#line 255 "gramatica.y"
+//#line 251 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el segundo operando en la multiplicación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 172:
-//#line 256 "gramatica.y"
+//#line 252 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el segundo operando en la división %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 173:
-//#line 257 "gramatica.y"
+//#line 253 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el primer operando en la multiplicación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 174:
-//#line 258 "gramatica.y"
+//#line 254 "gramatica.y"
 {System.out.printf( Main.ANSI_RED + "[Linea %d]- ERROR | Falta el primer operando en la división %n" + Main.ANSI_RESET, nroUltimaLinea);}
 break;
 case 177:
-//#line 265 "gramatica.y"
+//#line 261 "gramatica.y"
 {String cte = val_peek(0).sval;
            checkRango(cte, false);
            }
 break;
 case 178:
-//#line 268 "gramatica.y"
+//#line 264 "gramatica.y"
 { String cte = val_peek(0).sval;
       		  checkRango(cte, true);
       		  yyval = new ParserVal("-" + cte);

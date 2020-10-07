@@ -103,8 +103,6 @@ declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' c
                             | PROC ID '(' ')' NI '=' cte cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
                             | PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
                             | PROC ID '(' ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            //| PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' cuerpo error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '}' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            //| PROC ID '(' ')' NI '=' cte '{' cuerpo error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '}' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
 ;
 
 lista_parametros_formales   : parametro_formal ',' parametro_formal ',' parametro_formal {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (3) %n" + Main.ANSI_RESET, nroUltimaLinea);}
@@ -125,8 +123,6 @@ parametro_formal    : tipo ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Line
 
 sentencia_seleccion : IF '(' condicion ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | IF '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                    //| '(' condicion ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada IF en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                    //| '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada IF en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | IF condicion ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | IF condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | IF '(' ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
