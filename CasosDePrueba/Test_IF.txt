@@ -1,14 +1,11 @@
 %% Sentencias reconocidas como sentencias de selección IF
 %%IF (a>1.) THEN a=1.; END_IF;
 
-IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
+%%IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
 
-%%IF (a>1.) THEN a=1. END_IF;           LA RECONOCE PERO SE SUPONE QUE LA ASIGNACIÓN ESTÁ MAL
+%%IF (a>1.) THEN { a=1.; b=2.; } END_IF;
 
-%% Sentencias no reconocidas como sentencias de selección IF
-%%(a>1.) THEN a=1.; END_IF;
-%%(a>1.) THEN a=1.; ELSE a=2.; END_IF;
-
+%% Sentencias reconocidas como sentencias de selección IF con errores
 %%IF a>1.) THEN a=1.; END_IF;
 %%IF a>1.) THEN a=1.; ELSE a=2.; END_IF;
 
@@ -18,8 +15,8 @@ IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
 %%IF ("abc") THEN a=1.; END_IF;
 %%IF ("abc") THEN a=1.; ELSE a=2.; END_IF;
 
-%%IF (a>1.0 THEN a=1.; END_IF;                      LAS RECONOCE MAL
-%%IF (a>1.0 THEN a=1.; ELSE a=2.; END_IF;
+%%IF (a>1. THEN a=1.; END_IF;
+%%IF (a>1. THEN a=1.; ELSE a=2.; END_IF;
 
 %%IF (a>1.) a=1.; END_IF;
 %%IF (a>1.) a=1.; ELSE a=2.; END_IF;

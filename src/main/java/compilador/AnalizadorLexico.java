@@ -144,7 +144,14 @@ public class AnalizadorLexico {
             token.addAtributo("contador", String.valueOf(cont));
         }
         else {
-            token = new Token(TablaSimbolos.getId("cte"), tipo, lex);
+            int id = 0;
+            if(tipo.equals("IDENTIFICADOR")) {
+                id = TablaSimbolos.getId("id");
+            } else {
+                if(tipo.equals("CADENA MULT")) id = TablaSimbolos.getId("cadenaMult");
+                else id = TablaSimbolos.getId("cte");
+            }
+            token = new Token(id, tipo, lex);
             token.addAtributo("contador", "1");
             TablaSimbolos.add(token);
         }
@@ -281,8 +288,7 @@ public class AnalizadorLexico {
 
             Token token = null;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
-                token = new Token(TablaSimbolos.getId("cadenaMult"), "CADENA MULT", lexema.toString());
-                TablaSimbolos.add(token);
+                token = addToken(lexema.toString(), "CADENA MULT");
             }
             else if(TablaSimbolos.reservada(lexema.toString()) == 0)
                 token = new Token(TablaSimbolos.getId(lexema.toString()), "", lexema.toString());

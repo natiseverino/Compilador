@@ -1,7 +1,5 @@
 package compilador;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,11 +104,14 @@ public final class TablaSimbolos {
     }
 
     public static void print() {
-        System.out.println("TABLA DE SÍMBOLOS");
-        System.out.printf( "%-5s %-15s %-15s %-15s %n", "ID", "Tipo", "Lexema", "Contador");
-        for (String simbolo: simbolos.keySet()
-             ) {
-            System.out.printf( "%-5s %-15s %-15s %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).getAtributo("contador"));
+        if(!simbolos.isEmpty()) {
+            System.out.println(Main.ANSI_BOLD_WHITE + ">> TABLA DE SÍMBOLOS" + Main.ANSI_RESET);
+            System.out.printf( "%-3s | %-15s | %-15s | %-15s %n", "ID", "Tipo", "Lexema", "Contador");
+            System.out.printf(new String(new char[58]).replace("\0", "-") + "%n");
+            for (String simbolo: simbolos.keySet()
+            ) {
+                System.out.printf( "%-1s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).getAtributo("contador"));
+            }
         }
     }
 

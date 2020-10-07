@@ -1,4 +1,4 @@
-%% expresiones correctas
+%% Sentencias reconocidas como expresiones
 a = a+b;
 a = a-b;
 a = 2.0 * 4.0;
@@ -6,7 +6,7 @@ a = 4_l / 2_l;
 a = a + b * 5.0 - 1_l;
 a = -6.0;
 
-%% expresiones incorrectas
+%% Sentencias reconocidas como expresiones con errores
 %%a = a + "cadena";
 %%a = a + ;
 %%a = a - "cadena";
