@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         TablaSimbolos.init();
 
-        AnalizadorLexico al = new AnalizadorLexico(FileManager.loadCodigoFuente("CasosDePrueba/Test1.txt"));
+        AnalizadorLexico al = new AnalizadorLexico(FileManager.loadCodigoFuente("CasosDePrueba/Test_sentencias.txt"));
         Parser parser = new Parser(al, false);
         parser.yyparse();
         System.out.println();

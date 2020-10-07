@@ -1,0 +1,14 @@
+LONGINT a;
+a = 25_l;
+IF (a > 5_l) THEN
+    a = a + 1.0;
+END_IF;
+FLOAT b, c;
+b = 2.0;
+funcion();
+
+FOR(a=1.; a<10_l; UP 1.) {
+a = 5_l;
+FLOAT d;
+b = 2.0;
+}

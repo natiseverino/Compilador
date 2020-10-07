@@ -26,17 +26,7 @@ package compilador;
 %token DOWN
 
 %%
-programa : cuerpo
-;
-
-cuerpo: bloque_declarativo
-      | bloque_ejecutable
-      | bloque_declarativo bloque_ejecutable
-      | error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias. No se reconocen bloques declarativos/ejecutables %n" + Main.ANSI_RESET, nroUltimaLinea);}
-;
-
-bloque_declarativo     : bloque_declarativo sentencia_declarativa
-            | sentencia_declarativa
+programa : lista_sentencias
 ;
 
 bloque_ejecutable     : bloque_ejecutable sentencia_ejecutable
@@ -80,27 +70,27 @@ tipo    : LONGINT
         | FLOAT
 ;
 
-declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | ID '(' lista_parametros_formales ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | ID '(' ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC '(' lista_parametros_formales ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC '(' ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC error '(' lista_parametros_formales ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC error '('  ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID error lista_parametros_formales ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID error ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' error ')' NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' lista_parametros_formales NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' error NI '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' lista_parametros_formales ')' error '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' ')' error '=' cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' lista_parametros_formales ')' NI error cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' ')' NI error cte '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' lista_parametros_formales ')' NI '=' error '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' ')' NI '=' error '{' cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' lista_parametros_formales ')' NI '=' cte cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                            | PROC ID '(' ')' NI '=' cte cuerpo '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | ID '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | ID '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC error '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC error '('  ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID error lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID error ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' error ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' lista_parametros_formales NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' error NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' lista_parametros_formales ')' error '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' ')' error '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' lista_parametros_formales ')' NI error cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' ')' NI error cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' lista_parametros_formales ')' NI '=' error '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' ')' NI '=' error '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' lista_parametros_formales ')' NI '=' cte lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                            | PROC ID '(' ')' NI '=' cte lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
                             | PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
                             | PROC ID '(' ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, nroUltimaLinea);}
 ;
