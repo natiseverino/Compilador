@@ -29,8 +29,8 @@ package compilador;
 programa : lista_sentencias
 ;
 
-bloque_ejecutable     : bloque_ejecutable sentencia_ejecutable
-            | sentencia_ejecutable
+bloque_ejecutable   : bloque_ejecutable sentencia_ejecutable
+                    | sentencia_ejecutable
 ;
 
 bloque_sentencias   : '{' lista_sentencias sentencia '}'
@@ -162,7 +162,14 @@ sentencia_control   : FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{'
                     | FOR '(' ID '=' CTE ';' condicion ';' incr_decr error ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE error '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
                     | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE error sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' error '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control %n" + Main.ANSI_RESET, nroUltimaLinea);}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa bloque_ejecutable'}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa error '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable sentencia_declarativa error '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable error sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' sentencia_declarativa {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+
 ;
 
 incr_decr   : UP
