@@ -9,6 +9,7 @@ funcion();
 
 FOR(a=1.; a<10_l; UP 1.) {
 a = 5_l;
+b = -2.0;
 FLOAT d;
-b = 2.0;
+
 }

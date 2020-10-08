@@ -1,41 +1,41 @@
 %% Sentencias reconocidas como sentencias de selección IF
-%%IF (a>1.) THEN a=1.; END_IF;
+IF (a>1.) THEN a=1.; END_IF;
 
-%%IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
+IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
 
-%%IF (a>1.) THEN { a=1.; b=2.; } END_IF;
+IF (a>1.) THEN { a=1.; b=2.; } END_IF;
 
 %% Sentencias reconocidas como sentencias de selección IF con errores
-%%IF a>1.) THEN a=1.; END_IF;
-%%IF a>1.) THEN a=1.; ELSE a=2.; END_IF;
+IF a>1.) THEN a=1.; END_IF;
+IF a>1.) THEN a=1.; ELSE a=2.; END_IF;
 
-%%IF () THEN a=1.; END_IF;
-%%IF () THEN a=1.; ELSE a=2.; END_IF;
+IF () THEN a=1.; END_IF;
+IF () THEN a=1.; ELSE a=2.; END_IF;
 
-%%IF ("abc") THEN a=1.; END_IF;
-%%IF ("abc") THEN a=1.; ELSE a=2.; END_IF;
+IF ("abc") THEN a=1.; END_IF;
+IF ("abc") THEN a=1.; ELSE a=2.; END_IF;
 
-%%IF (a>1. THEN a=1.; END_IF;
-%%IF (a>1. THEN a=1.; ELSE a=2.; END_IF;
+IF (a>1. THEN a=1.; END_IF;
+IF (a>1. THEN a=1.; ELSE a=2.; END_IF;
 
-%%IF (a>1.) a=1.; END_IF;
-%%IF (a>1.) a=1.; ELSE a=2.; END_IF;
+IF (a>1.) a=1.; END_IF;
+IF (a>1.) a=1.; ELSE a=2.; END_IF;
 
-%%IF (a>1.) THEN END_IF;
-%%IF (a>1.) THEN ELSE a=2.; END_IF;
+IF (a>1.) THEN END_IF;
+IF (a>1.) THEN ELSE a=2.; END_IF;
 
-%%IF (a>1.) THEN "abc" END_IF;
-%%IF (a>1.) THEN "abc" ELSE a=2.; END_IF;
+IF (a>1.) THEN "abc" END_IF;
+IF (a>1.) THEN "abc" ELSE a=2.; END_IF;
 
-%%IF (a>1.) THEN a=1.; ;
-%%IF (a>1.) THEN a=1.; END_IF
-%%IF (a>1.) THEN a=1.;
+IF (a>1.) THEN a=1.; ;
+IF (a>1.) THEN a=1.; END_IF
+IF (a>1.) THEN a=1.;
 
-%%IF (a>1.) THEN { a=1.; a=2.; } ELSE END_IF;
-%%IF (a>1.) THEN a=1.; ELSE "abc" END_IF;
+IF (a>1.) THEN { a=1.; a=2.; } ELSE END_IF;
+IF (a>1.) THEN a=1.; ELSE "abc" END_IF;
 
-%%IF (a>1.) THEN a=1.; ELSE a=2.; ;
-%%IF (a>1.) THEN a=1.; ELSE a=2.; END_IF
-%%IF (a>1.) THEN a=1.; ELSE a=2.;
+IF (a>1.) THEN a=1.; ELSE a=2.; ;
+IF (a>1.) THEN a=1.; ELSE a=2.; END_IF
+IF (a>1.) THEN a=1.; ELSE a=2.;
 
-%%IF (a>1.) THEN ELSE END_IF;
+IF (a>1.) THEN ELSE END_IF;

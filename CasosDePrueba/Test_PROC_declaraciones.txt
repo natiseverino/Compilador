@@ -1,41 +1,41 @@
 %% Sentencias reconocidas como sentencias de declaración de procedimientos
-%%PROC a() NI = 1. {b=1.;}
+PROC a() NI = 1. {b=1.;}
 
-%%PROC a(LONGINT b) NI = 1. {b=1.;}
+PROC a(LONGINT b) NI = 1. {b=1.;}
 
-%%PROC a(LONGINT b, FLOAT c) NI = 1. {b=1.;}
+PROC a(LONGINT b, FLOAT c) NI = 1. {b=1.;}
 
-%%PROC a(LONGINT b, FLOAT c, LONGINT d) NI = 1. {b=1.;}
+PROC a(LONGINT b, FLOAT c, LONGINT d) NI = 1. {b=1.;}
 
 %% Sentencias reconocidas como sentencias de declaración de procedimientos con errores
-%%a() NI = 1. {b=1.;}
-%%a(LONGINT b) NI = 1. {b=1.;}
+a() NI = 1. {b=1.;}
+a(LONGINT b) NI = 1. {b=1.;}
 
-%%PROC () NI = 1. {b=1.;}
-%%PROC (LONGINT b) NI = 1. {b=1.;}
+PROC () NI = 1. {b=1.;}
+PROC (LONGINT b) NI = 1. {b=1.;}
 
-%%PROC "a"() NI = 1. {b=1.;}
-%%PROC "a"(LONGINT b) NI = 1. {b=1.;}
+PROC "a"() NI = 1. {b=1.;}
+PROC "a"(LONGINT b) NI = 1. {b=1.;}
 
-%%PROC a) NI = 1. {b=1.;}
-%%PROC aLONGINT b) NI = 1. {b=1.;}
+PROC a) NI = 1. {b=1.;}
+PROC aLONGINT b) NI = 1. {b=1.;}
 
-%%PROC a("b") NI = 1. {b=1.;}
+PROC a("b") NI = 1. {b=1.;}
 
-%%PROC a( NI = 1. {b=1.;}
-%%PROC a(LONGINT b NI = 1. {b=1.;}
+PROC a( NI = 1. {b=1.;}
+PROC a(LONGINT b NI = 1. {b=1.;}
 
-%%PROC a() = 1. {b=1.;}
-%%PROC a(LONGINT b) = 1. {b=1.;}
+PROC a() = 1. {b=1.;}
+PROC a(LONGINT b) = 1. {b=1.;}
 
-%%PROC a() NI 1. {b=1.;}
-%%PROC a(LONGINT b) NI 1. {b=1.;}
+PROC a() NI 1. {b=1.;}
+PROC a(LONGINT b) NI 1. {b=1.;}
 
-%%PROC a() NI = {b=1.;}
-%%PROC a(LONGINT b) NI = {b=1.;}
+PROC a() NI = {b=1.;}
+PROC a(LONGINT b) NI = {b=1.;}
 
-%%PROC a() NI = 1. b=1.;}
-%%PROC a(LONGINT b) NI = 1. b=1.;}
+PROC a() NI = 1. b=1.;}
+PROC a(LONGINT b) NI = 1. b=1.;}
 
-%%PROC a() NI = 1. {}
-%%PROC a(LONGINT b) NI = 1. {}
+PROC a() NI = 1. {}
+PROC a(LONGINT b) NI = 1. {}

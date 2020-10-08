@@ -1,18 +1,18 @@
 %% Sentencias reconocidas como asignaciones
-%%a = b;
-%%a = 1. + c;
+a = b;
+a = 1. + c;
 
 %% Sentencias reconocidas como asignaciones con errores
-%%= b;
-%%= 1. + c;
+= b;
+= 1. + c;
 
-%%a b;
-%%a 1. + c;
+a b;
+a 1. + c;
 
-%%a = ;
+a = ;
 
-%%a = b
-%%a = 1. + c
+a = b
+a = 1. + c
 
 
 
