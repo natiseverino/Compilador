@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
         String filePath = "";
-        StringBuilder codigoFuente = new StringBuilder();
+        StringBuilder codigoFuente;
 
         try {
             filePath = args[0];
@@ -26,11 +26,11 @@ public class Main {
             throw new Exception("No se ha encontrado el archivo "+ filePath);
         }
 
-            AnalizadorLexico al = new AnalizadorLexico(codigoFuente);
-            Parser parser = new Parser(al, false);
-            parser.yyparse();
-            System.out.println();
-            TablaSimbolos.print();
+        AnalizadorLexico al = new AnalizadorLexico(codigoFuente);
+        Parser parser = new Parser(al, false);
+        parser.yyparse();
+        System.out.println();
+        TablaSimbolos.print();
 
     }
 }
