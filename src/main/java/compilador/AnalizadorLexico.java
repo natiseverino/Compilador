@@ -232,6 +232,7 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
+            lexema.setLength(0);
             return null;
         }
     }

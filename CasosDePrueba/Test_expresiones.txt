@@ -7,11 +7,11 @@ a = a + b * 5.0 - 1_l;
 a = -6.0;
 
 %% Sentencias reconocidas como expresiones con errores
-%%a = a + "cadena";
-%%a = a + ;
-%%a = a - "cadena";
-%%a = "cadena" - a;
-%%a = 4.0 / ;
-%%a = "cadena" / a;
-%%a = a * "cadena";
-%%a =  * a;
+a = a + "cadena";
+a = a + ;
+a = a - "cadena";
+a = "cadena" - a;
+a = 4.0 / ;
+a = "cadena" / a;
+a = a * "cadena";
+a =  * a;
