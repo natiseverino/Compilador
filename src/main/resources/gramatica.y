@@ -70,29 +70,41 @@ tipo    : LONGINT
         | FLOAT
 ;
 
-declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | ID '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | ID '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC '(' ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC error '(' lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC error '('  ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID error lista_parametros_formales ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID error ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' error ')' NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' lista_parametros_formales NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' error NI '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' lista_parametros_formales ')' error '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' ')' error '=' cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' lista_parametros_formales ')' NI error cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' ')' NI error cte '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' CTE '{' lista_sentencias '}' {
+							String cte = $8.sval;
+							if (TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
+							System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+							else
+							System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' ')' NI '=' CTE '{' lista_sentencias '}' {
+							String cte = $7.sval;
+							if (TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
+                            				System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+                            				else
+                                                        System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | ID '(' lista_parametros_formales ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | ID '(' ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC '(' lista_parametros_formales ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC '(' ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC error '(' lista_parametros_formales ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC error '('  ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID error lista_parametros_formales ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID error ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' error ')' NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' lista_parametros_formales NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' error NI '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' lista_parametros_formales ')' error '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' ')' error '=' CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' lista_parametros_formales ')' NI error CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' ')' NI error CTE '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                             | PROC ID '(' lista_parametros_formales ')' NI '=' error '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                             | PROC ID '(' ')' NI '=' error '{' lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' lista_parametros_formales ')' NI '=' cte lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' ')' NI '=' cte lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' lista_parametros_formales ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                            | PROC ID '(' ')' NI '=' cte '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' lista_parametros_formales ')' NI '=' CTE lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' ')' NI '=' CTE lista_sentencias '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '{' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' lista_parametros_formales ')' NI '=' CTE '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                            | PROC ID '(' ')' NI '=' CTE '{' '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias en declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+			    | PROC ID '(' ')' '{' lista_sentencias'}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta control de invocaciones %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+			    | PROC ID '(' ')' error '{' lista_sentencias'}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta control de invocaciones %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 lista_parametros_formales   : parametro_formal ',' parametro_formal ',' parametro_formal {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (3) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
@@ -107,69 +119,67 @@ lista_parametros_formales   : parametro_formal ',' parametro_formal ',' parametr
 
 parametro_formal    : tipo ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                     | VAR tipo ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | error ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | VAR error ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta definir el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | error ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | VAR error ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-sentencia_seleccion : IF '(' condicion ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF condicion ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' error ')' THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en condición en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' error ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en condición en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion THEN bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion THEN bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' error bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' error bloque_sentencias ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN error END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN error ELSE bloque_sentencias END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias END_IF error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF y literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE error END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias END_IF error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
-                    | IF '(' condicion ')' THEN bloque_sentencias ELSE bloque_sentencias error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF y literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF '(' condicion ')' THEN ELSE END_IF error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan bloques de sentencias luego de THEN y ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
+sentencia_seleccion : IF condicion_if  THEN bloque_then END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | IF condicion_if THEN bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | IF condicion_if  bloque_then END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | IF condicion_if  bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | IF condicion_if  THEN bloque_then  bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada ELSE %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN error END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN error ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de THEN en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then END_IF  {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF y literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then ELSE END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then ELSE error END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en bloque de sentencias luego de ELSE en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then ELSE bloque_else error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada END_IF en sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | IF condicion_if  THEN bloque_then ELSE bloque_else END_IF  {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de selección IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
+		    | IF error THEN bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la condicion del IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
+		    | IF THEN bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta la condicion del IF %n" + Main.ANSI_RESET, nroUltimaLinea);}
 ;
 
-sentencia_control   : FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')'  sentencia_ejecutable {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada FOR en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada FOR en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR error ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR error ID '=' CTE ';' condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' error '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' error '=' CTE ';' condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID error CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID error CTE ';' condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' error ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' error ';' condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE error condicion ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de expresión de inicialización en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE error condicion ';' incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de expresión de inicialización en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' error ';' incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' error ';' incr_decr CTE ')' sentencia_ejecutable  {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion incr_decr CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion incr_decr CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' error CTE ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' error CTE ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr error ')' '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr error ')' sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE error '{' bloque_ejecutable '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE error sentencia_ejecutable {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa bloque_ejecutable'}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' sentencia_declarativa error '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable sentencia_declarativa error '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' '{' bloque_ejecutable error sentencia_declarativa '}' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+condicion_if  	: '(' condicion ')'
+		| condicion ')' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta parentesis '(' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		| '(' condicion {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta parentesis ')' %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		| '(' ')' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condicion %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		| condicion {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan parentesis %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+;
+
+
+bloque_then : bloque_sentencias
+;
+
+bloque_else: bloque_sentencias
+;
+
+sentencia_control   : FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' bloque_for {
+							String cte = $10.sval;
+							if (TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
+							System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+							else
+							System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Constante no es del tipo entero %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+							}
+                    | '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada FOR en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR error ID '=' CTE ';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' error '=' CTE ';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID error CTE ';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' error ';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta constante para inicializar identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE error condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de expresión de inicialización en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' error ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' luego de condición de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' error CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr error ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE error bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                     | FOR '(' ID '=' CTE ';' condicion ';' incr_decr CTE ')' sentencia_declarativa {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+		    | FOR '('';' condicion ';' incr_decr CTE ')' bloque_for {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta identificador de control en sentencia de control %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+;
 
+bloque_for	: '{' bloque_ejecutable sentencia_ejecutable '}'
+		| sentencia_ejecutable
 ;
 
 incr_decr   : UP
@@ -184,6 +194,7 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {System.out.printf( Main.ANSI_
                     | OUT '(' error ')' ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en la cadena multilínea a imprimir en sentencia de salida %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                     | OUT '(' CADENA_MULT error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de salida %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                     | OUT '(' CADENA_MULT ')' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ';' en sentencia de salida %n" + Main.ANSI_RESET, nroUltimaLinea);}
+		    | OUT '(' factor ')' ';'
 ;
 
 sentencia_asignacion    : ID '=' expresion ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
@@ -200,28 +211,26 @@ sentencia_invocacion    : ID '(' lista_parametros ')' ';' {System.out.printf( Ma
                         | ID lista_parametros ')' ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                         | ID ')' ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                         | ID '(' error ')' ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Parámetros inválidos %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                        | ID '(' lista_parametros error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                        | ID '(' error ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                        | ID '(' lista_parametros  ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                        | ID '('  ';' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta literal ')' en sentencia de invocación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
                         | ID '(' lista_parametros ')' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta literal ';' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
                         | ID '(' ')' {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta literal ';' en sentencia de invocación %n" + Main.ANSI_RESET, nroUltimaLinea);}
 ;
 
-lista_parametros    : parametro ',' parametro ',' parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (3) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro ',' parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (2) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (1) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro ',' parametro ',' parametro ',' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Número de parámetros permitidos excedido %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro ',' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Parámetro incorrecto %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro parametro parametro {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan literales ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro ',' parametro parametro {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro parametro ',' parametro {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | parametro parametro {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+lista_parametros    : ID ',' ID ',' ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (3) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ',' ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (2) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (1) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ',' ID ',' ID ',' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Número de parámetros permitidos excedido %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ',' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Parámetro incorrecto %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ID ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Faltan literales ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ',' ID ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ID ',' ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+                    | ID ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-parametro : factor
-;
 
 condicion   : expresion comparador expresion {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Comparación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-	        | expresion error expresion {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta comparador %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+	        | expresion error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta comparador %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 	        | expresion comparador error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el segundo operando de la condición %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 	        | error comparador expresion {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Falta el primer operando de la condición %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
@@ -240,7 +249,6 @@ expresion   : expresion '+' termino {System.out.printf( Main.ANSI_GREEN + "[AS] 
             | expresion '+' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta el segundo operando en la suma %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
             | expresion '-' error {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta el segundo operando en la resta %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
             | error '+' termino {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d:| Falta el primer operando en la suma %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-            | error '-' termino {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | Falta el primer operando en la resta %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
 termino : termino '*' factor {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Multiplicación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
@@ -257,10 +265,9 @@ factor  : ID
 ;
 
 cte : CTE {String cte = $1.sval;
-           checkRango(cte, false);
            }
       | '-' CTE { String cte = $2.sval;
-      		  checkRango(cte, true);
+      		  checkRango(cte);
       		  $$ = new ParserVal("-" + cte);
       		  String cte_nueva= "-"+cte;
       		  System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Constante negativa %s %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte_nueva);
@@ -296,63 +303,57 @@ private int yylex(){
 }
 
 
-public void checkRango(String cte, boolean negativo){
+public void checkRango(String cte){
 	Token token = TablaSimbolos.getToken(cte);
 	String tipo = token.getTipoToken();
 
 	if (tipo.equals("LONGINT")){
 	    long entero = 0;
-	    if (negativo) {
-		if (Long.parseLong(cte) <= 2147483648L) {
+		if (Long.parseLong(cte) <= Main.MAX_LONG-1) {
 		    entero = Long.parseLong(cte);
 		} else {
-		    System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: | Entero largo negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
+		    System.out.printf(Main.ANSI_YELLOW + "[AS] | Linea %d: | Entero largo negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
+		    entero = Main.MAX_LONG-1;
 		}
 		String nuevoLexema = "-" + entero;
-		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
+		int cont = (Integer) (TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
 		//if (cont == 0)
 		//  TablaSimbolos.remove(cte);
 		//else
-		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
+		  TablaSimbolos.getToken(cte).addAtributo("contador", cont);
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "LONGINT", nuevoLexema);
-		    nuevoToken.addAtributo("contador", "1");
+		    nuevoToken.addAtributo("contador", 1);
 		    TablaSimbolos.add(nuevoToken);
 		}
 		else {
-                     cont = Integer.parseInt(TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
-                     TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", String.valueOf(cont));
-                }
-	    }
-	    else{
-		if (Long.parseLong(cte) > 2147483647L){
-		    System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: | Entero largo positivo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
+		     cont = (Integer) (TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
+		     TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", cont);
 		}
-	    }
 	}
 	if (tipo.equals("FLOAT")) {
 	    float flotante = 0;
-	    if (negativo) {
-		if ((1.17549435e-38f < Float.parseFloat(cte) && Float.parseFloat(cte) < 3.40282347e+38f)) {
+		if ((Main.MIN_FLOAT < Float.parseFloat(cte) && Float.parseFloat(cte) < Main.MAX_FLOAT)) {
 		    flotante =  Float.parseFloat(cte);
 		} else {
-		    System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: | Flotante negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
+		    System.out.printf(Main.ANSI_YELLOW + "[AS] | Linea %d: | Flotante negativo fuera de rango: %s%n" + Main.ANSI_RESET, analizadorLexico.getNroLinea(), cte);
+		    flotante = Main.MAX_FLOAT;
 		}
 		String nuevoLexema = "-" + flotante;
-		int cont = Integer.parseInt(TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
+		int cont = (Integer) (TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
 		//if (cont == 0)
 		//  TablaSimbolos.remove(cte);
 		//else
-		  TablaSimbolos.getToken(cte).addAtributo("contador", String.valueOf(cont));
+		  TablaSimbolos.getToken(cte).addAtributo("contador", cont);
 		if (!TablaSimbolos.existe(nuevoLexema)){
 		    Token nuevoToken = new Token(token.getIdToken(), "FLOAT", nuevoLexema);
-		    nuevoToken.addAtributo("contador", "1");
+		    nuevoToken.addAtributo("contador", 1);
 		    TablaSimbolos.add(nuevoToken);
 		}
 		else {
-                      cont = Integer.parseInt(TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
-                      TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", String.valueOf(cont));
-                }
-	    }
+		     cont = (Integer) (TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1 ;
+		     TablaSimbolos.getToken(nuevoLexema).addAtributo("contador", cont);
+                      }
+
 	}
 }

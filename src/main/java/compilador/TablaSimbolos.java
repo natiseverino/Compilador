@@ -95,8 +95,7 @@ public final class TablaSimbolos {
     }
 
     public static void remove(String token){
-        if(simbolos.containsKey(token))
-            simbolos.remove(token);
+        simbolos.remove(token);
     }
 
     public static boolean existe(String lexema){
@@ -110,7 +109,7 @@ public final class TablaSimbolos {
             System.out.printf(new String(new char[58]).replace("\0", "-") + "%n");
             for (String simbolo: simbolos.keySet()
             ) {
-                System.out.printf( "%-1s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).getAtributo("contador"));
+                System.out.printf( "%-1s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).   getAtributo("contador"));
             }
         }
     }

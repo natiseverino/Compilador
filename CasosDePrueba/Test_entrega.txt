@@ -1,0 +1,38 @@
+%%FOR(; a<10_l; UP 1.)
+%%OUT("a");
+
+%%FOR(a=1.; a<10_l; UP 1.)
+%%{a=b;
+
+%%IF (a>1.) THEN
+%%a=-3.;
+%%ELSE
+%%{a=2.;}
+
+%%IF (a 1.) THEN
+%%a=-3.;
+%%ELSE
+%%{a=2.;}
+%%END_IF;
+
+
+%%IF (a 1.) THEN
+%%a=-3.;
+%%END_IF;
+
+%%IF () THEN
+%%a=-3.;
+%%ELSE
+%%{a=2.;}
+%%END_IF;
+
+%%inv(a,a a,c);
+
+
+%%PROC a()  {
+%%b=1.;
+%%}
+
+%%PROC a()  1. {
+%%b=1.;
+%%}

@@ -140,8 +140,8 @@ public class AnalizadorLexico {
         Token token;
         if (TablaSimbolos.existe(lex)){
             token = TablaSimbolos.getToken(lex);
-            int cont = Integer.parseInt(token.getAtributo("contador")) + 1;
-            token.addAtributo("contador", String.valueOf(cont));
+            int cont = ((Integer) token.getAtributo("contador")) + 1;
+            token.addAtributo("contador", cont);
         }
         else {
             int id = 0;
@@ -152,7 +152,7 @@ public class AnalizadorLexico {
                 else id = TablaSimbolos.getId("cte");
             }
             token = new Token(id, tipo, lex);
-            token.addAtributo("contador", "1");
+            token.addAtributo("contador", 1);
             TablaSimbolos.add(token);
         }
         return token;
@@ -213,13 +213,14 @@ public class AnalizadorLexico {
 
             //verificar rango
             Token token = null;
-            if(enteroLargo >= 0 && enteroLargo <= 2147483648L) {
+            if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si
                 // esta en TS y agregar
                 token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
 
             } else {
-                System.out.printf( Main.ANSI_RED + "[AL] | Linea %d:  Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d:  Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
             }
 
             return token;
@@ -259,11 +260,12 @@ public class AnalizadorLexico {
 
             //verificar rango
             Token token = null;
-            if((1.17549435e-38f < flotante && flotante < 3.40282347e+38f) || flotante == 0 ) {
+            if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), "FLOAT");
             } else {
-                System.err.printf( Main.ANSI_RED + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                System.err.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                token = addToken(String.valueOf(Main.MAX_FLOAT), "FLOAT");
             }
 
             return token;
