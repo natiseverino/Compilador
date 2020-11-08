@@ -6,9 +6,10 @@ public class AnalizadorLexico {
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
 
+    //TODO recordar modificar el informe en estado 1 con _ ; estado 11 con -
     private final int[][] estados = {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $  otro
-                { 1,   2,   3,  16,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
+                { 1,   2,   3,  1,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
                 { 1,  16,   1,   1,   1,  16,   1,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,   2,  16,   2,  16,  16,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,  16,   3,   4,  16,   6,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
@@ -47,7 +48,7 @@ public class AnalizadorLexico {
 
         accionesSemanticas = new AccionSemantica[][] {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $   otro
-                {AS2, AS2, AS2, AS4, AS2, AS2, AS2, AS6, AS7, AS7, AS2,         AS7,        AS2, AS2, AS2, AS8,  AS6  , AS6, AS4},
+                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS6, AS7, AS7, AS2,         AS7,        AS2, AS2, AS2, AS8,  AS6  , AS6, AS4},
                 {AS2, AS1, AS2, AS2, AS2, AS1, AS2, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
                 {AS1, AS2, AS1, AS2, AS1, AS1, AS1, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
                 {AS4, AS4, AS2, AS2, AS4, AS2, AS4, AS4, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
@@ -58,7 +59,7 @@ public class AnalizadorLexico {
                 {AS5, AS5, AS2, AS5, AS5, AS5, AS5, AS5, AS5, AS5, AS5,         AS5,        AS5, AS5, AS5, AS5,  AS5  , AS5, AS5},
                 {AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS6, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
                 {AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6,         AS6,        AS6, AS6, AS6, AS8,  AS6  , AS6, AS6},
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS6, AS2,         AS2,        AS7, AS2, AS2, AS4,  AS2  , AS2, AS2},
+                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS4,  AS2  , AS2, AS2},
                 {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS2, AS2, AS2, AS8,  AS2  , AS2, AS2},
                 {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS2,  AS2  , AS2, AS2},
                 {AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS7,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
@@ -170,6 +171,17 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             codigoFuente.insert(0, ultimo);
+            boolean editado = false;
+
+
+            while (lexema.charAt(0) == '_') {
+                editado = true;
+                lexema.deleteCharAt(0);
+            }
+
+            if (editado)
+                System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: Identificador comezaba con '_'. Se modifica a: %s%n"  + Main.ANSI_RESET, nroLinea, lexema);
+
 
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
@@ -244,19 +256,32 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             codigoFuente.insert(0, ultimo);
-
-            float flotante, real = -1, exponente = 0;
-
+            String lex;
             if(lexema.toString().contains("f"))
-                real = Float.parseFloat(lexema.toString().split("f")[0]);
+                lex = lexema.toString().replace("f", "e");
             else
-                real = Float.parseFloat(lexema.toString());
+                lex = lexema.toString();
 
-            if(lexema.toString().contains("f"))
-                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
+//            float flotante, real = -1, exponente = 0;
+//
+//            if(lexema.toString().contains("f"))
+//                real = Float.parseFloat(lexema.toString().split("f")[0]);
+//            else
+//                real = Float.parseFloat(lexema.toString());
+//
+//            if(lexema.toString().contains("f"))
+//                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
+//
+//
+//            flotante = real * (float)Math.pow(10, exponente);
 
-
-            flotante = real * (float)Math.pow(10, exponente);
+            float flotante = 0f;
+            try {
+                flotante = Float.parseFloat(lex);
+            }
+            catch (NumberFormatException e){
+                System.err.printf(Main.ANSI_RED + "[AL] | Linea %d:Flotante incorrecto: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+            }
 
             //verificar rango
             Token token = null;
@@ -306,9 +331,17 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             nroLinea++;
+
+            //En caso de las cadenas, donde es necesario eliminar los guiones
+            if (lexema.length() > 0) {
+                int ult = lexema.length()-1;
+                if (lexema.charAt(ult) == '-')
+                    lexema.replace(ult, ult+1, " ");
+            }
             return null;
         }
     }
+
 
 
 
