@@ -231,7 +231,7 @@ public class AnalizadorLexico {
                 token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
 
             } else {
-                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d:  Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d:  Entero largo fuera de rango: %s - Se cambia por: %d%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2), Main.MAX_LONG );
                 token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
             }
 
@@ -280,7 +280,7 @@ public class AnalizadorLexico {
                 flotante = Float.parseFloat(lex);
             }
             catch (NumberFormatException e){
-                System.err.printf(Main.ANSI_RED + "[AL] | Linea %d:Flotante incorrecto: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                System.out.printf(Main.ANSI_RED + "[AL] | Linea %d: Flotante incorrecto: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
             }
 
             //verificar rango
@@ -289,8 +289,9 @@ public class AnalizadorLexico {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), "FLOAT");
             } else {
-                System.err.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
-                token = addToken(String.valueOf(Main.MAX_FLOAT), "FLOAT");
+                float nuevo = Main.MAX_FLOAT-1;
+                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s - Se cambia por %d%n" + Main.ANSI_RESET, nroLinea, lexema, nuevo);
+                token = addToken(String.valueOf(nuevo), "FLOAT");
             }
 
             return token;

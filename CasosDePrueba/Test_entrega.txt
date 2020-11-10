@@ -1,30 +1,34 @@
-%%FOR(; a<10_l; UP 1.)
-%%OUT("a");
+FOR (a = 1_l; a<10_l; UP 1_l)
+b = -2147483648_l;
 
 %%FOR(a=1.; a<10_l; UP 1.)
 %%{a=b;
+%%SIGUE SIN TIRAR ERROR DE }
 
 %%IF (a>1.) THEN
 %%a=-3.;
 %%ELSE
 %%{a=2.;}
+%%TIRA ERROR BIEN
 
 %%IF (a 1.) THEN
 %%a=-3.;
 %%ELSE
 %%{a=2.;}
 %%END_IF;
-
+%%TIRA ERROR MASO - NO DICE QUE FALTA EL COMPARADOR
 
 %%IF (a 1.) THEN
 %%a=-3.;
 %%END_IF;
+%%IGUAL QUE ANTES, DICE ERROR EN LA CONDICION PERO NO LO DEL COMPARADOR
 
 %%IF () THEN
 %%a=-3.;
 %%ELSE
 %%{a=2.;}
 %%END_IF;
+%%TIRA ERROR BIEN
 
 %%inv(a,a a,c);
 
@@ -36,3 +40,18 @@
 %%PROC a()  1. {
 %%b=1.;
 %%}
+
+%%OUT("esta es u-na-
+%%cadena");
+
+%%FLOAT a;
+%%a = 2.;
+%%OUT(a);
+
+%%_id = -2.;
+
+%%IF THEN
+%%a=-3.;
+%%ELSE
+%%b=2.;
+%%END_IF;
