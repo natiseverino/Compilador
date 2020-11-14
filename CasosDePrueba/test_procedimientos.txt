@@ -1,0 +1,5 @@
+LONGINT a, b;
+
+c = 1_l;
+
+PROC g(LONGINT u) NI = 2_l {u = 2_l;}

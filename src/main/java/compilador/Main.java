@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "CasosDePrueba/Test_entrega.txt";
+        String filePath = "CasosDePrueba/test_procedimientos.txt";
         StringBuilder codigoFuente;
 
 //        try {

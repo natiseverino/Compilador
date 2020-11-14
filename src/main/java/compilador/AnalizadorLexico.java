@@ -124,10 +124,10 @@ public class AnalizadorLexico {
 
         if(token != null) {
             Parser.yylval = new ParserVal(token.getLexema());
-            if (!token.getTipoToken().isEmpty())
+            /*if (!token.getTipoToken().isEmpty())
                 System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s %s%n" + Main.ANSI_RESET, nroLinea, token.getTipoToken(), token.getLexema());
             else
-                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s%n" + Main.ANSI_RESET, nroLinea, token.getLexema());
+                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s%n" + Main.ANSI_RESET, nroLinea, token.getLexema());*/
         }
         return token != null ? token.getIdToken() : -1;
     }
@@ -216,11 +216,13 @@ public class AnalizadorLexico {
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si
                 // esta en TS y agregar
-                token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
+                token = addToken(lexema.substring(0, lexema.length()-2), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
 
             } else {
                 System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d:  Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
-                token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
+                token = addToken(String.valueOf(Main.MAX_LONG), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
             }
 
             return token;
@@ -262,10 +264,12 @@ public class AnalizadorLexico {
             Token token = null;
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
-                token = addToken(String.valueOf(flotante), "FLOAT");
+                token = addToken(String.valueOf(flotante), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             } else {
                 System.err.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
-                token = addToken(String.valueOf(Main.MAX_FLOAT), "FLOAT");
+                token = addToken(String.valueOf(Main.MAX_FLOAT), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             }
 
             return token;

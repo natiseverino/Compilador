@@ -28,6 +28,8 @@ public class Token {
         return atributos.get(tipo);
     }
 
+    public void removeAtributo(String tipo) { atributos.remove(tipo); }
+
     public int getIdToken() {return this.idToken;}
 
     public String getTipoToken() {
