@@ -280,19 +280,14 @@ lista_parametros    : ID ',' ID ',' ID {System.out.printf( Main.ANSI_GREEN + "[A
 ;
 
 
-condicion   : expresion comparador expresion {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Comparación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-	        | expresion error {error("Falta comparador", analizadorLexico.getNroLinea());}
-	        | expresion comparador error {error("Falta el segundo operando de la condicion", analizadorLexico.getNroLinea());}
-	        | error comparador expresion {error("Falta el primer operando de la condicion", analizadorLexico.getNroLinea());}
+condicion   : expresion MAYOR_IGUAL expresion { SA2(">=");}
+		| expresion MENOR_IGUAL expresion{SA2("<=");}
+		| expresion '>' expresion {SA2(">");}
+		| expresion '<' expresion {SA2("<");}
+		| expresion IGUAL expresion {SA2("==");}
+		| expresion DISTINTO  expresion {SA2("!=");}
 ;
 
-comparador  : MAYOR_IGUAL
-            | MENOR_IGUAL
-            | '>' {$$ = new ParserVal('>');}
-            | '<' {$$ = new ParserVal('<');}
-            | IGUAL
-            | DISTINTO
-;
 
 expresion   : expresion '+' termino {SA2($2.sval);}
             | expresion '-' termino {SA2($2.sval);}
