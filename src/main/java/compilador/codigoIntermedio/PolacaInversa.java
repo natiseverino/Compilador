@@ -1,5 +1,7 @@
 package compilador.codigoIntermedio;
 
+import compilador.Main;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -76,5 +78,12 @@ public class PolacaInversa {
         }
 
         return builder.toString();
+    }
+
+    public void print(){
+        if (!elementos.isEmpty()) {
+            System.out.println(Main.ANSI_BOLD_WHITE + ">> POLACA INVERSA" + Main.ANSI_RESET);
+            System.out.println(this.toString());
+        }
     }
 }

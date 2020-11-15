@@ -1,5 +1,5 @@
-FOR (a = 1_l; a<10_l; UP 1_l)
-b = -2147483648_l;
+%%FOR (a = 1_l; a<10_l; UP 1_l)
+%%b = -2147483648_l;
 
 %%FOR(a=1.; a<10_l; UP 1.)
 %%{a=b;
@@ -43,6 +43,7 @@ b = -2147483648_l;
 
 %%OUT("esta es u-na-
 %%cadena");
+%%//TODO ARREGLAR CUANDO UN SALTO DE LINEA NO TIENE GUION ANTES
 
 %%FLOAT a;
 %%a = 2.;
@@ -55,3 +56,6 @@ b = -2147483648_l;
 %%ELSE
 %%b=2.;
 %%END_IF;
+
+a = 3. / 2.;
+b = -2_l - a;

@@ -5,6 +5,7 @@ public class AnalizadorLexico {
 
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
+    private boolean verbose;
 
     //TODO recordar modificar el informe en estado 1 con _ ; estado 11 con -
     private final int[][] estados = {
@@ -31,9 +32,10 @@ public class AnalizadorLexico {
 
 
 
-    public AnalizadorLexico(StringBuilder codigoFuente) {
+    public AnalizadorLexico(StringBuilder codigoFuente, boolean verbose) {
         this.codigoFuente = codigoFuente;
         this.asignarAS();
+        this.verbose = verbose;
     }
 
     private void asignarAS() {
@@ -126,9 +128,9 @@ public class AnalizadorLexico {
         if(token != null) {
             Parser.yylval = new ParserVal(token.getLexema());
             if (!token.getTipoToken().isEmpty())
-                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s %s%n" + Main.ANSI_RESET, nroLinea, token.getTipoToken(), token.getLexema());
+                out(token.getTipoToken() + token.getLexema(), nroLinea);
             else
-                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s%n" + Main.ANSI_RESET, nroLinea, token.getLexema());
+                out(token.getLexema(), nroLinea);
         }
         return token != null ? token.getIdToken() : -1;
     }
@@ -159,6 +161,23 @@ public class AnalizadorLexico {
         return token;
     }
 
+    public void out(String mensaje, int linea){
+        if (verbose)
+            System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
+
+    }
+
+    public void error(String mensaje, int linea){
+        if (verbose)
+            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
+
+    }
+
+    public void warning(String mensaje, int linea){
+        if (verbose)
+            System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: "+ mensaje + "%n" + Main.ANSI_RESET, linea);
+    }
+
     //ACCIONES SEMANTICAS
 
     public interface AccionSemantica {
@@ -180,14 +199,14 @@ public class AnalizadorLexico {
             }
 
             if (editado)
-                System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: Identificador comezaba con '_'. Se modifica a: %s%n"  + Main.ANSI_RESET, nroLinea, lexema);
+                warning("Identificador comezaba con '_'. Se modifica a: "+ lexema, nroLinea);
 
 
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
-                System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + Main.ANSI_RESET, nroLinea, lexemaAnt, lexema);
-            }
+                warning("Identificador con más de 20 caracteres: + " + lexemaAnt + "Se trunca a: "+ lexema,nroLinea);
+             }
 
 
             Token token;
@@ -231,7 +250,7 @@ public class AnalizadorLexico {
                 token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
 
             } else {
-                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d:  Entero largo fuera de rango: %s - Se cambia por: %d%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2), Main.MAX_LONG );
+                warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
                 token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
             }
 
@@ -244,8 +263,8 @@ public class AnalizadorLexico {
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
-            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
-            lexema.setLength(0);
+            error("Caracter inválido: " + ultimo, nroLinea);
+           lexema.setLength(0);
             return null;
         }
     }
@@ -280,7 +299,7 @@ public class AnalizadorLexico {
                 flotante = Float.parseFloat(lex);
             }
             catch (NumberFormatException e){
-                System.out.printf(Main.ANSI_RED + "[AL] | Linea %d: Flotante incorrecto: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                error("Flotante incorrecto " + lexema, nroLinea);
             }
 
             //verificar rango
@@ -290,7 +309,7 @@ public class AnalizadorLexico {
                 token = addToken(String.valueOf(flotante), "FLOAT");
             } else {
                 float nuevo = Main.MAX_FLOAT-1;
-                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s - Se cambia por %d%n" + Main.ANSI_RESET, nroLinea, lexema, nuevo);
+                warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
                 token = addToken(String.valueOf(nuevo), "FLOAT");
             }
 
