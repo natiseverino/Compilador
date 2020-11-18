@@ -1364,7 +1364,7 @@ case 85:
 
                             polaca.addElem(new ElemPos(polaca.size()),true);
                             polaca.addElem(new ElemPos(polaca.popPos()),false);
-                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI),false);
+                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI),false));
 							}
 break;
 case 86:
