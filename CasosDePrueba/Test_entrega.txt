@@ -16,19 +16,16 @@
 %%ELSE
 %%{a=2.;}
 %%END_IF;
-%%TIRA ERROR MASO - NO DICE QUE FALTA EL COMPARADOR
 
 %%IF (a 1.) THEN
 %%a=-3.;
 %%END_IF;
-%%IGUAL QUE ANTES, DICE ERROR EN LA CONDICION PERO NO LO DEL COMPARADOR
 
 %%IF () THEN
 %%a=-3.;
 %%ELSE
 %%{a=2.;}
 %%END_IF;
-%%TIRA ERROR BIEN
 
 %%inv(a,a a,c);
 
@@ -60,6 +57,18 @@
 %%a = 3. / 2.;
 %%b = -2_l - a;
 
-IF (a < 1.) THEN
-a = 1.;
+IF (a > 0.) THEN
+    k = k * 5.;
+ELSE
+    j = j - 3.;
 END_IF;
+
+%%FLOAT a, b;
+%%b= 3.5f-3;
+%%
+%%OUT("cadena de-
+%%prueba");
+%%
+%%a = 2.;
+%%
+%%OUT(-3.);

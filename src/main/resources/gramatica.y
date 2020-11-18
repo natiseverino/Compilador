@@ -1,8 +1,6 @@
 %{
 package compilador;
-import compilador.codigoIntermedio.ElemSimple;
-import compilador.codigoIntermedio.OperadorBinario;
-import compilador.codigoIntermedio.PolacaInversa;
+import compilador.codigoIntermedio.*;
 %}
 
 %token IGUAL
@@ -72,7 +70,8 @@ lista_variables    : ID ',' lista_variables
                 Token token = TablaSimbolos.getToken(id);
                 if (token!= null){
                   token.addAtributo("USO", "VARIABLE");
-                }}
+                }
+              }
         | ID  lista_variables {error("Falta literal ',' ", analizadorLexico.getNroLinea());}
 ;
 
@@ -155,8 +154,14 @@ parametro_formal    : tipo ID   {System.out.printf( Main.ANSI_GREEN + "[AS] | Li
                     | VAR error ID {System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: Error en el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
 ;
 
-sentencia_seleccion : IF condicion_if  THEN bloque_then END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
-                    | IF condicion_if  THEN bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());}
+sentencia_seleccion : IF condicion_if  THEN bloque_then END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+									polaca.addElem(new ElemPos(polaca.size()), true);
+									polaca.addElem(new EtiquetaElem(polaca.size()), false);
+									}
+                    | IF condicion_if  THEN bloque_then ELSE bloque_else END_IF ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+                    									polaca.addElem(new ElemPos(polaca.size()), true);
+                                                                                        polaca.addElem(new EtiquetaElem(polaca.size()), false);
+                    									}
                     | IF condicion_if  bloque_then END_IF ';' {error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());}
                     | IF condicion_if  bloque_then ELSE bloque_else END_IF ';' {error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());}
                     | IF condicion_if  THEN bloque_then  bloque_else END_IF ';' {error("Falta palabra reservada ELSE ", analizadorLexico.getNroLinea());}
@@ -174,7 +179,7 @@ sentencia_seleccion : IF condicion_if  THEN bloque_then END_IF ';' {System.out.p
 		    | IF THEN bloque_then ELSE bloque_else END_IF ';' {error(" Falta la condicion de la sentencia IF ", nroUltimaLinea);}
 ;
 
-condicion_if  	: '(' condicion ')'
+condicion_if  	: '(' condicion ')' {polaca.pushPos(true); polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BF), false);}
 		| condicion ')' {error("Falta literal '('", analizadorLexico.getNroLinea());}
 		| '(' condicion {error("Falta literal ')'", analizadorLexico.getNroLinea());}
 		| '(' ')' {error("Falta condicion", analizadorLexico.getNroLinea());}
@@ -183,7 +188,10 @@ condicion_if  	: '(' condicion ')'
 ;
 
 
-bloque_then : bloque_sentencias
+bloque_then : bloque_sentencias {polaca.addElem(new ElemPos(polaca.size()+2),true);
+				 polaca.pushPos(true);
+				 polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI),false);
+				 polaca.addElem(new EtiquetaElem(polaca.size()), false);}
 ;
 
 bloque_else: bloque_sentencias
@@ -230,14 +238,18 @@ incr_decr   : UP
 
 sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de salida OUT %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
 						   String cadena = $3.sval;
-						   System.out.printf(cadena);
+						   System.out.println(cadena);
+						   SA1(cadena);
+						   polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
 						  }
                     | OUT error CADENA_MULT ')' ';' {error("Falta literal '('", analizadorLexico.getNroLinea());}
                     | OUT '(' ')' ';' {error("Falta elemento a imprimir", analizadorLexico.getNroLinea());}
                     | OUT '(' error ')' ';' {error("Error en la cadena multilínea a imprimir", analizadorLexico.getNroLinea());}
                     | OUT '(' CADENA_MULT error ';' {error("Falta literal ')'", analizadorLexico.getNroLinea());}
                     | OUT '(' CADENA_MULT ')' {error("Falta literal ';'", nroUltimaLinea);}
-		    | OUT '(' factor ')' ';' { out($3.sval);}
+		    | OUT '(' factor ')' ';' { 	String factor = $3.sval;
+		    				out(factor);
+                                               	polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);}
 ;
 
 sentencia_asignacion    : ID '=' expresion ';' {  System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
@@ -429,7 +441,7 @@ public void cambiarSimbolo(Token token, String cte, String nuevoLexema, String t
 
 public void error(String mensaje, int linea){
 	if (verbose)
-		System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
+		System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: " + mensaje +" %n" + Main.ANSI_RESET, linea);
 
 }
 
@@ -440,20 +452,21 @@ public void warning(String mensaje, int linea){
 
 public void out(String lex){
        Token token = TablaSimbolos.getToken(lex);
-       if (token!= null) {
-	  if (token.getAtributo("USO") != null) {
-	      if (token.getTipoToken().equals("IDENTIFICADOR") && token.getAtributo("USO").equals("VARIABLE")) {
-		  Object valor = token.getAtributo("VALOR");
-		  if (valor != null)
-		      System.out.println((String) token.getAtributo("VALOR"));
-		  else
-		      error("Variable + lex + no inicializada", analizadorLexico.getNroLinea());
-	      } else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
-		  System.out.println(token.getLexema());
-	  }
-	  else
-	      error("Variable + lex + no declarada", analizadorLexico.getNroLinea());
-       }
+               if (token != null) {
+                   if (token.getTipoToken().equals("IDENTIFICADOR")) {
+                       if (token.getAtributo("USO") != null) {
+                           if (token.getAtributo("USO").equals("VARIABLE")) {
+                               Object valor = token.getAtributo("VALOR");
+                               if (valor != null)
+                                   System.out.println(token.getAtributo("VALOR") + "\n");
+                               else
+                                   error("Variable " + lex + " no inicializada", analizadorLexico.getNroLinea());
+                           }
+                       } else
+                           error("Variable " + lex + " no declarada", analizadorLexico.getNroLinea());
+                   }else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
+                       System.out.println(token.getLexema() + "\n");
+               }
 }
 
 public void SA1(String lex){  //añadir factor a la polaca

@@ -12,7 +12,7 @@ public class EtiquetaElem extends PolacaElem {
 
     @Override
     public String generarCodigo(Stack<PolacaElem> stack) {
-        return "Etiqueta " + pos + ":";
+        return "label" + pos + ":";
     }
 
     @Override

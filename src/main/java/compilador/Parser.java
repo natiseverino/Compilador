@@ -15,10 +15,8 @@
 //#line 2 "gramatica.y"
 package compilador;
 
-import compilador.codigoIntermedio.ElemSimple;
-import compilador.codigoIntermedio.OperadorBinario;
-import compilador.codigoIntermedio.PolacaInversa;
-//#line 22 "Parser.java"
+import compilador.codigoIntermedio.*;
+//#line 20 "Parser.java"
 
 
 public class Parser {
@@ -754,7 +752,7 @@ public class Parser {
             "cte : '-' CTE",
     };
 
-//#line 330 "gramatica.y"
+//#line 342 "gramatica.y"
 
     private AnalizadorLexico analizadorLexico;
     private int nroUltimaLinea;
@@ -856,7 +854,7 @@ public class Parser {
 
     public void error(String mensaje, int linea) {
         if (verbose)
-            System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: | " + mensaje + " %n" + Main.ANSI_RESET, linea);
+            System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: " + mensaje + " %n" + Main.ANSI_RESET, linea);
 
     }
 
@@ -868,17 +866,19 @@ public class Parser {
     public void out(String lex) {
         Token token = TablaSimbolos.getToken(lex);
         if (token != null) {
-            if (token.getAtributo("USO") != null) {
-                if (token.getTipoToken().equals("IDENTIFICADOR") && token.getAtributo("USO").equals("VARIABLE")) {
-                    Object valor = token.getAtributo("VALOR");
-                    if (valor != null)
-                        System.out.println((String) token.getAtributo("VALOR"));
-                    else
-                        error("Variable + lex + no inicializada", analizadorLexico.getNroLinea());
-                } else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
-                    System.out.println(token.getLexema());
-            } else
-                error("Variable + lex + no declarada", analizadorLexico.getNroLinea());
+            if (token.getTipoToken().equals("IDENTIFICADOR")) {
+                if (token.getAtributo("USO") != null) {
+                    if (token.getAtributo("USO").equals("VARIABLE")) {
+                        Object valor = token.getAtributo("VALOR");
+                        if (valor != null)
+                            System.out.println(token.getAtributo("VALOR") + "\n");
+                        else
+                            error("Variable " + lex + " no inicializada", analizadorLexico.getNroLinea());
+                    }
+                } else
+                    error("Variable " + lex + " no declarada", analizadorLexico.getNroLinea());
+            } else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
+                System.out.println(token.getLexema() + "\n");
         }
     }
 
@@ -893,7 +893,7 @@ public class Parser {
         polaca.addElem(elem, false);
     }
 
-    //#line 824 "Parser.java"
+    //#line 823 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1033,37 +1033,37 @@ public class Parser {
             switch (yyn) {
 //########## USER-SUPPLIED ACTIONS ##########
                 case 4:
-//#line 37 "gramatica.y"
+//#line 35 "gramatica.y"
                 {
                     error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 5:
-//#line 38 "gramatica.y"
+//#line 36 "gramatica.y"
                 {
                     error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 19:
-//#line 65 "gramatica.y"
+//#line 63 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Declaración de variables %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 20:
-//#line 66 "gramatica.y"
+//#line 64 "gramatica.y"
                 {
                     error("Falta literal ';'", nroUltimaLinea);
                 }
                 break;
                 case 21:
-//#line 67 "gramatica.y"
+//#line 65 "gramatica.y"
                 {
                     error("Falta lista de variables", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 23:
-//#line 71 "gramatica.y"
+//#line 69 "gramatica.y"
                 {
                     String id = val_peek(0).sval;
                     Token token = TablaSimbolos.getToken(id);
@@ -1073,13 +1073,13 @@ public class Parser {
                 }
                 break;
                 case 24:
-//#line 76 "gramatica.y"
+//#line 75 "gramatica.y"
                 {
                     error("Falta literal ',' ", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 27:
-//#line 83 "gramatica.y"
+//#line 82 "gramatica.y"
                 {
                     String id = val_peek(7).sval;
                     Token token = TablaSimbolos.getToken(id);
@@ -1095,7 +1095,7 @@ public class Parser {
                 }
                 break;
                 case 28:
-//#line 95 "gramatica.y"
+//#line 94 "gramatica.y"
                 {
                     String id = val_peek(6).sval;
                     Token token = TablaSimbolos.getToken(id);
@@ -1111,169 +1111,169 @@ public class Parser {
                 }
                 break;
                 case 29:
-//#line 107 "gramatica.y"
+//#line 106 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 30:
-//#line 108 "gramatica.y"
+//#line 107 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 31:
-//#line 109 "gramatica.y"
+//#line 108 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 32:
-//#line 110 "gramatica.y"
+//#line 109 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta definir el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 33:
-//#line 111 "gramatica.y"
+//#line 110 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 34:
-//#line 112 "gramatica.y"
+//#line 111 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 35:
-//#line 113 "gramatica.y"
+//#line 112 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 36:
-//#line 114 "gramatica.y"
+//#line 113 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 37:
-//#line 115 "gramatica.y"
+//#line 114 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 38:
-//#line 116 "gramatica.y"
+//#line 115 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 39:
-//#line 117 "gramatica.y"
+//#line 116 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 40:
-//#line 118 "gramatica.y"
+//#line 117 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 41:
-//#line 119 "gramatica.y"
+//#line 118 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 42:
-//#line 120 "gramatica.y"
+//#line 119 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 43:
-//#line 121 "gramatica.y"
+//#line 120 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 44:
-//#line 122 "gramatica.y"
+//#line 121 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 45:
-//#line 123 "gramatica.y"
+//#line 122 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 46:
-//#line 124 "gramatica.y"
+//#line 123 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta control de invocaciones %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 47:
-//#line 125 "gramatica.y"
+//#line 124 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta control de invocaciones %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 48:
-//#line 128 "gramatica.y"
+//#line 127 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (3) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 49:
-//#line 129 "gramatica.y"
+//#line 128 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (2) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 50:
-//#line 130 "gramatica.y"
+//#line 129 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros formales (1) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 51:
-//#line 131 "gramatica.y"
+//#line 130 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los primeros dos parámetros formales %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 52:
-//#line 132 "gramatica.y"
+//#line 131 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los últimos dos parámetros formales %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 53:
-//#line 133 "gramatica.y"
+//#line 132 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Falta literal ',' entre los parámetros formales %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 54:
-//#line 134 "gramatica.y"
+//#line 133 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Número de parámetros formales permitidos excedido %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 55:
-//#line 135 "gramatica.y"
+//#line 134 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Parámetro formal incorrecto %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 56:
-//#line 138 "gramatica.y"
+//#line 137 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                     String param = val_peek(0).sval;
@@ -1285,7 +1285,7 @@ public class Parser {
                 }
                 break;
                 case 57:
-//#line 146 "gramatica.y"
+//#line 145 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                     String param = val_peek(0).sval;
@@ -1297,151 +1297,171 @@ public class Parser {
                 }
                 break;
                 case 58:
-//#line 154 "gramatica.y"
+//#line 153 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Error en el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 59:
-//#line 155 "gramatica.y"
+//#line 154 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_RED + "[AS] | Linea %d: Error en el tipo del parámetro formal %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 60:
-//#line 158 "gramatica.y"
+//#line 157 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+                    polaca.addElem(new ElemPos(polaca.size()), true);
+                    //polaca.addElem(new EtiquetaElem(polaca.size()), false);
                 }
                 break;
                 case 61:
-//#line 159 "gramatica.y"
+//#line 161 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de selección IF %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
+                    polaca.addElem(new ElemPos(polaca.size()), true);
+                    //polaca.addElem(new EtiquetaElem(polaca.size()), false);
                 }
                 break;
                 case 62:
-//#line 160 "gramatica.y"
+//#line 165 "gramatica.y"
                 {
                     error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 63:
-//#line 161 "gramatica.y"
+//#line 166 "gramatica.y"
                 {
                     error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 64:
-//#line 162 "gramatica.y"
+//#line 167 "gramatica.y"
                 {
                     error("Falta palabra reservada ELSE ", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 65:
-//#line 163 "gramatica.y"
+//#line 168 "gramatica.y"
                 {
                     error("Falta bloque de sentencias THEN", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 66:
-//#line 164 "gramatica.y"
+//#line 169 "gramatica.y"
                 {
                     error("Falta bloque de sentencias THEN", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 67:
-//#line 165 "gramatica.y"
+//#line 170 "gramatica.y"
                 {
                     error("Error en bloque de sentencias THEN", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 68:
-//#line 166 "gramatica.y"
+//#line 171 "gramatica.y"
                 {
                     error("Error en bloque de sentencias THEN", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 69:
-//#line 167 "gramatica.y"
-                {
-                    error(" Falta literal ';'", nroUltimaLinea);
-                }
-                break;
-                case 70:
-//#line 168 "gramatica.y"
-                {
-                    error(" Falta palabra reservada END_IF y literal ';'", nroUltimaLinea);
-                }
-                break;
-                case 71:
-//#line 169 "gramatica.y"
-                {
-                    error("Falta bloque de sentencias ELSE", analizadorLexico.getNroLinea());
-                }
-                break;
-                case 72:
-//#line 170 "gramatica.y"
-                {
-                    error("Error en bloque de sentencias ELSE", analizadorLexico.getNroLinea());
-                }
-                break;
-                case 73:
-//#line 171 "gramatica.y"
-                {
-                    error("Falta palabra reservada END_IF", analizadorLexico.getNroLinea());
-                }
-                break;
-                case 74:
 //#line 172 "gramatica.y"
                 {
                     error(" Falta literal ';'", nroUltimaLinea);
                 }
                 break;
-                case 75:
+                case 70:
 //#line 173 "gramatica.y"
+                {
+                    error(" Falta palabra reservada END_IF y literal ';'", nroUltimaLinea);
+                }
+                break;
+                case 71:
+//#line 174 "gramatica.y"
+                {
+                    error("Falta bloque de sentencias ELSE", analizadorLexico.getNroLinea());
+                }
+                break;
+                case 72:
+//#line 175 "gramatica.y"
+                {
+                    error("Error en bloque de sentencias ELSE", analizadorLexico.getNroLinea());
+                }
+                break;
+                case 73:
+//#line 176 "gramatica.y"
+                {
+                    error("Falta palabra reservada END_IF", analizadorLexico.getNroLinea());
+                }
+                break;
+                case 74:
+//#line 177 "gramatica.y"
+                {
+                    error(" Falta literal ';'", nroUltimaLinea);
+                }
+                break;
+                case 75:
+//#line 178 "gramatica.y"
                 {
                     error(" Falta la condicion de la sentencia IF ", nroUltimaLinea);
                 }
                 break;
                 case 76:
-//#line 174 "gramatica.y"
+//#line 179 "gramatica.y"
                 {
                     error(" Falta la condicion de la sentencia IF ", nroUltimaLinea);
                 }
                 break;
+                case 77:
+//#line 182 "gramatica.y"
+                {
+                    polaca.pushPos(true);
+                    polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BF), false);
+                }
+                break;
                 case 78:
-//#line 178 "gramatica.y"
+//#line 183 "gramatica.y"
                 {
                     error("Falta literal '('", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 79:
-//#line 179 "gramatica.y"
+//#line 184 "gramatica.y"
                 {
                     error("Falta literal ')'", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 80:
-//#line 180 "gramatica.y"
+//#line 185 "gramatica.y"
                 {
                     error("Falta condicion", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 81:
-//#line 181 "gramatica.y"
+//#line 186 "gramatica.y"
                 {
                     error("Faltan parentesis", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 82:
-//#line 182 "gramatica.y"
+//#line 187 "gramatica.y"
                 {
                     error("Error en la condicion", analizadorLexico.getNroLinea());
                 }
                 break;
+                case 83:
+//#line 191 "gramatica.y"
+                {
+                    polaca.addElem(new ElemPos(polaca.size() + 2), true);
+                    polaca.pushPos(true);
+                    polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI), false);
+                    polaca.addElem(new EtiquetaElem(polaca.size()), false);
+                }
+                break;
                 case 85:
-//#line 192 "gramatica.y"
+//#line 200 "gramatica.y"
                 {
                     String cte = val_peek(2).sval;
                     if (TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
@@ -1451,55 +1471,55 @@ public class Parser {
                 }
                 break;
                 case 86:
-//#line 199 "gramatica.y"
+//#line 207 "gramatica.y"
                 {
                     error("Falta literal '('", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 87:
-//#line 200 "gramatica.y"
+//#line 208 "gramatica.y"
                 {
                     error("Error en el inicio de la variable de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 88:
-//#line 201 "gramatica.y"
+//#line 209 "gramatica.y"
                 {
                     error("Falta condición de control en sentencia de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 89:
-//#line 202 "gramatica.y"
+//#line 210 "gramatica.y"
                 {
                     error("Falta indicar incremento o decremento de la sentencia de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 90:
-//#line 203 "gramatica.y"
+//#line 211 "gramatica.y"
                 {
                     error("Falta indicar constante de paso para incremento/decremento en sentencia de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 91:
-//#line 204 "gramatica.y"
+//#line 212 "gramatica.y"
                 {
                     error("Falta literal ')'", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 92:
-//#line 205 "gramatica.y"
+//#line 213 "gramatica.y"
                 {
                     error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 93:
-//#line 206 "gramatica.y"
+//#line 214 "gramatica.y"
                 {
                     error("Falta asignacion a la variable de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 94:
-//#line 209 "gramatica.y"
+//#line 217 "gramatica.y"
                 {
                     String cte = val_peek(0).sval;
                     if (!TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
@@ -1507,75 +1527,79 @@ public class Parser {
                 }
                 break;
                 case 95:
-//#line 214 "gramatica.y"
+//#line 222 "gramatica.y"
                 {
                     error("Error en el identificador de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 96:
-//#line 215 "gramatica.y"
+//#line 223 "gramatica.y"
                 {
                     error("Error, el inicio del for debe ser una asignacion", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 97:
-//#line 216 "gramatica.y"
+//#line 224 "gramatica.y"
                 {
                     error("Error en la constante de la asignacion", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 98:
-//#line 217 "gramatica.y"
+//#line 225 "gramatica.y"
                 {
                     error("Error en la asignacion de control", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 103:
-//#line 231 "gramatica.y"
+//#line 239 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de salida OUT %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                     String cadena = val_peek(2).sval;
-                    System.out.printf(cadena);
+                    System.out.println(cadena);
+                    SA1(cadena);
+                    polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
                 }
                 break;
                 case 104:
-//#line 235 "gramatica.y"
+//#line 245 "gramatica.y"
                 {
                     error("Falta literal '('", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 105:
-//#line 236 "gramatica.y"
+//#line 246 "gramatica.y"
                 {
                     error("Falta elemento a imprimir", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 106:
-//#line 237 "gramatica.y"
+//#line 247 "gramatica.y"
                 {
                     error("Error en la cadena multilínea a imprimir", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 107:
-//#line 238 "gramatica.y"
+//#line 248 "gramatica.y"
                 {
                     error("Falta literal ')'", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 108:
-//#line 239 "gramatica.y"
+//#line 249 "gramatica.y"
                 {
                     error("Falta literal ';'", nroUltimaLinea);
                 }
                 break;
                 case 109:
-//#line 240 "gramatica.y"
+//#line 250 "gramatica.y"
                 {
-                    out(val_peek(2).sval);
+                    String factor = val_peek(2).sval;
+                    out(factor);
+                    polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
                 }
                 break;
                 case 110:
-//#line 243 "gramatica.y"
+//#line 255 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de asignación %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                     String id = val_peek(3).sval;
@@ -1590,255 +1614,255 @@ public class Parser {
                 }
                 break;
                 case 111:
-//#line 254 "gramatica.y"
+//#line 266 "gramatica.y"
                 {
                     error("Falta lado izquierdo de la asignación", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 112:
-//#line 255 "gramatica.y"
+//#line 267 "gramatica.y"
                 {
                     error("Falta literal '=' en sentencia de asignación", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 113:
-//#line 256 "gramatica.y"
+//#line 268 "gramatica.y"
                 {
                     error("Falta lado derecho de la asignación", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 114:
-//#line 257 "gramatica.y"
+//#line 269 "gramatica.y"
                 {
                     error("Falta literal ';'", nroUltimaLinea);
                 }
                 break;
                 case 115:
-//#line 260 "gramatica.y"
+//#line 272 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocación con lista de parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 116:
-//#line 261 "gramatica.y"
+//#line 273 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de invocación sin parámetros %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 117:
-//#line 262 "gramatica.y"
+//#line 274 "gramatica.y"
                 {
                     error("Falta literal '('", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 118:
-//#line 263 "gramatica.y"
+//#line 275 "gramatica.y"
                 {
                     error("Falta literal '('", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 119:
-//#line 264 "gramatica.y"
+//#line 276 "gramatica.y"
                 {
                     error("Parametros invalidos", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 120:
-//#line 265 "gramatica.y"
+//#line 277 "gramatica.y"
                 {
                     error("Falta literal ')'", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 121:
-//#line 266 "gramatica.y"
+//#line 278 "gramatica.y"
                 {
                     error("Falta literal ')'", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 122:
-//#line 267 "gramatica.y"
+//#line 279 "gramatica.y"
                 {
                     error("Falta literal ';'", nroUltimaLinea);
                 }
                 break;
                 case 123:
-//#line 268 "gramatica.y"
+//#line 280 "gramatica.y"
                 {
                     error("Falta literal ';'", nroUltimaLinea);
                 }
                 break;
                 case 124:
-//#line 271 "gramatica.y"
+//#line 283 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (3) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 125:
-//#line 272 "gramatica.y"
+//#line 284 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (2) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 126:
-//#line 273 "gramatica.y"
+//#line 285 "gramatica.y"
                 {
                     System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: Lista de parámetros (1) %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
                 }
                 break;
                 case 127:
-//#line 274 "gramatica.y"
+//#line 286 "gramatica.y"
                 {
                     error("Número de parámetros permitidos excedido", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 128:
-//#line 275 "gramatica.y"
+//#line 287 "gramatica.y"
                 {
                     error("Parámetro incorrecto", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 129:
-//#line 276 "gramatica.y"
+//#line 288 "gramatica.y"
                 {
                     error("Faltan literales ',' entre parámetros", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 130:
-//#line 277 "gramatica.y"
+//#line 289 "gramatica.y"
                 {
                     error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 131:
-//#line 278 "gramatica.y"
+//#line 290 "gramatica.y"
                 {
                     error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 132:
-//#line 279 "gramatica.y"
+//#line 291 "gramatica.y"
                 {
                     error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 133:
-//#line 283 "gramatica.y"
+//#line 295 "gramatica.y"
                 {
                     SA2(">=");
                 }
                 break;
                 case 134:
-//#line 284 "gramatica.y"
+//#line 296 "gramatica.y"
                 {
                     SA2("<=");
                 }
                 break;
                 case 135:
-//#line 285 "gramatica.y"
+//#line 297 "gramatica.y"
                 {
                     SA2(">");
                 }
                 break;
                 case 136:
-//#line 286 "gramatica.y"
+//#line 298 "gramatica.y"
                 {
                     SA2("<");
                 }
                 break;
                 case 137:
-//#line 287 "gramatica.y"
+//#line 299 "gramatica.y"
                 {
                     SA2("==");
                 }
                 break;
                 case 138:
-//#line 288 "gramatica.y"
+//#line 300 "gramatica.y"
                 {
                     SA2("!=");
                 }
                 break;
                 case 139:
-//#line 292 "gramatica.y"
+//#line 304 "gramatica.y"
                 {
                     SA2(val_peek(1).sval);
                 }
                 break;
                 case 140:
-//#line 293 "gramatica.y"
+//#line 305 "gramatica.y"
                 {
                     SA2(val_peek(1).sval);
                 }
                 break;
                 case 142:
-//#line 295 "gramatica.y"
+//#line 307 "gramatica.y"
                 {
                     error("Falta el segundo operando en la suma", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 143:
-//#line 296 "gramatica.y"
+//#line 308 "gramatica.y"
                 {
                     error("Falta el segundo operando en la resta", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 144:
-//#line 297 "gramatica.y"
+//#line 309 "gramatica.y"
                 {
                     error("Falta el primer operando en la suma", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 145:
-//#line 300 "gramatica.y"
+//#line 312 "gramatica.y"
                 {
                     SA2(val_peek(1).sval);
                 }
                 break;
                 case 146:
-//#line 301 "gramatica.y"
+//#line 313 "gramatica.y"
                 {
                     SA2(val_peek(1).sval);
                 }
                 break;
                 case 148:
-//#line 303 "gramatica.y"
+//#line 315 "gramatica.y"
                 {
                     error("Falta el segundo operando en la multiplicación", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 149:
-//#line 304 "gramatica.y"
+//#line 316 "gramatica.y"
                 {
                     error("Falta el segundo operando en la division", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 150:
-//#line 305 "gramatica.y"
+//#line 317 "gramatica.y"
                 {
                     error("Falta el primer operando en la multiplicación", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 151:
-//#line 306 "gramatica.y"
+//#line 318 "gramatica.y"
                 {
                     error("Falta el primer operando en la division", analizadorLexico.getNroLinea());
                 }
                 break;
                 case 152:
-//#line 309 "gramatica.y"
+//#line 321 "gramatica.y"
                 {
                     yyval = val_peek(0);
                     SA1(val_peek(0).sval);
                 }
                 break;
                 case 153:
-//#line 310 "gramatica.y"
+//#line 322 "gramatica.y"
                 {
                     yyval = val_peek(0);
                     SA1(val_peek(0).sval);
                 }
                 break;
                 case 154:
-//#line 313 "gramatica.y"
+//#line 325 "gramatica.y"
                 {
                     String cte = val_peek(0).sval;
                     String nuevo = checkPositivo(cte);
@@ -1849,7 +1873,7 @@ public class Parser {
                 }
                 break;
                 case 155:
-//#line 320 "gramatica.y"
+//#line 332 "gramatica.y"
                 {
                     String cte = val_peek(0).sval;
                     String nuevo = checkRango(cte);
@@ -1859,7 +1883,7 @@ public class Parser {
                     }
                 }
                 break;
-//#line 1556 "Parser.java"
+//#line 1577 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
             }//switch
             //#### Now let's reduce... ####

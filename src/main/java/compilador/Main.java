@@ -35,7 +35,7 @@ public class Main {
 
         AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
         PolacaInversa polaca = new PolacaInversa();
-        Parser parser = new Parser(al, false, polaca, false);
+        Parser parser = new Parser(al, false, polaca, true);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();
