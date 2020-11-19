@@ -1,5 +1,7 @@
 package compilador;
 
+import compilador.codigoIntermedio.PolacaInversa;
+
 import java.io.FileNotFoundException;
 
 public class Main {
@@ -31,11 +33,14 @@ public class Main {
             throw new Exception("No se ha encontrado el archivo "+ filePath);
         }
 
-        AnalizadorLexico al = new AnalizadorLexico(codigoFuente);
-        Parser parser = new Parser(al, false);
+        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
+        PolacaInversa polaca = new PolacaInversa();
+        Parser parser = new Parser(al, false, polaca, true);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();
+        System.out.println();
+        polaca.print();
 
     }
 }

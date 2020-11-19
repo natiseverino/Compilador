@@ -1,11 +1,24 @@
 %% Sentencias reconocidas como sentencias de selección IF
-IF (a>1.) THEN a=1.; END_IF;
+IF (a>1.) THEN
+a=1.;
+END_IF;
 
-IF (a>1.) THEN a=-3.; ELSE a=2.; END_IF;
+IF (a>1.) THEN
+a=-3.;
+ELSE a=2.;
+END_IF;
 
-IF (a>1.) THEN { a=1.; b=2.; } END_IF;
+IF (a>1.) THEN
+{a=1.;}
+END_IF;
 
-%% Sentencias reconocidas como sentencias de selección IF con errores
+IF (a>1.) THEN
+{ a=1.;}
+ELSE
+{b=2.;}
+END_IF;
+
+%% Sentencias de selección IF con errores
 IF a>1.) THEN a=1.; END_IF;
 IF a>1.) THEN a=1.; ELSE a=2.; END_IF;
 
@@ -37,5 +50,3 @@ IF (a>1.) THEN a=1.; ELSE "abc" END_IF;
 IF (a>1.) THEN a=1.; ELSE a=2.; ;
 IF (a>1.) THEN a=1.; ELSE a=2.; END_IF
 IF (a>1.) THEN a=1.; ELSE a=2.;
-
-IF (a>1.) THEN ELSE END_IF;

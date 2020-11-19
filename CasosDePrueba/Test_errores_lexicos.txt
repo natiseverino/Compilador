@@ -1,21 +1,21 @@
 %% esto es un comentario
 
-id = 2.4 + 5.0;
-identificador_con_muchos_caracteres = 1500000_l;
-_id_mal = 2_l;
-
-OUT("esto es una cadena de una linea");
-
-OUT("esto es -
-una cadena -
-multilinea correcta");
-
-OUT("esta es una cadena
-multilinea incorrecta");
-
-OUT("esta es otra cadena -
-incorrecta -");
-
+%%id = 2.4 + 5.0;
+%%identificador_con_muchos_caracteres = 1500000_l;
+%%_id_mal = 2_l;
+%%
+%%OUT("esto es una cadena de una linea");
+%%
+%%OUT("esto es -
+%%una cadena -
+%%multilinea correcta");
+%%
+%%OUT("esta es una cadena
+%%multilinea incorrecta");
+%%
+%%OUT("esta es otra cadena -
+%%incorrecta -");
+%%
 entero_largo_positivo = 1100000000_l;
 fuera_de_rango1 = 2147483648_l;
 fuera_de_rango2 = -2147483649_l;
