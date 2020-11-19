@@ -198,16 +198,14 @@ bloque_else: bloque_sentencias
 ;
 
 sentencia_control   : FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' bloque_for {
-							String cte = $7.sval;
-							if (TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
-							System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de control FOR %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
-							else
-							error("Constante no es del tipo entero", analizadorLexico.getNroLinea());
-
-                            polaca.addElem(new ElemPos(polaca.size()),true);
-                            polaca.addElem(new ElemPos(polaca.popPos()),false);
-                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI),false);
-							}
+				SA3($7.sval);
+				SA4($3.sval , $5.sval);
+				SA5($3.sval, $7.sval, $6.sval); // id cte incr_decr
+				polaca.addElem(new ElemPos(polaca.size() +2 ),true);
+				polaca.addElem(new ElemPos(polaca.popPos()),false);
+				polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BI),false);
+				polaca.addElem(new EtiquetaElem(polaca.size()), false);
+				}
                     | FOR  inicio_for ';' condicion_for  incr_decr CTE ')' bloque_for {error("Falta literal '('", analizadorLexico.getNroLinea());}
                     | FOR '(' error ';' condicion_for  incr_decr CTE ')' bloque_for {error("Error en el inicio de la variable de control", analizadorLexico.getNroLinea());}
                     | FOR '(' inicio_for ';' error ';' incr_decr CTE ')' bloque_for {error("Falta condición de control en sentencia de control", analizadorLexico.getNroLinea());  }
@@ -218,12 +216,13 @@ sentencia_control   : FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' bl
 		    | FOR '('';' condicion_for  incr_decr CTE ')' bloque_for {error("Falta asignacion a la variable de control", analizadorLexico.getNroLinea());}
 ;
 
-inicio_for	: ID '=' CTE {
-			String cte = $3.sval;
-			if (!TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
-			error("Constante no es del tipo entero", analizadorLexico.getNroLinea());
-			polaca.addElem(new EtiquetaElem(polaca.size()), false);
+inicio_for	: ID '=' CTE { $$ = $1;
+			SA3($3.sval);
+			SA1($1.sval);
+			SA1($3.sval);
+			SA2($2.sval);
 			polaca.pushPos(false);
+			polaca.addElem(new EtiquetaElem(polaca.size()), false);
 			}
 		| error '=' CTE {error("Error en el identificador de control", analizadorLexico.getNroLinea());}
 		| ID error CTE {error("Error, el inicio del for debe ser una asignacion", analizadorLexico.getNroLinea());}
@@ -236,12 +235,12 @@ bloque_for	: '{' bloque_ejecutable '}'
 		| sentencia_ejecutable
 ;
 
-condicion_for : condicion ';' {polaca.pushPos(true); polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BF),false);}
+condicion_for : condicion ';' {$$ =$1; polaca.pushPos(true); polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BF),false);}
 
 ;
 
-incr_decr   : UP
-            | DOWN
+incr_decr   : UP {$$ = new ParserVal("+");}
+            | DOWN {$$ = new ParserVal("-");}
 ;
 
 sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {System.out.printf( Main.ANSI_GREEN + "[AS] | Linea %d: Sentencia de salida OUT %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea());
@@ -266,7 +265,7 @@ sentencia_asignacion    : ID '=' expresion ';' {  System.out.printf( Main.ANSI_G
                                                   Token token = TablaSimbolos.getToken(id);
                                                   if (token!= null){
                                                     token.addAtributo("VALOR", cte);
-                                                    SA1($1.sval);
+                                                    SA1(id);
                                                     SA2($2.sval);
                                                   }
 
@@ -300,12 +299,12 @@ lista_parametros    : ID ',' ID ',' ID {System.out.printf( Main.ANSI_GREEN + "[A
 ;
 
 
-condicion   : expresion MAYOR_IGUAL expresion { SA2(">=");}
-		| expresion MENOR_IGUAL expresion{SA2("<=");}
-		| expresion '>' expresion {SA2(">");}
-		| expresion '<' expresion {SA2("<");}
-		| expresion IGUAL expresion {SA2("==");}
-		| expresion DISTINTO  expresion {SA2("!=");}
+condicion   : expresion MAYOR_IGUAL expresion {$$ =$1; SA2(">=");}
+		| expresion MENOR_IGUAL expresion{$$ =$1;SA2("<=");}
+		| expresion '>' expresion {$$ =$1;SA2(">");}
+		| expresion '<' expresion {$$ =$1;SA2("<");}
+		| expresion IGUAL expresion {$$ =$1;SA2("==");}
+		| expresion DISTINTO  expresion {$$ =$1;SA2("!=");}
 ;
 
 
@@ -352,16 +351,22 @@ private AnalizadorLexico analizadorLexico;
 private int nroUltimaLinea;
 private PolacaInversa polaca;
 private boolean verbose;
+private int yyerrores;
 
 public Parser(AnalizadorLexico analizadorLexico, boolean debug, PolacaInversa polaca, boolean verbose){
 	this.analizadorLexico = analizadorLexico;
 	this.yydebug = debug;
 	this.polaca = polaca;
 	this.verbose = verbose;
+	this.yyerrores = 0;
 }
 
 private void yyerror(String mensaje){
 	//System.out.println(Main.ANSI_RED + "ERROR | " + mensaje + Main.ANSI_RESET);
+}
+
+public int getErrores(){
+	return yyerrores;
 }
 
 private int yylex(){
@@ -448,6 +453,7 @@ public void cambiarSimbolo(Token token, String cte, String nuevoLexema, String t
 }
 
 public void error(String mensaje, int linea){
+	yyerrores++;
 	if (verbose)
 		System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: " + mensaje +" %n" + Main.ANSI_RESET, linea);
 
@@ -488,3 +494,25 @@ public void SA2(String operador){ //añadir operador binario a la polaca
 	polaca.addElem(elem, false);
 }
 
+public void SA3(String cte){ //chequea que la constante sea LONGINT
+	 if (!TablaSimbolos.getToken(cte).getTipoToken().equals("LONGINT"))
+ 		error("Constante no es del tipo entero", analizadorLexico.getNroLinea());
+}
+
+public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion
+	Token token1 = TablaSimbolos.getToken(id1);
+	Token token2 = TablaSimbolos.getToken(id2);
+	if (!token1.equals(token2))
+		error("En la sentencia for, la variable inicializada "+ id1 + "no es la misma que la variable utilizada en la condicion" ,analizadorLexico.getNroLinea());
+}
+
+public void SA5(String id, String cte, String op){ //incremento o decremento la variable del for
+	Token id_t = TablaSimbolos.getToken(id);
+	Token cte_t = TablaSimbolos.getToken(cte);
+
+	polaca.addElem(new ElemSimple(id_t), false);
+	polaca.addElem(new ElemSimple(cte_t), false);
+        polaca.addElem(new OperadorBinario(op), false);
+        polaca.addElem(new ElemSimple(id_t), false);
+        polaca.addElem(new OperadorBinario("="), false);
+}
