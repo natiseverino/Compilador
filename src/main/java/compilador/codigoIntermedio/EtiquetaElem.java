@@ -3,7 +3,7 @@ package compilador.codigoIntermedio;
 import java.util.Stack;
 
 public class EtiquetaElem extends PolacaElem {
-    //TODO ?
+
     int pos;
 
     public EtiquetaElem(int pos) {
