@@ -1,6 +1,8 @@
 package compilador;
 
 import compilador.codigoIntermedio.PolacaInversa;
+import compilador.codigoIntermedio.PolacaInversaProcedimientos;
+import compilador.codigoSalida.GeneradorCodigo;
 import compilador.codigoSalida.GeneradorCodigo;
 
 import java.io.BufferedWriter;
@@ -36,7 +38,6 @@ public class Main {
         StringBuilder codigoFuente;
 
         String fileNameAsm = "codigosalida.asm";
-        String fileNameBat = "";
 
 //        try {
 //            filePath = args[0];
@@ -46,18 +47,21 @@ public class Main {
 
         try {
             codigoFuente = FileManager.loadCodigoFuente(filePath);
-        } catch (Exception e){
-            throw new Exception("No se ha encontrado el archivo "+ filePath);
+        } catch (Exception e) {
+            throw new Exception("No se ha encontrado el archivo " + filePath);
         }
 
         AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
         PolacaInversa polaca = new PolacaInversa();
-        Parser parser = new Parser(al, false, polaca, true);
+        PolacaInversaProcedimientos polacaProcedimientos = new PolacaInversaProcedimientos();
+        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, true);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();
-        System.out.println();
+        Errores.printWarnings();
+        Errores.printErrores();
         polaca.print();
+        polacaProcedimientos.print();
 
         int errores = al.getErrores() + parser.getErrores();
 

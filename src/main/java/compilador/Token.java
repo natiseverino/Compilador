@@ -40,14 +40,6 @@ public class Token {
                 countString++;
                 alias = "@string" + countString;
                 break;
-            case "FLOAT": //TODO borrar con nueva tabla de simbolos
-                countFloat++;
-                alias = "@float" + countFloat;
-                break;
-            case "LONGINT": //TODO borrar con nueva tabla de simbolos
-                countLongint++;
-                alias = "@long" + countLongint;
-                break;
         }
     }
 
@@ -63,6 +55,13 @@ public class Token {
         return atributos.get(tipo);
     }
 
+    public Map<String, Object> getAtributos() {
+        return(new HashMap<String, Object>(atributos));
+    }
+
+    public void removeAtributo(String tipo) { atributos.remove(tipo); }
+
+
     public int getIdToken() {
         return this.idToken;
     }
@@ -72,7 +71,7 @@ public class Token {
     }
 
     public String getLexema(boolean alias) {
-        if (alias && (tipoToken.equals("FLOAT")))
+        if (alias && (tipoToken.equals("CONSTANTE")))
             return this.alias;
         return lexema;
     }
@@ -97,11 +96,10 @@ public class Token {
         StringBuilder builder = new StringBuilder();
         switch (this.tipoToken) {
             case "IDENTIFICADOR":
-                if (this.getAtributo("uso").equals("VARIABLE"))
+                if (this.getAtributo("uso").equals("variable"))
                     builder.append("_").append(lexema).append(" dd ?");
                 break;
-            case "LONGINT":
-            case "FLOAT": //TODO MODIFICAR A CONSTANTE CON LA NUEVA TABLA DE SIMBOLOS
+            case "CONSTANTE":
                 builder.append(alias).append(" dd ").append(lexema);
                 break;
             case "CADENA MULT":

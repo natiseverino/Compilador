@@ -44,7 +44,6 @@ public class OperadorBinario extends PolacaElem {
 
         if (operador != '=') {
             if (tipo.equals("LONGINT")) {
-                System.out.println(Main.ANSI_RED + "SALI DE ACA" +Main.ANSI_RESET);
                 switch (operador) {
                     //TODO operaciones de enteros largos con seguimiento de registros
                     case '+':

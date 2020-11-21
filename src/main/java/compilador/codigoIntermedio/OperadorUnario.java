@@ -7,10 +7,11 @@ import java.util.Stack;
 
 public class OperadorUnario extends PolacaElem {
 
-    public enum Tipo {
+    public enum Tipo{
         BF,
         BI,
-        OUT;
+        OUT,
+        INV
     }
 
     private Tipo tipo;
@@ -63,7 +64,7 @@ public class OperadorUnario extends PolacaElem {
                     out = token.getAlias();
 
                 return "print addr " + out;
-                //TODO no estoy segura del print addr cuando se imprime una variable
+            //TODO no estoy segura del print addr cuando se imprime una variable
 
         }
         return "";

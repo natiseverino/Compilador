@@ -252,11 +252,13 @@ public class AnalizadorLexico {
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si
                 // esta en TS y agregar
-                token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
+                token = addToken(lexema.substring(0, lexema.length()-2), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
 
             } else {
                 warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
-                token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
+                token = addToken(String.valueOf(Main.MAX_LONG), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
             }
 
             return token;
@@ -286,19 +288,6 @@ public class AnalizadorLexico {
             else
                 lex = lexema.toString();
 
-//            float flotante, real = -1, exponente = 0;
-//
-//            if(lexema.toString().contains("f"))
-//                real = Float.parseFloat(lexema.toString().split("f")[0]);
-//            else
-//                real = Float.parseFloat(lexema.toString());
-//
-//            if(lexema.toString().contains("f"))
-//                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
-//
-//
-//            flotante = real * (float)Math.pow(10, exponente);
-
             float flotante = 0f;
             try {
                 flotante = Float.parseFloat(lex);
@@ -311,11 +300,13 @@ public class AnalizadorLexico {
             Token token = null;
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
-                token = addToken(String.valueOf(flotante), "FLOAT");
+                token = addToken(String.valueOf(flotante), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             } else {
                 float nuevo = Main.MAX_FLOAT-1;
                 warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
-                token = addToken(String.valueOf(nuevo), "FLOAT");
+                token = addToken(String.valueOf(Main.MAX_FLOAT), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             }
 
             return token;

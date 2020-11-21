@@ -1,6 +1,7 @@
 package compilador;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class TablaSimbolos {
@@ -70,7 +71,6 @@ public final class TablaSimbolos {
         ids.put("UP",UP);
         ids.put("DOWN", DOWN);
         ids.put("aux", AUX);
-
     }
 
     public static int getId(String palabra) {
@@ -80,6 +80,8 @@ public final class TablaSimbolos {
     public static Token getToken(String lexema) {
         return simbolos.get(lexema);
     }
+
+    public static Map<String, Token> getSimbolos() { return (new HashMap<>(simbolos)); }
 
     public static int reservada(String palabra) {
         if(!ids.containsKey(palabra))
@@ -103,18 +105,6 @@ public final class TablaSimbolos {
         return simbolos.containsKey(lexema);
     }
 
-    public static void print() {
-        if(!simbolos.isEmpty()) {
-            System.out.println(Main.ANSI_BOLD_WHITE + ">> TABLA DE SÍMBOLOS" + Main.ANSI_RESET);
-            System.out.printf( "%-3s | %-15s | %-15s | %-15s %n", "ID", "Tipo", "Lexema", "Contador");
-            System.out.printf(new String(new char[58]).replace("\0", "-") + "%n");
-            for (String simbolo: simbolos.keySet()
-            ) {
-                System.out.printf( "%-1s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(false), simbolos.get(simbolo).   getAtributo("contador"));
-            }
-        }
-    }
-
     public static String getDataAssembler(){
         StringBuilder builder = new StringBuilder();
         for (Token token: simbolos.values()){
@@ -124,6 +114,39 @@ public final class TablaSimbolos {
                 builder.append(asm).append(System.lineSeparator());
         }
         return builder.toString();
+    }
+
+    public static void print() {
+        if(!simbolos.isEmpty()) {
+            System.out.println(Main.ANSI_BOLD_WHITE + ">> TABLA DE SÍMBOLOS" + Main.ANSI_RESET);
+            System.out.printf( "%-3s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s %n", "ID", "Tipo (Token)", "Lexema", "Uso", "Tipo", "Contador Ref.", "Atributos adicionales");
+            System.out.printf(new String(new char[115]).replace("\0", "-") + "%n");
+            for (String simbolo: simbolos.keySet()
+            ) {
+                String uso = (String)simbolos.get(simbolo).getAtributo("uso");
+                String tipo = (String)simbolos.get(simbolo).getAtributo("tipo");
+                if(uso.equals("Procedimiento")) {
+                    Object maxInvocaciones = simbolos.get(simbolo).getAtributo("max. invocaciones");
+                    String atributosAdicionales = (maxInvocaciones != null) ? "NI: " + maxInvocaciones.toString() : "";
+
+                    List<String> parametros = (List)simbolos.get(simbolo).getAtributo("parametros");
+                    if(!parametros.isEmpty()) {
+                        String infoParametros = String.join(", ", parametros);
+                        atributosAdicionales += " / Parametros: " + infoParametros;
+                    }
+
+                    System.out.printf( "%-1s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(false), (uso != null) ? uso : "-", (tipo != null) ? tipo : "-", simbolos.get(simbolo).getAtributo("contador"), atributosAdicionales);
+                }
+                else if(uso.equals("Parametro")) {
+                    String atributosAdicionales = "Tipo pasaje: " + simbolos.get(simbolo).getAtributo("tipo pasaje");
+                    System.out.printf( "%-1s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(false), (uso != null) ? uso : "-", (tipo != null) ? tipo : "-", simbolos.get(simbolo).getAtributo("contador"), atributosAdicionales);
+
+                }
+                else
+                    System.out.printf( "%-1s | %-15s | %-15s | %-15s | %-15s | %-15s | - %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(false), (uso != null) ? uso : "-", (tipo != null) ? tipo : "-", simbolos.get(simbolo).getAtributo("contador"));
+            }
+            System.out.println();
+        }
     }
 
 }
