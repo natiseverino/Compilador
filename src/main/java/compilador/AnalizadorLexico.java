@@ -28,13 +28,14 @@ public class AnalizadorLexico {
     };
 
     private AccionSemantica[][] accionesSemanticas;
-
+    private int errores;
 
 
     public AnalizadorLexico(StringBuilder codigoFuente, boolean verbose) {
         this.codigoFuente = codigoFuente;
         this.asignarAS();
         this.verbose = verbose;
+        this.errores = 0;
     }
 
     private void asignarAS() {
@@ -125,11 +126,11 @@ public class AnalizadorLexico {
         }
 
         if(token != null) {
-            Parser.yylval = new ParserVal(token.getLexema());
+            Parser.yylval = new ParserVal(token.getLexema(false));
             if (!token.getTipoToken().isEmpty())
-                out(token.getTipoToken() + token.getLexema(), nroLinea);
+                out(token.getTipoToken() + token.getLexema(false), nroLinea);
             else
-                out(token.getLexema(), nroLinea);
+                out(token.getLexema(false), nroLinea);
         }
         return token != null ? token.getIdToken() : -1;
     }
@@ -167,6 +168,7 @@ public class AnalizadorLexico {
     }
 
     public void error(String mensaje, int linea){
+        errores++;
         if (verbose)
             System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
 
@@ -175,6 +177,10 @@ public class AnalizadorLexico {
     public void warning(String mensaje, int linea){
         if (verbose)
             System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: "+ mensaje + "%n" + Main.ANSI_RESET, linea);
+    }
+
+    public int getErrores(){
+        return errores;
     }
 
     //ACCIONES SEMANTICAS

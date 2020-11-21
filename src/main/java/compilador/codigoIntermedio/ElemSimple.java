@@ -8,12 +8,12 @@ public class ElemSimple extends PolacaElem {
 
     private Token token;
 
-    public ElemSimple(Token token, int nroLinea){
+    public ElemSimple(Token token, int nroLinea) {
         this.token = token;
         setNroLinea(nroLinea);
     }
 
-    public ElemSimple(Token token){
+    public ElemSimple(Token token) {
         this.token = token;
     }
 
@@ -28,16 +28,24 @@ public class ElemSimple extends PolacaElem {
         return false;
     }
 
-    public Token getToken(){
+    public Token getToken() {
         return token;
     }
 
-    public String getTipo(){
-        return (String) token.getAtributo("tipo");
+    public String getTipo() { //TODO cambiar con la nueva tabla de simbolos
+        String tipo = "";
+        if (token.getTipoToken().equals("IDENTIFICADOR") || token.getTipoToken().equals("AUX"))
+            tipo = (String) token.getAtributo("tipo");
+        else if (token.getTipoToken().equals("FLOAT"))
+            tipo = "FLOAT";
+        else if (token.getTipoToken().equals("LONGINT"))
+            tipo = "LONGINT";
+
+        return tipo;
     }
 
     @Override
     public String toString() {
-        return token.getLexema();
+        return token.getLexema(false);
     }
 }

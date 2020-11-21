@@ -33,6 +33,8 @@ public class OperadorBinario extends PolacaElem {
 
         if (!elem1.getTipo().equals(elem2.getTipo())) {
             System.out.printf(Main.ANSI_RED + "[GC] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea());
+            System.out.println(elem1.getToken().getLexema(false) + " -> " + elem1.getTipo());
+            System.out.println(elem2.getToken().getLexema(false) + " -> " + elem2.getTipo());
             huboError = true;
             return "";
         }
@@ -42,6 +44,7 @@ public class OperadorBinario extends PolacaElem {
 
         if (operador != '=') {
             if (tipo.equals("LONGINT")) {
+                System.out.println(Main.ANSI_RED + "SALI DE ACA" +Main.ANSI_RESET);
                 switch (operador) {
                     //TODO operaciones de enteros largos con seguimiento de registros
                     case '+':
@@ -78,25 +81,25 @@ public class OperadorBinario extends PolacaElem {
             }
         } else { //asignaciones
             Token id1 = elem1.getToken();
-            Token id2 = elem1.getToken();
+            Token id2 = elem2.getToken();
 
             if (tipo.equals("FLOAT")) {
-                code.append("fld ").append(id2.getLexema())
+                code.append("fld ").append(id2.getLexema(true))
                         .append(System.lineSeparator())
-                        .append("fstp ").append(id1.getLexema())
+                        .append("fstp ").append(id1.getLexema(true))
                         .append(System.lineSeparator());
             } else if (tipo.equals("LONGINT")) {
                 String reg = SeguimientoRegistros.getInstance().regLibre();
-                code.append("mov ").append(reg).append(", ").append(id2.getLexema())
+                code.append("mov ").append(reg).append(", ").append(id2.getLexema(true))
                         .append(System.lineSeparator())
-                        .append("mov ").append(id1.getLexema()).append(" ,").append(reg)
+                        .append("mov ").append(id1.getLexema(true)).append(" ,").append(reg)
                         .append(System.lineSeparator());
                 SeguimientoRegistros.getInstance().liberar(reg);
 
             }
         }
 
-        return null;
+        return code.toString();
     }
 
 
@@ -105,32 +108,32 @@ public class OperadorBinario extends PolacaElem {
 
         switch (op) {
             case '+':
-                code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                    .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                    .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                     .append("fadd").append(System.lineSeparator())
-                    .append("fstp ").append(aux.getToken().getLexema())
+                    .append("fstp ").append(aux.getToken().getLexema(true))
                     .append(System.lineSeparator());
                 //TODO chequear overflow
                 break;
             case '-':
-                code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fsub").append(System.lineSeparator())
-                        .append("fstp ").append(aux.getToken().getLexema())
+                        .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
                 break;
             case '*':
-                code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fmul").append(System.lineSeparator())
-                        .append("fstp ").append(aux.getToken().getLexema())
+                        .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
                 break;
             case '/':
-                code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fdiv").append(System.lineSeparator())
-                        .append("fstp ").append(aux.getToken().getLexema())
+                        .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
                 break;
             case '>':
@@ -139,8 +142,8 @@ public class OperadorBinario extends PolacaElem {
             case TablaSimbolos.MAYOR_IGUAL:
             case TablaSimbolos.MENOR_IGUAL:
             case TablaSimbolos.IGUAL:
-                code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fcompp").append(System.lineSeparator())
                         .append("fstsw ax").append(System.lineSeparator())
                         .append("sahf").append(System.lineSeparator());

@@ -24,6 +24,7 @@ public class Token {
         this.lexema = lexema;
     }
 
+
     public void initAlias() {
         switch (this.tipoToken) {
             case "CONSTANTE":
@@ -34,9 +35,19 @@ public class Token {
                     countFloat++;
                     alias = "@float" + countFloat;
                 }
+                break;
             case "CADENA MULT":
                 countString++;
                 alias = "@string" + countString;
+                break;
+            case "FLOAT": //TODO borrar con nueva tabla de simbolos
+                countFloat++;
+                alias = "@float" + countFloat;
+                break;
+            case "LONGINT": //TODO borrar con nueva tabla de simbolos
+                countLongint++;
+                alias = "@long" + countLongint;
+                break;
         }
     }
 
@@ -60,8 +71,10 @@ public class Token {
         return tipoToken;
     }
 
-    public String getLexema() {
-        return this.lexema;
+    public String getLexema(boolean alias) {
+        if (alias && (tipoToken.equals("FLOAT")))
+            return this.alias;
+        return lexema;
     }
 
     @Override
@@ -84,14 +97,19 @@ public class Token {
         StringBuilder builder = new StringBuilder();
         switch (this.tipoToken) {
             case "IDENTIFICADOR":
-                if (this.getAtributo("uso").equals("variable"))
+                if (this.getAtributo("uso").equals("VARIABLE"))
                     builder.append("_").append(lexema).append(" dd ?");
-
-            case "CONSTANTE":
+                break;
+            case "LONGINT":
+            case "FLOAT": //TODO MODIFICAR A CONSTANTE CON LA NUEVA TABLA DE SIMBOLOS
                 builder.append(alias).append(" dd ").append(lexema);
-
+                break;
             case "CADENA MULT":
                 builder.append(alias).append(" db ").append(lexema).append(", 0");
+                break;
+            case "AUX":
+                builder.append(lexema).append(" dd ?");
+                break;
         }
 
         return builder.toString();

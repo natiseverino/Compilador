@@ -1,8 +1,11 @@
 package compilador;
 
 import compilador.codigoIntermedio.PolacaInversa;
+import compilador.codigoSalida.GeneradorCodigo;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
 
@@ -16,10 +19,24 @@ public class Main {
     public static final float MAX_FLOAT = 3.40282347e+38f;
     public static final float MIN_FLOAT = 1.17549435e-38f;
 
+    public static void guardarArchivo(String txt, String path){
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(path));
+            writer.write(txt);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "CasosDePrueba/Test_entrega.txt";
+        String filePath = "CasosDePrueba/Test_asm.txt";
         StringBuilder codigoFuente;
+
+        String fileNameAsm = "codigosalida.asm";
+        String fileNameBat = "";
 
 //        try {
 //            filePath = args[0];
@@ -41,6 +58,28 @@ public class Main {
         TablaSimbolos.print();
         System.out.println();
         polaca.print();
+
+        int errores = al.getErrores() + parser.getErrores();
+
+        if (errores > 0) {
+            System.out.println();
+            System.out.println("Hay " + errores + " sintacticos y lexicos");
+            System.out.println("No se genero el codigo assembler");
+        }
+        else {
+
+            String code = GeneradorCodigo.getInstance().generarCodigo(polaca);
+            int gc_errores = polaca.getErrores();
+            if (gc_errores > 0) {
+                System.out.println();
+                System.out.println("Hay " + gc_errores + " errores en la generacion de codigo");
+                System.out.println("No se genero el codigo assembler");
+            } else {
+                guardarArchivo(code, fileNameAsm);
+                System.out.println("Se genero el codigo assembler en " + fileNameAsm);
+            }
+
+        }
 
     }
 }

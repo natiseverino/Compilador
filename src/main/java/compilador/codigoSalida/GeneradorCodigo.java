@@ -17,8 +17,9 @@ public class GeneradorCodigo {
         return instance;
     }
 
-    public static String generarCodigo(PolacaInversa polacaInversa) {
+    public String generarCodigo(PolacaInversa polacaInversa) {
         StringBuilder code = new StringBuilder();
+        String data = TablaSimbolos.getDataAssembler();
         String codigoIntermedio = polacaInversa.generarCodigo();
 
         code.append(".386").append(System.lineSeparator())
@@ -33,7 +34,7 @@ public class GeneradorCodigo {
                 .append("dll_dllcrt0 PROTO C").append(System.lineSeparator())
                 .append("printf PROTO C :VARARG").append(System.lineSeparator())
                 .append(".data").append(System.lineSeparator())
-                .append(TablaSimbolos.getDataAssembler())
+                .append(data)
                 .append("@string_overflow_longint db \"Error: Overflow en suma de enteros largos\", 0")
                 .append(System.lineSeparator())
                 .append("@string_overflow_float db \"Error: Overflow en suma de flotantes\", 0")

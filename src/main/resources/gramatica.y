@@ -65,25 +65,32 @@ declaracion_variables    : tipo lista_variables ';' {System.out.printf( Main.ANS
                         | tipo error ';'  {error("Falta lista de variables", analizadorLexico.getNroLinea());}
 ;
 
-lista_variables    : ID ',' lista_variables
+lista_variables    : ID ',' lista_variables {  String id = $1.sval;
+						    Token token = TablaSimbolos.getToken(id);
+						    if (token!= null){
+						      token.addAtributo("uso", "VARIABLE");
+						      token.addAtributo("tipo", ultimoTipo);
+						    }
+					  }
         | ID {  String id = $1.sval;
                 Token token = TablaSimbolos.getToken(id);
                 if (token!= null){
-                  token.addAtributo("USO", "VARIABLE");
+                  token.addAtributo("uso", "VARIABLE");
+                  token.addAtributo("tipo", ultimoTipo);
                 }
               }
         | ID  lista_variables {error("Falta literal ',' ", analizadorLexico.getNroLinea());}
 ;
 
-tipo    : LONGINT
-        | FLOAT
+tipo    : LONGINT {ultimoTipo = "LONGINT";}
+        | FLOAT{ultimoTipo = "FLOAT";}
 ;
 
 declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' CTE bloque_sentencias {
 							String id = $2.sval;
 							Token token = TablaSimbolos.getToken(id);
 							if (token!= null){
-							  token.addAtributo("USO", "PROCEDIMIENTO");
+							  token.addAtributo("uso", "PROCEDIMIENTO");
 							}
 
 							String cte = $8.sval;
@@ -95,7 +102,7 @@ declaracion_procedimiento   : PROC ID '(' lista_parametros_formales ')' NI '=' C
 						        String id = $2.sval;
 						        Token token = TablaSimbolos.getToken(id);
 						        if (token!= null){
-							  token.addAtributo("USO", "PROCEDIMIENTO");
+							  token.addAtributo("uso", "PROCEDIMIENTO");
 						        }
 
 							String cte = $7.sval;
@@ -138,7 +145,7 @@ parametro_formal    : tipo ID   {System.out.printf( Main.ANSI_GREEN + "[AS] | Li
 				  String param = $2.sval;
                                   Token token = TablaSimbolos.getToken(param);
                                   if (token!= null){
-                                    token.addAtributo("USO", "PARAMETRO");
+                                    token.addAtributo("uso", "PARAMETRO");
 				    token.addAtributo("PASAJE", "COPIA");
                                   }
 				}
@@ -146,7 +153,7 @@ parametro_formal    : tipo ID   {System.out.printf( Main.ANSI_GREEN + "[AS] | Li
 				  String param = $3.sval;
 				  Token token = TablaSimbolos.getToken(param);
 				  if (token!= null){
-				    token.addAtributo("USO", "PARAMETRO");
+				    token.addAtributo("uso", "PARAMETRO");
 				    token.addAtributo("PASAJE", "VAR");
 				  }
                     		}
@@ -352,6 +359,7 @@ private int nroUltimaLinea;
 private PolacaInversa polaca;
 private boolean verbose;
 private int yyerrores;
+private String ultimoTipo = "";
 
 public Parser(AnalizadorLexico analizadorLexico, boolean debug, PolacaInversa polaca, boolean verbose){
 	this.analizadorLexico = analizadorLexico;
@@ -468,8 +476,8 @@ public void out(String lex){
        Token token = TablaSimbolos.getToken(lex);
                if (token != null) {
                    if (token.getTipoToken().equals("IDENTIFICADOR")) {
-                       if (token.getAtributo("USO") != null) {
-                           if (token.getAtributo("USO").equals("VARIABLE")) {
+                       if (token.getAtributo("uso") != null) {
+                           if (token.getAtributo("uso").equals("VARIABLE")) {
                                Object valor = token.getAtributo("VALOR");
                                if (valor != null)
                                    System.out.println(token.getAtributo("VALOR") + "\n");

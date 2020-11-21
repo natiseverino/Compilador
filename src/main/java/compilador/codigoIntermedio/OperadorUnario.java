@@ -50,10 +50,13 @@ public class OperadorUnario extends PolacaElem {
                 String out = "";
                 if (token.getTipoToken().equals("IDENTIFICADOR")) {
                     if (token.getAtributo("uso") != null) {
-                        if (token.getAtributo("uso").equals("variable")) {
-                            Object valor = token.getAtributo("valor");
+                        if (token.getAtributo("uso").equals("VARIABLE")) {
+                            Object valor = token.getAtributo("VALOR");
                             if (valor != null)
-                                out = (String) token.getAtributo("valor");
+                                out = (String) token.getAtributo("VALOR");
+                            /*TODO mepa que esta mal que imprima asi nomas el valor de la variable,
+                            ** si es un float deberia ser el alias
+                            */
                         }
                     }
                 } else

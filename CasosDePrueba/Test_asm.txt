@@ -1,0 +1,12 @@
+FLOAT a, b;
+a = 2.;
+b = 1.;
+
+IF (a>b) THEN
+    b = 2. * a;
+ELSE
+    a = b;
+END_IF;
+
+OUT(b);
+

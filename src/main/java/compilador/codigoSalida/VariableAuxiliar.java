@@ -6,13 +6,14 @@ import compilador.Token;
 public class VariableAuxiliar {
 
     private static int count = 0;
-    private static final String FLOAT = "FLOAT";
+    private static final String AUX = "AUX";
 
     public static Token getAux(){
         count++;
         String alias = "@aux"+count;
-        Token token = new Token(TablaSimbolos.getId("aux"), FLOAT,alias);
+        Token token = new Token(TablaSimbolos.getId("aux"), AUX, alias);
         token.addAtributo("uso", "aux");
+        token.addAtributo("tipo", "FLOAT");
         TablaSimbolos.add(token);
         return token;
     }
