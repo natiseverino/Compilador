@@ -63,7 +63,7 @@ public class Main {
         polaca.print();
         polacaProcedimientos.print();
 
-        int errores = al.getErrores() + parser.getErrores();
+        int errores = Errores.getErrores();
 
         if (errores > 0) {
             System.out.println();

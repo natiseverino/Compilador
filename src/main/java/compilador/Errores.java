@@ -39,4 +39,8 @@ public class Errores {
             System.out.println();
         }
     }
+
+    public static int getErrores(){
+        return errors.isEmpty()? 0 : errors.size()-1;
+    }
 }

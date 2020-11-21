@@ -36,8 +36,8 @@ programa : lista_sentencias
 
 bloque_ejecutable   : bloque_ejecutable sentencia_ejecutable
                     | sentencia_ejecutable
-                    | sentencia_declarativa { error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea()); }
-		    | bloque_ejecutable sentencia_declarativa { error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea()); }
+                    | sentencia_declarativa { Errores.addError(String.format("[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n",analizadorLexico.getNroLinea())); }
+		    | bloque_ejecutable sentencia_declarativa { Errores.addError(String.format("[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n",analizadorLexico.getNroLinea())); }
 
 ;
 
@@ -65,12 +65,12 @@ sentencia_ejecutable    : sentencia_seleccion
 ;
 
 declaracion_variables   : tipo lista_variables ';'  { imprimirReglaReconocida("Declaración de variables", analizadorLexico.getNroLinea()); }
-                        | tipo lista_variables error {error("Falta literal ';'", nroUltimaLinea);}
-                        | tipo error ';'  {error("Falta lista de variables", analizadorLexico.getNroLinea());}
+                        | tipo lista_variables error {Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
+                        | tipo error ';'  {Errores.addError(String.format("[AS] | Linea %d: Falta lista de variables %n",analizadorLexico.getNroLinea()));}
 ;
 lista_variables : ID ',' lista_variables { declaracionID($1.sval, "Variable", ultimoTipo); }
                 | ID { declaracionID($1.sval, "Variable", ultimoTipo); }
-      		| ID  lista_variables {error("Falta literal ',' ", analizadorLexico.getNroLinea());}
+      		| ID  lista_variables {Errores.addError(String.format("[AS] | Linea %d: Falta literal ','  %n",analizadorLexico.getNroLinea()));}
 ;
 
 tipo    : LONGINT { ultimoTipo = "LONGINT"; }
@@ -85,8 +85,7 @@ declaracion_procedimiento   : proc_encabezado proc_parametros proc_ni proc_cuerp
 proc_encabezado : PROC ID   {   ambitos.agregarAmbito($2.sval);
                                 declaracionID($2.sval, "Procedimiento", null);
                             }
-                | error ID { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada PROC en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-                | PROC error { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
+               | PROC error { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 ;
 
 proc_parametros : '(' lista_parametros_formales ')' {   TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
@@ -139,8 +138,8 @@ parametro_formal    : tipo ID { imprimirReglaReconocida("Parámetro formal", ana
                                     declaracionID($3.sval, "Parametro", ultimoTipo);
                                     TablaSimbolos.getToken($3.sval + ":" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
                                   }
-                    | error ID { Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n", analizadorLexico.getNroLinea())); }
-                    | VAR error ID { Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n", analizadorLexico.getNroLinea())); }
+                    | error ID {  Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n",analizadorLexico.getNroLinea())); }
+                    | VAR error ID { Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n %n",analizadorLexico.getNroLinea())); }
 ;
 
 sentencia_seleccion : IF condicion_if THEN bloque_then END_IF ';'   {   imprimirReglaReconocida("Sentencia de selección IF", analizadorLexico.getNroLinea());
@@ -163,21 +162,21 @@ sentencia_seleccion : IF condicion_if THEN bloque_then END_IF ';'   {   imprimir
                                                                                             polacaProcedimientos.addElem(ambitos.getAmbitos(), new EtiquetaElem(polacaProcedimientos.getPolacaSize(ambitos.getAmbitos())), false);
                                                                                         }
                     									                            }
-                    | IF condicion_if  bloque_then END_IF ';' {error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());}
-                    | IF condicion_if  bloque_then ELSE bloque_else END_IF ';' {error("Falta palabra reservada THEN ", analizadorLexico.getNroLinea());}
-                    | IF condicion_if  THEN bloque_then  bloque_else END_IF ';' {error("Falta palabra reservada ELSE ", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN END_IF ';' {error("Falta bloque de sentencias THEN", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN ELSE bloque_else END_IF ';' {error("Falta bloque de sentencias THEN", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN error END_IF ';' {error("Error en bloque de sentencias THEN", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN error ELSE bloque_else END_IF ';' {error("Error en bloque de sentencias THEN", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN bloque_then END_IF  {error(" Falta literal ';'", nroUltimaLinea);}
-		    | IF condicion_if  THEN bloque_then error  {error(" Falta palabra reservada END_IF y literal ';'", nroUltimaLinea);}
-		    | IF condicion_if  THEN bloque_then ELSE END_IF ';' {error("Falta bloque de sentencias ELSE", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN bloque_then ELSE error END_IF ';' {error("Error en bloque de sentencias ELSE", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN bloque_then ELSE bloque_else error {error("Falta palabra reservada END_IF", analizadorLexico.getNroLinea());}
-		    | IF condicion_if  THEN bloque_then ELSE bloque_else END_IF  {error(" Falta literal ';'", nroUltimaLinea);}
-		    | IF THEN bloque_then END_IF ';' {error(" Falta la condicion de la sentencia IF ", nroUltimaLinea);}
-		    | IF THEN bloque_then ELSE bloque_else END_IF ';' {error(" Falta la condicion de la sentencia IF ", nroUltimaLinea);}
+                    | IF condicion_if  bloque_then END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada THEN  %n",analizadorLexico.getNroLinea()));}
+                    | IF condicion_if  bloque_then ELSE bloque_else END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada THEN  %n",analizadorLexico.getNroLinea()));}
+                    | IF condicion_if  THEN bloque_then  bloque_else END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada ELSE  %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN ELSE bloque_else END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN error END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN error ELSE bloque_else END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN bloque_then END_IF  { Errores.addError(String.format("[AS] | Linea %d:  Falta literal ';' %n",nroUltimaLinea));}
+		    | IF condicion_if  THEN bloque_then error  { Errores.addError(String.format("[AS] | Linea %d:  Falta palabra reservada END_IF y literal ';' %n",nroUltimaLinea));}
+		    | IF condicion_if  THEN bloque_then ELSE END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias ELSE %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN bloque_then ELSE error END_IF ';' { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias ELSE %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN bloque_then ELSE bloque_else error { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada END_IF %n",analizadorLexico.getNroLinea()));}
+		    | IF condicion_if  THEN bloque_then ELSE bloque_else END_IF  { Errores.addError(String.format("[AS] | Linea %d:  Falta literal ';' %n",nroUltimaLinea));}
+		    | IF THEN bloque_then END_IF ';' { Errores.addError(String.format("[AS] | Linea %d:  Falta la condicion de la sentencia IF  %n",nroUltimaLinea));}
+		    | IF THEN bloque_then ELSE bloque_else END_IF ';' { Errores.addError(String.format("[AS] | Linea %d:  Falta la condicion de la sentencia IF  %n",nroUltimaLinea));}
 ;
 
 condicion_if    : '(' condicion ')' {   if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
@@ -189,11 +188,11 @@ condicion_if    : '(' condicion ')' {   if(ambitos.getAmbitos().equals(Ambitos.a
                                             polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.BF), false);
                                         }
                                     }
-		| condicion ')' {error("Falta literal '('", analizadorLexico.getNroLinea());}
-		| '(' condicion {error("Falta literal ')'", analizadorLexico.getNroLinea());}
-		| '(' ')' {error("Falta condicion", analizadorLexico.getNroLinea());}
-		| condicion {error("Faltan parentesis", analizadorLexico.getNroLinea());}
-		| '(' error ')' {error("Error en la condicion", analizadorLexico.getNroLinea());}
+		| condicion ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
+		| '(' condicion { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
+		| '(' ')' { Errores.addError(String.format("[AS] | Linea %d: Falta condicion %n",analizadorLexico.getNroLinea()));}
+		| condicion { Errores.addError(String.format("[AS] | Linea %d: Faltan parentesis %n",analizadorLexico.getNroLinea()));}
+		| '(' error ')' { Errores.addError(String.format("[AS] | Linea %d: Error en la condicion %n",analizadorLexico.getNroLinea()));}
 ;
 
 
@@ -231,14 +230,14 @@ sentencia_control   : FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' bl
                                                                                                     polacaProcedimientos.addElem(ambitos.getAmbitos(), new EtiquetaElem(polacaProcedimientos.getPolacaSize(ambitos.getAmbitos())), false);
                                                                                                 }
                                                                                             }
-                    | FOR  inicio_for ';' condicion_for  incr_decr CTE ')' bloque_for {error("Falta literal '('", analizadorLexico.getNroLinea());}
-                    | FOR '(' error ';' condicion_for  incr_decr CTE ')' bloque_for {error("Error en el inicio de la variable de control", analizadorLexico.getNroLinea());}
-                    | FOR '(' inicio_for ';' error ';' incr_decr CTE ')' bloque_for {error("Falta condición de control en sentencia de control", analizadorLexico.getNroLinea());  }
-                    | FOR '(' inicio_for ';' condicion_for  error CTE ')' bloque_for {error("Falta indicar incremento o decremento de la sentencia de control", analizadorLexico.getNroLinea()); }
-                    | FOR '(' inicio_for ';' condicion_for  incr_decr error ')' bloque_for { error("Falta indicar constante de paso para incremento/decremento en sentencia de control", analizadorLexico.getNroLinea());  }
-                    | FOR '(' inicio_for ';' condicion_for  incr_decr CTE  bloque_for {error("Falta literal ')'", analizadorLexico.getNroLinea());}
-                    | FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' sentencia_declarativa {error("Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa.", analizadorLexico.getNroLinea());}
-		    | FOR '('';' condicion_for  incr_decr CTE ')' bloque_for {error("Falta asignacion a la variable de control", analizadorLexico.getNroLinea());}
+                    | FOR  inicio_for ';' condicion_for  incr_decr CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
+                    | FOR '(' error ';' condicion_for  incr_decr CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Error en el inicio de la variable de control %n",analizadorLexico.getNroLinea()));}
+                    | FOR '(' inicio_for ';' error ';' incr_decr CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta condición de control en sentencia de control %n",analizadorLexico.getNroLinea()));  }
+                    | FOR '(' inicio_for ';' condicion_for  error CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n",analizadorLexico.getNroLinea())); }
+                    | FOR '(' inicio_for ';' condicion_for  incr_decr error ')' bloque_for {  Errores.addError(String.format("[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n",analizadorLexico.getNroLinea()));  }
+                    | FOR '(' inicio_for ';' condicion_for  incr_decr CTE  bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
+                    | FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' sentencia_declarativa { Errores.addError(String.format("[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n",analizadorLexico.getNroLinea()));}
+		    | FOR '('';' condicion_for  incr_decr CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta asignacion a la variable de control %n",analizadorLexico.getNroLinea()));}
 ;
 
 inicio_for	: ID '=' CTE { $$ = $1;
@@ -255,10 +254,10 @@ inicio_for	: ID '=' CTE { $$ = $1;
                                                             polacaProcedimientos.addElem(ambitos.getAmbitos(), new EtiquetaElem(polacaProcedimientos.getPolacaSize(ambitos.getAmbitos())), false);
                                                         }
                                                     }
-		| error '=' CTE {error("Error en el identificador de control", analizadorLexico.getNroLinea());}
-		| ID error CTE {error("Error, el inicio del for debe ser una asignacion", analizadorLexico.getNroLinea());}
-		| ID '=' error {error("Error en la constante de la asignacion", analizadorLexico.getNroLinea());}
-		| ID error {error("Error en la asignacion de control", analizadorLexico.getNroLinea());}
+		| error '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador de control %n",analizadorLexico.getNroLinea()));}
+		| ID error CTE { Errores.addError(String.format("[AS] | Linea %d: Error, el inicio del for debe ser una asignacion %n",analizadorLexico.getNroLinea()));}
+		| ID '=' error { Errores.addError(String.format("[AS] | Linea %d: Error en la constante de la asignacion %n",analizadorLexico.getNroLinea()));}
+		| ID error { Errores.addError(String.format("[AS] | Linea %d: Error en la asignacion de control %n",analizadorLexico.getNroLinea()));}
 
 ;
 
@@ -289,11 +288,11 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {   imprimirReglaReconocida("S
 						  else
 						      polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
 					      }
-                    | OUT error CADENA_MULT ')' ';' {error("Falta literal '('", analizadorLexico.getNroLinea());}
-                    | OUT '(' ')' ';' {error("Falta elemento a imprimir", analizadorLexico.getNroLinea());}
-                    | OUT '(' error ')' ';' {error("Error en la cadena multilínea a imprimir", analizadorLexico.getNroLinea());}
-                    | OUT '(' CADENA_MULT error ';' {error("Falta literal ')'", analizadorLexico.getNroLinea());}
-                    | OUT '(' CADENA_MULT ')' {error("Falta literal ';'", nroUltimaLinea);}
+                    | OUT error CADENA_MULT ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
+                    | OUT '(' ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Falta elemento a imprimir %n",analizadorLexico.getNroLinea()));}
+                    | OUT '(' error ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Error en la cadena multilínea a imprimir %n",analizadorLexico.getNroLinea()));}
+                    | OUT '(' CADENA_MULT error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
+                    | OUT '(' CADENA_MULT ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 //		    | OUT '(' factor ')' ';' { 	String factor = $3.sval;
 //		    				out(factor);
 //                                               	polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);}
@@ -327,10 +326,11 @@ sentencia_asignacion    : ID '=' expresion ';'  {   imprimirReglaReconocida("Sen
                                                         SA2($2.sval);
                                                     }
                                                     invocacionID(id, "Variable");
-                                                }                        | error '=' expresion ';' {error("Falta lado izquierdo de la asignación", analizadorLexico.getNroLinea());}
-                        | ID error expresion ';' {error("Falta literal '=' en sentencia de asignación", analizadorLexico.getNroLinea());}
-                        | ID '=' error ';' {error("Falta lado derecho de la asignación", analizadorLexico.getNroLinea());}
-                        | ID '=' expresion {error("Falta literal ';'", nroUltimaLinea);}
+                                                }
+                        | error '=' expresion ';' { Errores.addError(String.format("[AS] | Linea %d: Falta lado izquierdo de la asignación %n",analizadorLexico.getNroLinea()));}
+                        | ID error expresion ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de asignación %n",analizadorLexico.getNroLinea()));}
+                        | ID '=' error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta lado derecho de la asignación %n",analizadorLexico.getNroLinea()));}
+                        | ID '=' expresion { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 ;
 
 sentencia_invocacion    : ID '(' lista_parametros ')' ';'   {   imprimirReglaReconocida("Sentencia de invocación con lista de parámetros %n", analizadorLexico.getNroLinea());
@@ -338,13 +338,14 @@ sentencia_invocacion    : ID '(' lista_parametros ')' ';'   {   imprimirReglaRec
                                                             }
                         | ID '(' ')' ';'    {   imprimirReglaReconocida("Sentencia de invocación sin parámetros %n", analizadorLexico.getNroLinea());
                                                 invocacionID($1.sval, "Procedimiento");
-                                            }                        | ID lista_parametros ')' ';' {error("Falta literal '('", analizadorLexico.getNroLinea());}
-                        | ID ')' ';' {error("Falta literal '('", analizadorLexico.getNroLinea());}
-                        | ID '(' error ')' ';' {error("Parametros invalidos", analizadorLexico.getNroLinea());}
-                        | ID '(' lista_parametros  ';' {error("Falta literal ')'", analizadorLexico.getNroLinea());}
-                        | ID '('  ';' {error("Falta literal ')'", analizadorLexico.getNroLinea());}
-                        | ID '(' lista_parametros ')' {error("Falta literal ';'", nroUltimaLinea);}
-                        | ID '(' ')' {error("Falta literal ';'", nroUltimaLinea);}
+                                            }
+                        | ID lista_parametros ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
+                        | ID ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
+                        | ID '(' error ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Parametros invalidos %n",analizadorLexico.getNroLinea()));}
+                        | ID '(' lista_parametros  ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
+                        | ID '('  ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
+                        | ID '(' lista_parametros ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
+                        | ID '(' ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 ;
 
 lista_parametros    : ID ',' ID ',' ID  {   imprimirReglaReconocida("Lista de parámetros (3)", analizadorLexico.getNroLinea());
@@ -358,12 +359,13 @@ lista_parametros    : ID ',' ID ',' ID  {   imprimirReglaReconocida("Lista de pa
                                 }
                     | ID    {   imprimirReglaReconocida("Lista de parámetros (1) %n", analizadorLexico.getNroLinea());
                                 invocacionID($1.sval, "Parametro");
-                            }                    | ID ',' ID ',' ID ',' error {error("Número de parámetros permitidos excedido", analizadorLexico.getNroLinea());}
-                    | ID ',' error {error("Parámetro incorrecto", analizadorLexico.getNroLinea());}
-                    | ID ID ID {error("Faltan literales ',' entre parámetros", analizadorLexico.getNroLinea());}
-                    | ID ',' ID ID {error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());}
-                    | ID ID ',' ID {error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());}
-                    | ID ID {error("Falta literal ',' entre parámetros", analizadorLexico.getNroLinea());}
+                            }
+                    | ID ',' ID ',' ID ',' error { Errores.addError(String.format("[AS] | Linea %d: Número de parámetros permitidos excedido %n",analizadorLexico.getNroLinea()));}
+                    | ID ',' error { Errores.addError(String.format("[AS] | Linea %d: Parámetro incorrecto %n",analizadorLexico.getNroLinea()));}
+                    | ID ID ID { Errores.addError(String.format("[AS] | Linea %d: Faltan literales ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
+                    | ID ',' ID ID { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
+                    | ID ID ',' ID { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
+                    | ID ID { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
 ;
 
 
@@ -381,9 +383,9 @@ expresion   : expresion '+' termino {imprimirReglaReconocida("Suma", analizadorL
             | expresion '-' termino {imprimirReglaReconocida("Resta", analizadorLexico.getNroLinea());
                                      SA2($2.sval);}
             | termino
-            | expresion '+' error {error("Falta el segundo operando en la suma", analizadorLexico.getNroLinea());}
-            | expresion '-' error {error("Falta el segundo operando en la resta", analizadorLexico.getNroLinea());}
-            | error '+' termino {error("Falta el primer operando en la suma", analizadorLexico.getNroLinea());}
+            | expresion '+' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la suma %n",analizadorLexico.getNroLinea()));}
+            | expresion '-' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la resta %n",analizadorLexico.getNroLinea()));}
+            | error '+' termino { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la suma %n",analizadorLexico.getNroLinea()));}
 ;
 
 termino : termino '*' factor { $$ = $1;
@@ -393,10 +395,10 @@ termino : termino '*' factor { $$ = $1;
         			imprimirReglaReconocida("División", analizadorLexico.getNroLinea());
         			SA2($2.sval);}
         | factor {$$ = $1;}
-        | termino '*' error {error("Falta el segundo operando en la multiplicación", analizadorLexico.getNroLinea());}
-        | termino '/' error {error("Falta el segundo operando en la division", analizadorLexico.getNroLinea());}
-        | error '*' factor {error("Falta el primer operando en la multiplicación", analizadorLexico.getNroLinea());}
-        | error '/' factor {error("Falta el primer operando en la division", analizadorLexico.getNroLinea());}
+        | termino '*' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
+        | termino '/' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la division %n",analizadorLexico.getNroLinea()));}
+        | error '*' factor { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
+        | error '/' factor { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la division %n",analizadorLexico.getNroLinea()));}
 ;
 
 factor  : ID {$$ = $1; SA1($1.sval);
@@ -427,7 +429,6 @@ private int nroUltimaLinea;
 private Ambitos ambitos;
 private PolacaInversa polaca;
 private boolean verbose;
-private int yyerrores;
 private PolacaInversaProcedimientos polacaProcedimientos;
 
 private String ultimoTipo;
@@ -442,9 +443,7 @@ public Parser(AnalizadorLexico analizadorLexico, boolean actualizarTablaSimbolos
 	this.actualizarTablaSimbolos = actualizarTablaSimbolos;
 	this.polaca = polaca;
 	this.polacaProcedimientos = polacaProcedimientos;
-	this.verboseSintactico = verboseSintactico;
 	this.verbose = verbose;
-        this.yyerrores = 0;
 }
 
 private void yyerror(String mensaje){
@@ -456,9 +455,6 @@ private void imprimirReglaReconocida(String descripcion, int lineaCodigo) {
         System.out.printf(Main.ANSI_GREEN + "[AS] | Linea %d: %s %n" + Main.ANSI_RESET, lineaCodigo, descripcion);
 }
 
-public int getErrores(){
-	return yyerrores;
-}
 
 private int yylex(){
 	if (!analizadorLexico.endOfFile()) {
@@ -481,7 +477,7 @@ public String checkPositivo(String cte) {
         long entero = 0;
 		if (Long.parseLong(cte) >= Main.MAX_LONG) {
 		    entero = Main.MAX_LONG - 1;
-		    warning("Entero largo positivo fuera de rango: " + cte + " - Se cambia por: " + entero, analizadorLexico.getNroLinea());
+		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
 		    String nuevoLexema = String.valueOf(entero);
 		    cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
 		    return nuevoLexema;
@@ -503,7 +499,7 @@ public String checkRango(String cte) {
 		    entero = Long.parseLong(cte);
 		} else {
 		    entero = Main.MAX_LONG;
-		    warning("Entero largo negativo fuera de rango: " + cte + " - Se cambia por: " + entero, analizadorLexico.getNroLinea());
+		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
 		}
 		nuevoLexema = "-" + entero;
 		cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
@@ -516,7 +512,7 @@ public String checkRango(String cte) {
 		flotante = Float.parseFloat(cte);
 	    } else {
 		flotante = Main.MAX_FLOAT-1;
-		warning("Flotante negativo fuera de rango: " + cte + " - Se cambia por: " + flotante, analizadorLexico.getNroLinea());
+		 Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, flotante));
 	    }
 	    if (flotante != 0f) {
 		String nuevoLexema = "-" + flotante;
@@ -668,17 +664,9 @@ public String getLexemaID() {
     return(id + ":" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
 }
 
-public void error(String mensaje, int linea){
-	yyerrores++;
-	if (verbose)
-		System.out.printf( Main.ANSI_RED + "[AS] | Linea %d: " + mensaje +" %n" + Main.ANSI_RESET, linea);
 
-}
 
-public void warning(String mensaje, int linea){
-	if (verbose)
-		System.out.printf(Main.ANSI_YELLOW + "[AS] | Linea %d: "+ mensaje + "%n" + Main.ANSI_RESET, linea);
-}
+
 
 public void out(String lex){
        Token token = TablaSimbolos.getToken(lex);
@@ -690,12 +678,12 @@ public void out(String lex){
                                if (valor != null)
                                    System.out.println(token.getAtributo("VALOR") + "\n");
                                else
-                                   error("Variable " + lex + " no inicializada", analizadorLexico.getNroLinea());
+                                    Errores.addError(String.format("[AS] | Linea %d: Variable " + lex + " no inicializada %n",analizadorLexico.getNroLinea()));
                            }
                        } else
-                           error("Variable " + lex + " no declarada", analizadorLexico.getNroLinea());
+                            Errores.addError(String.format("[AS] | Linea %d: Variable " + lex + " no declarada %n",analizadorLexico.getNroLinea()));
                    }else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
-                       System.out.println(token.getLexema() + "\n");
+                       System.out.println(token.getLexema(false) + "\n");
                }
 }
 
@@ -711,7 +699,7 @@ public void SA1(String lexema) {  // Añadir factor a la polaca
     Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, "Variable"));
 
     // Se añade a la polaca el token sin el ámbito en el lexema
-    String lexemaToken = token.getLexema();
+    String lexemaToken = token.getLexema(false);
     Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":")) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
     for (Map.Entry<String, Object> atributo: token.getAtributos().entrySet()) {
       nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
@@ -735,14 +723,14 @@ public void SA2(String operador){ // Añadir operador binario a la polaca
 
 public void SA3(String cte){ //chequea que la constante sea LONGINT
 	 if (!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
- 		error("Constante no es del tipo entero", analizadorLexico.getNroLinea());
+ 		 Errores.addError(String.format("[AS] | Linea %d: Constante no es del tipo entero %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion
 	Token token1 = TablaSimbolos.getToken(id1);
 	Token token2 = TablaSimbolos.getToken(id2);
 	if (!token1.equals(token2))
-		error("En la sentencia for, la variable inicializada "+ id1 + " no es la misma que la variable utilizada en la condicion" ,analizadorLexico.getNroLinea());
+		 Errores.addError(String.format("[AS] | Linea %d: En la sentencia for, la variable inicializada "+ id1 + " no es la misma que la variable utilizada en la condicion %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA5(String id, String cte, String op){ //incremento o decremento la variable del for
