@@ -31,6 +31,7 @@ public class OperadorBinario extends PolacaElem {
         ElemSimple elem1 = (ElemSimple) stack.pop();
         ElemSimple elem2 = (ElemSimple) stack.pop();
 
+        // TODO cuando uno de los elementos es una variable auxiliar entra
         if (!elem1.getTipo().equals(elem2.getTipo())) {
             System.out.printf(Main.ANSI_RED + "[GC] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea());
             huboError = true;
@@ -96,7 +97,7 @@ public class OperadorBinario extends PolacaElem {
             }
         }
 
-        return null;
+        return "";
     }
 
 
@@ -106,10 +107,10 @@ public class OperadorBinario extends PolacaElem {
         switch (op) {
             case '+':
                 code.append("fld ").append(elem1.getToken().getLexema()).append(System.lineSeparator())
-                    .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
-                    .append("fadd").append(System.lineSeparator())
-                    .append("fstp ").append(aux.getToken().getLexema())
-                    .append(System.lineSeparator());
+                        .append("fld ").append(elem2.getToken().getLexema()).append(System.lineSeparator())
+                        .append("fadd").append(System.lineSeparator())
+                        .append("fstp ").append(aux.getToken().getLexema())
+                        .append(System.lineSeparator());
                 //TODO chequear overflow
                 break;
             case '-':

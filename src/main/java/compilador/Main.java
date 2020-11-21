@@ -1,6 +1,8 @@
 package compilador;
 
 import compilador.codigoIntermedio.PolacaInversa;
+import compilador.codigoIntermedio.PolacaInversaProcedimientos;
+import compilador.codigoSalida.GeneradorCodigo;
 
 import java.io.FileNotFoundException;
 
@@ -18,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "CasosDePrueba/Test_entrega.txt";
+        String filePath = "CasosDePrueba/test_procedimientos.txt";
         StringBuilder codigoFuente;
 
 //        try {
@@ -29,18 +31,23 @@ public class Main {
 
         try {
             codigoFuente = FileManager.loadCodigoFuente(filePath);
-        } catch (Exception e){
-            throw new Exception("No se ha encontrado el archivo "+ filePath);
+        } catch (Exception e) {
+            throw new Exception("No se ha encontrado el archivo " + filePath);
         }
 
-        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
+        AnalizadorLexico al = new AnalizadorLexico(codigoFuente);
         PolacaInversa polaca = new PolacaInversa();
-        Parser parser = new Parser(al, false, polaca, true);
+        PolacaInversaProcedimientos polacaProcedimientos = new PolacaInversaProcedimientos();
+        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, true);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();
-        System.out.println();
+        Errores.printWarnings();
+        Errores.printErrores();
         polaca.print();
+        polacaProcedimientos.print();
+        System.out.println(GeneradorCodigo.generarCodigo(polaca));
 
     }
 }
+

@@ -5,11 +5,11 @@ public class AnalizadorLexico {
 
     private StringBuilder codigoFuente;
     private int nroLinea = 1;
-    private boolean verbose;
 
+    //TODO recordar modificar el informe en estado 1 con _ ; estado 11 con -
     private final int[][] estados = {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $  otro
-                { 1,   2,   3,  1,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
+                { 1,   2,   3,  16,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
                 { 1,  16,   1,   1,   1,  16,   1,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,   2,  16,   2,  16,  16,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,  16,   3,   4,  16,   6,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
@@ -31,10 +31,9 @@ public class AnalizadorLexico {
 
 
 
-    public AnalizadorLexico(StringBuilder codigoFuente, boolean verbose) {
+    public AnalizadorLexico(StringBuilder codigoFuente) {
         this.codigoFuente = codigoFuente;
         this.asignarAS();
-        this.verbose = verbose;
     }
 
     private void asignarAS() {
@@ -49,7 +48,7 @@ public class AnalizadorLexico {
 
         accionesSemanticas = new AccionSemantica[][] {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $   otro
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS6, AS7, AS7, AS2,         AS7,        AS2, AS2, AS2, AS8,  AS6  , AS6, AS4},
+                {AS2, AS2, AS2, AS4, AS2, AS2, AS2, AS6, AS7, AS7, AS2,         AS7,        AS2, AS2, AS2, AS8,  AS6  , AS6, AS4},
                 {AS2, AS1, AS2, AS2, AS2, AS1, AS2, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
                 {AS1, AS2, AS1, AS2, AS1, AS1, AS1, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
                 {AS4, AS4, AS2, AS2, AS4, AS2, AS4, AS4, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
@@ -60,7 +59,7 @@ public class AnalizadorLexico {
                 {AS5, AS5, AS2, AS5, AS5, AS5, AS5, AS5, AS5, AS5, AS5,         AS5,        AS5, AS5, AS5, AS5,  AS5  , AS5, AS5},
                 {AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS6, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
                 {AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6,         AS6,        AS6, AS6, AS6, AS8,  AS6  , AS6, AS6},
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS4,  AS2  , AS2, AS2},
+                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS6, AS2,         AS2,        AS7, AS2, AS2, AS4,  AS2  , AS2, AS2},
                 {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS2, AS2, AS2, AS8,  AS2  , AS2, AS2},
                 {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS2,  AS2  , AS2, AS2},
                 {AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS7,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
@@ -126,10 +125,10 @@ public class AnalizadorLexico {
 
         if(token != null) {
             Parser.yylval = new ParserVal(token.getLexema());
-            if (!token.getTipoToken().isEmpty())
-                out(token.getTipoToken() + token.getLexema(), nroLinea);
+            /*if (!token.getTipoToken().isEmpty())
+                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s %s%n" + Main.ANSI_RESET, nroLinea, token.getTipoToken(), token.getLexema());
             else
-                out(token.getLexema(), nroLinea);
+                System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: %s%n" + Main.ANSI_RESET, nroLinea, token.getLexema());*/
         }
         return token != null ? token.getIdToken() : -1;
     }
@@ -160,23 +159,6 @@ public class AnalizadorLexico {
         return token;
     }
 
-    public void out(String mensaje, int linea){
-        if (verbose)
-            System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
-
-    }
-
-    public void error(String mensaje, int linea){
-        if (verbose)
-            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
-
-    }
-
-    public void warning(String mensaje, int linea){
-        if (verbose)
-            System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: "+ mensaje + "%n" + Main.ANSI_RESET, linea);
-    }
-
     //ACCIONES SEMANTICAS
 
     public interface AccionSemantica {
@@ -189,23 +171,12 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             codigoFuente.insert(0, ultimo);
-            boolean editado = false;
-
-
-            while (lexema.charAt(0) == '_') {
-                editado = true;
-                lexema.deleteCharAt(0);
-            }
-
-            if (editado)
-                warning("Identificador comezaba con '_'. Se modifica a: "+ lexema, nroLinea);
-
 
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
-                warning("Identificador con más de 20 caracteres: + " + lexemaAnt + "Se trunca a: "+ lexema,nroLinea);
-             }
+                System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: Identificador con más de 20 caracteres: %s. Se trunca a: %s%n"  + Main.ANSI_RESET, nroLinea, lexemaAnt, lexema);
+            }
 
 
             Token token;
@@ -246,11 +217,13 @@ public class AnalizadorLexico {
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si
                 // esta en TS y agregar
-                token = addToken(lexema.substring(0, lexema.length()-2), "LONGINT");
+                token = addToken(lexema.substring(0, lexema.length()-2), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
 
             } else {
-                warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
-                token = addToken(String.valueOf(Main.MAX_LONG), "LONGINT");
+                System.out.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Entero largo fuera de rango: %s%n"  + Main.ANSI_RESET, nroLinea, lexema.substring(0, lexema.length()-2) );
+                token = addToken(String.valueOf(Main.MAX_LONG), "CONSTANTE");
+                token.addAtributo("tipo", "LONGINT");
             }
 
             return token;
@@ -262,8 +235,8 @@ public class AnalizadorLexico {
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
-            error("Caracter inválido: " + ultimo, nroLinea);
-           lexema.setLength(0);
+            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: Caracter inválido: %c%n" + Main.ANSI_RESET, nroLinea, ultimo);
+            lexema.setLength(0);
             return null;
         }
     }
@@ -274,42 +247,30 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             codigoFuente.insert(0, ultimo);
-            String lex;
+
+            float flotante, real = -1, exponente = 0;
+
             if(lexema.toString().contains("f"))
-                lex = lexema.toString().replace("f", "e");
+                real = Float.parseFloat(lexema.toString().split("f")[0]);
             else
-                lex = lexema.toString();
+                real = Float.parseFloat(lexema.toString());
 
-//            float flotante, real = -1, exponente = 0;
-//
-//            if(lexema.toString().contains("f"))
-//                real = Float.parseFloat(lexema.toString().split("f")[0]);
-//            else
-//                real = Float.parseFloat(lexema.toString());
-//
-//            if(lexema.toString().contains("f"))
-//                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
-//
-//
-//            flotante = real * (float)Math.pow(10, exponente);
+            if(lexema.toString().contains("f"))
+                exponente = Float.parseFloat(lexema.toString().split("f")[1]);
 
-            float flotante = 0f;
-            try {
-                flotante = Float.parseFloat(lex);
-            }
-            catch (NumberFormatException e){
-                error("Flotante incorrecto " + lexema, nroLinea);
-            }
+
+            flotante = real * (float)Math.pow(10, exponente);
 
             //verificar rango
             Token token = null;
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
-                token = addToken(String.valueOf(flotante), "FLOAT");
+                token = addToken(String.valueOf(flotante), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             } else {
-                float nuevo = Main.MAX_FLOAT-1;
-                warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
-                token = addToken(String.valueOf(nuevo), "FLOAT");
+                System.err.printf( Main.ANSI_YELLOW + "[AL] | Linea %d: Flotante fuera de rango: %s%n" + Main.ANSI_RESET, nroLinea, lexema);
+                token = addToken(String.valueOf(Main.MAX_FLOAT), "CONSTANTE");
+                token.addAtributo("tipo", "FLOAT");
             }
 
             return token;
@@ -350,17 +311,9 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             nroLinea++;
-
-            //En caso de las cadenas, donde es necesario eliminar los guiones
-            if (lexema.length() > 0) {
-                int ult = lexema.length()-1;
-                if (lexema.charAt(ult) == '-')
-                    lexema.replace(ult, ult+1, " ");
-            }
             return null;
         }
     }
-
 
 
 

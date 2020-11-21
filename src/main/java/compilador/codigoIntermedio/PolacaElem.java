@@ -16,6 +16,4 @@ public abstract class PolacaElem {
     public void setNroLinea(int nroLinea){
         this.nroLinea = nroLinea;
     }
-
-
 }

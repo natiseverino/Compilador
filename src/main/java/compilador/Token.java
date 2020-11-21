@@ -5,12 +5,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Token {
-
-
     private int idToken;
     private String tipoToken;
     private String lexema;
-
     private String alias = "";
     private static int countString = 0;
     private static int countLongint = 0;
@@ -34,9 +31,11 @@ public class Token {
                     countFloat++;
                     alias = "@float" + countFloat;
                 }
+                break;
             case "CADENA MULT":
                 countString++;
                 alias = "@string" + countString;
+                break;
         }
     }
 
@@ -44,25 +43,27 @@ public class Token {
         this.idToken = idToken;
     }
 
-    public void addAtributo(String tipo, Object atributo) {
+    public void addAtributo(String tipo, Object atributo){
         atributos.put(tipo, atributo);
     }
 
-    public Object getAtributo(String tipo) {
+    public Object getAtributo(String tipo){
         return atributos.get(tipo);
     }
 
-    public int getIdToken() {
-        return this.idToken;
+    public Map<String, Object> getAtributos() {
+        return(new HashMap<String, Object>(atributos));
     }
+
+    public void removeAtributo(String tipo) { atributos.remove(tipo); }
+
+    public int getIdToken() {return this.idToken;}
 
     public String getTipoToken() {
         return tipoToken;
     }
 
-    public String getLexema() {
-        return this.lexema;
-    }
+    public String getLexema() { return this.lexema; }
 
     @Override
     public boolean equals(Object o) {
