@@ -51,9 +51,9 @@ public class PolacaInversa {
         errores = 0;
 
         for(PolacaElem elem: elementos){
-           String elemCodigo = elem.generarCodigo(stackPol);
+           String elemCodigo = elem.generarCodigo(stackPol); //TODO generarCodigo por cada elemento
             if (!elemCodigo.equals(""))
-                builder.append(elemCodigo).append(System.lineSeparator());
+                builder.append(elemCodigo).append("\n");
             if (elem.error()){
                 errores++;
                 break;
