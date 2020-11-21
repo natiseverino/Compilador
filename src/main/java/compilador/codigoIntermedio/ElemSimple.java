@@ -8,6 +8,11 @@ public class ElemSimple extends PolacaElem {
 
     private Token token;
 
+    public ElemSimple(Token token, int nroLinea){
+        this.token = token;
+        setNroLinea(nroLinea);
+    }
+
     public ElemSimple(Token token){
         this.token = token;
     }
@@ -24,7 +29,11 @@ public class ElemSimple extends PolacaElem {
     }
 
     public Token getToken(){
-        return this.token;
+        return token;
+    }
+
+    public String getTipo(){
+        return (String) token.getAtributo("tipo");
     }
 
     @Override

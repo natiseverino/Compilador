@@ -485,12 +485,12 @@ public void out(String lex){
 
 public void SA1(String lex){  //añadir factor a la polaca
 	Token token = TablaSimbolos.getToken(lex);
-	ElemSimple elem = new ElemSimple(token);
+	ElemSimple elem = new ElemSimple(token, analizadorLexico.getNroLinea());
 	polaca.addElem(elem, false);
 }
 
 public void SA2(String operador){ //añadir operador binario a la polaca
-	OperadorBinario elem = new OperadorBinario(operador);
+	OperadorBinario elem = new OperadorBinario(operador, analizadorLexico.getNroLinea());
 	polaca.addElem(elem, false);
 }
 

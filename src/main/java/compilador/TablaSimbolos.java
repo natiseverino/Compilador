@@ -30,7 +30,7 @@ public final class TablaSimbolos {
     public final static int NI=276;
     public final static int UP=277;
     public final static int DOWN=278;
-
+    public final static int AUX=279;
 
     public static void init() {
         ids.put("\"", 34);
@@ -69,6 +69,7 @@ public final class TablaSimbolos {
         ids.put("NI", NI);
         ids.put("UP",UP);
         ids.put("DOWN", DOWN);
+        ids.put("aux", AUX);
 
     }
 
@@ -112,6 +113,17 @@ public final class TablaSimbolos {
                 System.out.printf( "%-1s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(), simbolos.get(simbolo).   getAtributo("contador"));
             }
         }
+    }
+
+    public static String getDataAssembler(){
+        StringBuilder builder = new StringBuilder();
+        for (Token token: simbolos.values()){
+            token.initAlias();
+            String asm = token.getAsm();
+            if (!asm.equals(""))
+                builder.append(asm).append(System.lineSeparator());
+        }
+        return builder.toString();
     }
 
 }

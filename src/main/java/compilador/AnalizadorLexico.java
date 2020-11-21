@@ -7,7 +7,6 @@ public class AnalizadorLexico {
     private int nroLinea = 1;
     private boolean verbose;
 
-    //TODO recordar modificar el informe en estado 1 con _ ; estado 11 con -
     private final int[][] estados = {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $  otro
                 { 1,   2,   3,  1,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
