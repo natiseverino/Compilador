@@ -11,7 +11,7 @@ public class Token {
     private String tipoToken;
     private String lexema;
 
-    private String alias = "";
+    private String alias;
     private static int countString = 0;
     private static int countLongint = 0;
     private static int countFloat = 0;
@@ -22,23 +22,27 @@ public class Token {
         this.idToken = idToken;
         this.tipoToken = tipoToken;
         this.lexema = lexema;
+        this.alias = "";
     }
 
 
     public void initAlias() {
         switch (this.tipoToken) {
-            case "CONSTANTE":
+            case Main.CONSTANTE:
                 if (getAtributo("tipo").equals("LONGINT")) {
                     countLongint++;
-                    alias = "@long" + countLongint;
+                    this.alias = "@long" + countLongint;
                 } else if (getAtributo("tipo").equals("FLOAT")) {
                     countFloat++;
-                    alias = "@float" + countFloat;
+                    this.alias = "@float" + countFloat;
                 }
                 break;
-            case "CADENA MULT":
+            case Main.CADENA:
                 countString++;
-                alias = "@string" + countString;
+                this.alias = "@string" + countString;
+                break;
+            case Main.IDENTIFICADOR:
+                this.alias = "_"+lexema;
                 break;
         }
     }
@@ -70,8 +74,8 @@ public class Token {
         return tipoToken;
     }
 
-    public String getLexema(boolean alias) {
-        if (alias && (tipoToken.equals("CONSTANTE")))
+    public String getLexema(boolean getAlias) {
+        if (getAlias)
             return this.alias;
         return lexema;
     }
@@ -81,10 +85,11 @@ public class Token {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Token token = (Token) o;
+
         return idToken == token.idToken &&
                 tipoToken.equals(token.tipoToken) &&
                 lexema.equals(token.lexema) &&
-                Objects.equals(atributos, token.atributos);
+                alias.equals(alias);
     }
 
     @Override
@@ -95,14 +100,14 @@ public class Token {
     public String getAsm() {
         StringBuilder builder = new StringBuilder();
         switch (this.tipoToken) {
-            case "IDENTIFICADOR":
-                if (this.getAtributo("uso").equals("variable"))
+            case Main.IDENTIFICADOR:
+                if (this.getAtributo("uso").equals(Main.VARIABLE))
                     builder.append("_").append(lexema).append(" dd ?");
                 break;
-            case "CONSTANTE":
+            case Main.CONSTANTE:
                 builder.append(alias).append(" dd ").append(lexema);
                 break;
-            case "CADENA MULT":
+            case Main.CADENA:
                 builder.append(alias).append(" db ").append(lexema).append(", 0");
                 break;
             case "AUX":
@@ -115,5 +120,9 @@ public class Token {
 
     public String getAlias() {
         return alias;
+    }
+
+    public void setAlias(String alias){
+        this.alias = alias;
     }
 }

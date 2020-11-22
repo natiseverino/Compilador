@@ -66,7 +66,7 @@ public class GeneradorCodigo {
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append(System.lineSeparator())
-                .append("Label_end:").append(System.lineSeparator())
+                .append("label_end:").append(System.lineSeparator())
                 .append("invoke ExitProcess, 0").append(System.lineSeparator())
                 .append("end start");
 

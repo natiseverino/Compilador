@@ -19,6 +19,8 @@ public class ElemSimple extends PolacaElem {
 
     @Override
     public String generarCodigo(Stack<PolacaElem> stack) {
+        if (token.getAlias().equals(""))
+            token.initAlias();
         stack.push(this);
         return "";
     }
@@ -32,16 +34,8 @@ public class ElemSimple extends PolacaElem {
         return token;
     }
 
-    public String getTipo() { //TODO cambiar con la nueva tabla de simbolos
-        String tipo = "";
-        if (token.getTipoToken().equals("IDENTIFICADOR") || token.getTipoToken().equals("AUX"))
-            tipo = (String) token.getAtributo("tipo");
-        else if (token.getTipoToken().equals("FLOAT"))
-            tipo = "FLOAT";
-        else if (token.getTipoToken().equals("LONGINT"))
-            tipo = "LONGINT";
-
-        return tipo;
+    public String getTipo() {
+        return (String) token.getAtributo("tipo");
     }
 
     @Override

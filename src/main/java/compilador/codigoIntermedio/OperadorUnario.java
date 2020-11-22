@@ -1,5 +1,6 @@
 package compilador.codigoIntermedio;
 
+import compilador.Main;
 import compilador.TablaSimbolos;
 import compilador.Token;
 
@@ -49,15 +50,10 @@ public class OperadorUnario extends PolacaElem {
                 ElemSimple elem = (ElemSimple) stack.pop();
                 Token token = elem.getToken();
                 String out = "";
-                if (token.getTipoToken().equals("IDENTIFICADOR")) {
+                if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
                     if (token.getAtributo("uso") != null) {
-                        if (token.getAtributo("uso").equals("VARIABLE")) {
-                            Object valor = token.getAtributo("VALOR");
-                            if (valor != null)
-                                out = (String) token.getAtributo("VALOR");
-                            /*TODO mepa que esta mal que imprima asi nomas el valor de la variable,
-                            ** si es un float deberia ser el alias
-                            */
+                        if (token.getAtributo("uso").equals(Main.VARIABLE)) {
+                            out = token.getLexema(true);
                         }
                     }
                 } else

@@ -33,8 +33,8 @@ public class OperadorBinario extends PolacaElem {
 
         if (!elem1.getTipo().equals(elem2.getTipo())) {
             System.out.printf(Main.ANSI_RED + "[GC] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea());
-            System.out.println(elem1.getToken().getLexema(false) + " -> " + elem1.getTipo());
-            System.out.println(elem2.getToken().getLexema(false) + " -> " + elem2.getTipo());
+            System.out.println(elem1.getToken().getLexema(true) + " -> " + elem1.getTipo());
+            System.out.println(elem2.getToken().getLexema(true) + " -> " + elem2.getTipo());
             huboError = true;
             return "";
         }
@@ -81,6 +81,7 @@ public class OperadorBinario extends PolacaElem {
         } else { //asignaciones
             Token id1 = elem1.getToken();
             Token id2 = elem2.getToken();
+
 
             if (tipo.equals("FLOAT")) {
                 code.append("fld ").append(id2.getLexema(true))

@@ -68,8 +68,8 @@ declaracion_variables   : tipo lista_variables ';'  { imprimirReglaReconocida("D
                         | tipo lista_variables error {Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
                         | tipo error ';'  {Errores.addError(String.format("[AS] | Linea %d: Falta lista de variables %n",analizadorLexico.getNroLinea()));}
 ;
-lista_variables : ID ',' lista_variables { declaracionID($1.sval, "Variable", ultimoTipo); }
-                | ID { declaracionID($1.sval, "Variable", ultimoTipo); }
+lista_variables : ID ',' lista_variables { declaracionID($1.sval, Main.VARIABLE, ultimoTipo); }
+                | ID { declaracionID($1.sval, Main.VARIABLE, ultimoTipo); }
       		| ID  lista_variables {Errores.addError(String.format("[AS] | Linea %d: Falta literal ','  %n",analizadorLexico.getNroLinea()));}
 ;
 
@@ -293,25 +293,22 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {   imprimirReglaReconocida("S
                     | OUT '(' error ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Error en la cadena multilínea a imprimir %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
-//		    | OUT '(' factor ')' ';' { 	String factor = $3.sval;
-//		    				out(factor);
-//                                               	polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);}
-//                    | OUT '(' ID ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
-//                                                        // TODO: ver como hacer SA1 cuando el id no está declarado o cuando está renombrado con el ámbito
-//                                                        SA1($3.sval);
-//                                                        invocacionID($3.sval, "Variable");
-//                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
-//                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-//                                                        else
-//                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-//                                                    }
-//                    | OUT '(' CTE ')' ';'           {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
-//                                                        SA1($3.sval);
-//                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
-//                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-//                                                        else
-//                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-//                                                    }
+                    | OUT '(' ID ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
+                                                        // TODO: ver como hacer SA1 cuando el id no está declarado o cuando está renombrado con el ámbito
+                                                        invocacionID($3.sval, Main.VARIABLE);
+                                                        SA1($3.sval);
+                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
+                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+                                                        else
+                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+                                                    }
+                    | OUT '(' CTE ')' ';'           {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
+                                                        SA1($3.sval);
+                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
+                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+                                                        else
+                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+                                                    }
 //
 ;
 
@@ -325,7 +322,7 @@ sentencia_asignacion    : ID '=' expresion ';'  {   imprimirReglaReconocida("Sen
                                                         SA1(id);
                                                         SA2($2.sval);
                                                     }
-                                                    invocacionID(id, "Variable");
+                                                    invocacionID(id, Main.VARIABLE);
                                                 }
                         | error '=' expresion ';' { Errores.addError(String.format("[AS] | Linea %d: Falta lado izquierdo de la asignación %n",analizadorLexico.getNroLinea()));}
                         | ID error expresion ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de asignación %n",analizadorLexico.getNroLinea()));}
@@ -369,12 +366,12 @@ lista_parametros    : ID ',' ID ',' ID  {   imprimirReglaReconocida("Lista de pa
 ;
 
 
-condicion   : expresion MAYOR_IGUAL expresion {$$ =$1; SA2(">=");}
-		| expresion MENOR_IGUAL expresion{$$ =$1;SA2("<=");}
-		| expresion '>' expresion {$$ =$1;SA2(">");}
-		| expresion '<' expresion {$$ =$1;SA2("<");}
-		| expresion IGUAL expresion {$$ =$1;SA2("==");}
-		| expresion DISTINTO  expresion {$$ =$1;SA2("!=");}
+condicion   : expresion MAYOR_IGUAL expresion {$$ = $1; SA2(">=");}
+		| expresion MENOR_IGUAL expresion{$$ = $1;SA2("<=");}
+		| expresion '>' expresion {$$ = $1;SA2(">");}
+		| expresion '<' expresion {$$ = $1;SA2("<");}
+		| expresion IGUAL expresion {$$ = $1;SA2("==");}
+		| expresion DISTINTO  expresion {$$ = $1;SA2("!=");}
 ;
 
 
@@ -402,7 +399,7 @@ termino : termino '*' factor { $$ = $1;
 ;
 
 factor  : ID {$$ = $1; SA1($1.sval);
-		invocacionID($1.sval, "Variable");}
+		invocacionID($1.sval, Main.VARIABLE);}
         | cte {$$ = $1; SA1($1.sval);}
 ;
 
@@ -567,7 +564,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
         TablaSimbolos.add(nuevoToken);
     }
     else {
-        if(uso.equals("Variable"))
+        if(uso.equals(Main.VARIABLE))
             Errores.addError(String.format("[GD] | Linea %d: Variable redeclarada %n", analizadorLexico.getNroLinea()));
         else if(uso.equals("Procedimiento"))
             Errores.addError(String.format("[GD] | Linea %d: Procedimiento redeclarado %n", analizadorLexico.getNroLinea()));
@@ -584,7 +581,7 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
       ambitosString = ambitosString.substring(0, (ambitosString.length())-(ambitosList.get(ambitosList.size()-1).length()+1));
 
     boolean declarado = false;
-    for(int i = 0; i < ambitosList.size(); i++) {
+    for(int i = 0; i <= ambitosList.size(); i++) {
       if(TablaSimbolos.existe(lexema + ":" + ambitosString)) {
         if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + ":" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
           declarado = true;
@@ -608,14 +605,14 @@ public void invocacionID(String lexema, String uso) {
     String ambitosString = getAmbitoDeclaracionID(lexema, uso);
     boolean declarado = (ambitosString.isEmpty()) ? false : true;
 
-    if(!declarado) {
-        if(uso.equals("Variable"))
-            Errores.addError(String.format("[GD] | Linea %d: Variable no declarada %n" , analizadorLexico.getNroLinea()));
-        else if(uso.equals("Procedimiento"))
-            Errores.addError(String.format("[GD] | Linea %d: Procedimiento no declarado %n", analizadorLexico.getNroLinea()));
-            else if(uso.equals("Parametro"))
-                Errores.addError(String.format("[GD] | Linea %d: Parametro real no declarado %n", analizadorLexico.getNroLinea()));
-    }
+	if (!declarado) {
+	    if (uso.equals(Main.VARIABLE))
+		Errores.addError(String.format("[GD] | Linea %d: Variable %s no declarada %n", analizadorLexico.getNroLinea(), lexema));
+	    else if (uso.equals("Procedimiento"))
+		Errores.addError(String.format("[GD] | Linea %d: Procedimiento %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+	    else if (uso.equals("Parametro"))
+		Errores.addError(String.format("[GD] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+	}
 
     if(uso.equals("Parametro") && declarado)
         parametrosReales.add(lexema + ":" + ambitosString);
@@ -671,9 +668,9 @@ public String getLexemaID() {
 public void out(String lex){
        Token token = TablaSimbolos.getToken(lex);
                if (token != null) {
-                   if (token.getTipoToken().equals("IDENTIFICADOR")) {
+                   if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
                        if (token.getAtributo("uso") != null) {
-                           if (token.getAtributo("uso").equals("VARIABLE")) {
+                           if (token.getAtributo("uso").equals(Main.VARIABLE)) {
                                Object valor = token.getAtributo("VALOR");
                                if (valor != null)
                                    System.out.println(token.getAtributo("VALOR") + "\n");
@@ -687,24 +684,27 @@ public void out(String lex){
                }
 }
 
-//public void SA1(String lex){  //añadir factor a la polaca
-//	Token token = TablaSimbolos.getToken(lex);
-//	ElemSimple elem = new ElemSimple(token, analizadorLexico.getNroLinea());
-//	polaca.addElem(elem, false);
-//}
+
 
 public void SA1(String lexema) {  // Añadir factor a la polaca
     String ambitosActuales = ambitos.getAmbitos();
 
-    Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, "Variable"));
+    Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
 
+    String tipo = token.getTipoToken();
+    ElemSimple elem;
     // Se añade a la polaca el token sin el ámbito en el lexema
-    String lexemaToken = token.getLexema(false);
-    Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":")) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
-    for (Map.Entry<String, Object> atributo: token.getAtributos().entrySet()) {
-      nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
+    if (tipo.equals(Main.CONSTANTE) || tipo.equals(Main.CADENA)) //en constantes y cadenas me quedo con el token original, total no se modifica
+	elem = new ElemSimple(token, analizadorLexico.getNroLinea());
+    else{
+	String lexemaToken = token.getLexema(false);
+	Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":")) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
+	for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
+	    nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
+	}
+	elem = new ElemSimple(nuevoToken, analizadorLexico.getNroLinea());
     }
-    ElemSimple elem = new ElemSimple(nuevoToken, analizadorLexico.getNroLinea());
+
     if(ambitosActuales.equals(Ambitos.ambitoGlobal))
         polaca.addElem(elem, false);
     else

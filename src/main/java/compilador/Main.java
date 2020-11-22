@@ -20,6 +20,11 @@ public class Main {
     public static final long MAX_LONG = 2147483648L;
     public static final float MAX_FLOAT = 3.40282347e+38f;
     public static final float MIN_FLOAT = 1.17549435e-38f;
+    public static final String VARIABLE = "VARIABLE";
+    public static final String CONSTANTE = "CONSTANTE";
+    public static final String IDENTIFICADOR = "IDENTIFICADOR";
+    public static final String CADENA = "CADENA_MULT";
+
 
     public static void guardarArchivo(String txt, String path){
         BufferedWriter writer = null;
@@ -54,7 +59,7 @@ public class Main {
         AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
         PolacaInversa polaca = new PolacaInversa();
         PolacaInversaProcedimientos polacaProcedimientos = new PolacaInversaProcedimientos();
-        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, true);
+        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, false);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();

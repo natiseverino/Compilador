@@ -148,10 +148,10 @@ public class AnalizadorLexico {
         }
         else {
             int id = 0;
-            if(tipo.equals("IDENTIFICADOR")) {
+            if(tipo.equals(Main.IDENTIFICADOR)) {
                 id = TablaSimbolos.getId("id");
             } else {
-                if(tipo.equals("CADENA MULT")) id = TablaSimbolos.getId("cadenaMult");
+                if(tipo.equals(Main.CADENA)) id = TablaSimbolos.getId("cadenaMult");
                 else id = TablaSimbolos.getId("cte");
             }
             token = new Token(id, tipo, lex);
@@ -216,7 +216,7 @@ public class AnalizadorLexico {
 
             Token token;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
-                token = addToken(lexema.toString(), "IDENTIFICADOR");
+                token = addToken(lexema.toString(), Main.IDENTIFICADOR);
             }
             else
                 if(TablaSimbolos.reservada(lexema.toString()) == 0)
@@ -252,12 +252,12 @@ public class AnalizadorLexico {
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si
                 // esta en TS y agregar
-                token = addToken(lexema.substring(0, lexema.length()-2), "CONSTANTE");
+                token = addToken(lexema.substring(0, lexema.length()-2), Main.CONSTANTE);
                 token.addAtributo("tipo", "LONGINT");
 
             } else {
                 warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
-                token = addToken(String.valueOf(Main.MAX_LONG), "CONSTANTE");
+                token = addToken(String.valueOf(Main.MAX_LONG), Main.CONSTANTE);
                 token.addAtributo("tipo", "LONGINT");
             }
 
@@ -300,12 +300,12 @@ public class AnalizadorLexico {
             Token token = null;
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
-                token = addToken(String.valueOf(flotante), "CONSTANTE");
+                token = addToken(String.valueOf(flotante), Main.CONSTANTE);
                 token.addAtributo("tipo", "FLOAT");
             } else {
                 float nuevo = Main.MAX_FLOAT-1;
                 warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
-                token = addToken(String.valueOf(Main.MAX_FLOAT), "CONSTANTE");
+                token = addToken(String.valueOf(Main.MAX_FLOAT), Main.CONSTANTE);
                 token.addAtributo("tipo", "FLOAT");
             }
 
@@ -332,7 +332,7 @@ public class AnalizadorLexico {
 
             Token token = null;
             if(TablaSimbolos.reservada(lexema.toString()) == -1) {
-                token = addToken(lexema.toString(), "CADENA MULT");
+                token = addToken(lexema.toString(), Main.CADENA);
             }
             else if(TablaSimbolos.reservada(lexema.toString()) == 0)
                 token = new Token(TablaSimbolos.getId(lexema.toString()), "", lexema.toString());

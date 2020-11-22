@@ -14,6 +14,7 @@ public class VariableAuxiliar {
         Token token = new Token(TablaSimbolos.getId("aux"), AUX, alias);
         token.addAtributo("uso", "aux");
         token.addAtributo("tipo", "FLOAT");
+        token.setAlias(alias);
         TablaSimbolos.add(token);
         return token;
     }
