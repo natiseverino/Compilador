@@ -24,6 +24,8 @@ public class Main {
     public static final String CONSTANTE = "CONSTANTE";
     public static final String IDENTIFICADOR = "IDENTIFICADOR";
     public static final String CADENA = "CADENA_MULT";
+    public static final String PARAMETRO = "Parametro";
+    public static final String PROCEDIMIENTO = "Procedimiento";
 
 
     public static void guardarArchivo(String txt, String path){
@@ -77,7 +79,7 @@ public class Main {
         }
         else {
 
-            String code = GeneradorCodigo.getInstance().generarCodigo(polaca);
+            String code = GeneradorCodigo.getInstance().generarCodigo(polaca, polacaProcedimientos);
             int gc_errores = polaca.getErrores();
             if (gc_errores > 0) {
                 System.out.println();

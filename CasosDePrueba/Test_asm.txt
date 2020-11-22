@@ -1,12 +1,18 @@
-FLOAT a, b;
-a = 2.;
-b = 1.;
+%%FLOAT a, b;
+%%a = 2.;
+%%b = 1.;
 
-IF (a>b+1.) THEN
-    b = 2. * a;
-ELSE
-    a = b;
-END_IF;
+%%IF (a>b+1.) THEN
+%%    b = 2. * a;
+%%ELSE
+%%    a = b;
+%%END_IF;
 
-OUT("HOLI");
+PROC a(VAR LONGINT b, LONGINT c) NI = 1_l {
+b = 2_l;
+}
+
+LONGINT d, e;
+
+a(d, e);
 

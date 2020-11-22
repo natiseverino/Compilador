@@ -2,6 +2,7 @@ package compilador.codigoSalida;
 
 import compilador.TablaSimbolos;
 import compilador.codigoIntermedio.PolacaInversa;
+import compilador.codigoIntermedio.PolacaInversaProcedimientos;
 
 public class GeneradorCodigo {
 
@@ -17,10 +18,11 @@ public class GeneradorCodigo {
         return instance;
     }
 
-    public String generarCodigo(PolacaInversa polacaInversa) {
+    public String generarCodigo(PolacaInversa polacaInversa, PolacaInversaProcedimientos polacaInversaProcedimientos) {
         StringBuilder code = new StringBuilder();
         String data = TablaSimbolos.getDataAssembler();
         String codigoIntermedio = polacaInversa.generarCodigo();
+        codigoIntermedio += polacaInversaProcedimientos.generarCodigo();
 
         code.append(".386").append(System.lineSeparator())
                 .append(".model flat, stdcall").append(System.lineSeparator())

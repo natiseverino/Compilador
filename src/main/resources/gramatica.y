@@ -621,7 +621,7 @@ public void invocacionID(String lexema, String uso) {
         Token procedimiento = TablaSimbolos.getToken(lexema + ":" + ambitosString);
 
         // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
-        if(uso.equals("Procedimiento") && (((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones")))
+        if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
             Errores.addError(String.format("[GD] | Linea %d: Se supera el máximo de invocaciones del procedimiento %n", analizadorLexico.getNroLinea()));
         else {
             // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
@@ -641,7 +641,7 @@ public void invocacionID(String lexema, String uso) {
                 }
 
                 if(tiposCompatibles) {
-                    SA6(lexema);
+                    SA6(lexema, parametrosFormales, parametrosReales);
                     actualizarContadorID(lexema + ":" + ambitosString, false);
               }
             }
@@ -691,18 +691,26 @@ public void SA1(String lexema) {  // Añadir factor a la polaca
 
     Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
 
+    if (token == null)
+        token = TablaSimbolos.getToken(lexema);
+
     String tipo = token.getTipoToken();
     ElemSimple elem;
     // Se añade a la polaca el token sin el ámbito en el lexema
     if (tipo.equals(Main.CONSTANTE) || tipo.equals(Main.CADENA)) //en constantes y cadenas me quedo con el token original, total no se modifica
 	elem = new ElemSimple(token, analizadorLexico.getNroLinea());
     else{
-	String lexemaToken = token.getLexema(false);
-	Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":")) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
-	for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
-	    nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
-	}
-	elem = new ElemSimple(nuevoToken, analizadorLexico.getNroLinea());
+      String lexemaToken = token.getLexema(false);
+      if(token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
+        String id = lexemaToken.split(":")[0];
+        lexemaToken = lexemaToken.replace(id+":", "");
+        lexemaToken += ":"+id;
+      }
+      Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
+      for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
+        nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
+      }
+      elem = new ElemSimple(nuevoToken, analizadorLexico.getNroLinea());
     }
 
     if(ambitosActuales.equals(Ambitos.ambitoGlobal))
@@ -754,11 +762,39 @@ public void SA5(String id, String cte, String op){ //incremento o decremento la 
 
 }
 
-public void SA6(String lexema) { // invocacion a procedimientos
-    // TODO: Falta acomodar el pasaje de parámetros cuando se invoca a un procedimiento
+public void SA6(String lexema, List<String> parametrosFormales, List<String> parametrosReales) { // invocacion a procedimientos
+    List<String> parametrosCVR = new ArrayList<>();
+
+    for(int i = 0; i < parametrosFormales.size(); i++) {
+        String parametroFormal = parametrosFormales.get(i);
+
+        parametroFormal = parametroFormal.replace("LONGINT ", "");
+        parametroFormal = parametroFormal.replace("FLOAT ", "");
+
+        if(parametroFormal.contains("VAR ")) {
+          parametroFormal = parametroFormal.replace("VAR ", "");
+          parametrosCVR.add(parametroFormal + "@" + parametrosReales.get(i));
+        }
+
+        parametroFormal = parametroFormal + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema;
+        SA1(parametroFormal);
+        SA1(parametrosReales.get(i));
+        SA2("=");
+    }
+
     SA1(lexema);
     if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
         polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.INV),false);
     else
         polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.INV),false);
+
+    if(!parametrosCVR.isEmpty()) {
+      for (String parametroCVR: parametrosCVR
+           ) {
+        String[] param = parametroCVR.split("@");
+        SA1(param[1]);
+        SA1(param[0] + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema);
+        SA2("=");
+      }
+    }
 }
