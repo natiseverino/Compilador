@@ -46,7 +46,7 @@ public class OperadorBinario extends PolacaElem {
 
         if (operador != '=') {
             if (tipo.equals("LONGINT")) {
-                    codeLongint(elem2, elem1, operador, stack, code);
+                codeLongint(elem2, elem1, operador, stack, code);
 
             } else if (tipo.equals("FLOAT")) {
                 ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux());
@@ -80,12 +80,11 @@ public class OperadorBinario extends PolacaElem {
                         .append("fstp ").append(id1.getLexema(true))
                         .append(System.lineSeparator());
             } else if (tipo.equals("LONGINT")) {
-                if (id2.getTipoToken().equals(REGISTRO)){
+                if (id2.getTipoToken().equals(REGISTRO)) {
                     code.append("mov ").append(id1.getLexema(true)).append(", ").append(id2.getLexema(true))
                             .append(System.lineSeparator());
                     SeguimientoRegistros.getInstance().liberar(id2.getLexema(true));
-                }
-                else{
+                } else {
                     String reg = SeguimientoRegistros.getInstance().regBC();
                     code.append("mov ").append(reg).append(", ").append(id1.getLexema(true))
                             .append(System.lineSeparator())
@@ -155,7 +154,7 @@ public class OperadorBinario extends PolacaElem {
     }
 
     private void codeLongint(ElemSimple elem2, ElemSimple elem1, int op, Stack<PolacaElem> stack, StringBuilder code) {
-        String reg1= "";
+        String reg1 = "";
         String reg2 = "";
 
         Token token1 = elem1.getToken();
@@ -171,7 +170,7 @@ public class OperadorBinario extends PolacaElem {
                         reg1 = SeguimientoRegistros.getInstance().regBC();
                         code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator());
-                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                    } else if (tipo1.equals(REGISTRO)) { //caso reg var
                         reg1 = token1.getLexema(true);
                     }
                     code.append("add ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
@@ -179,10 +178,9 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                }
-                else if (tipo2.equals(REGISTRO)){ //casos var reg - reg reg
+                } else if (tipo2.equals(REGISTRO)) { //casos var reg - reg reg
                     code.append("add ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
-                                .append(System.lineSeparator());
+                            .append(System.lineSeparator());
                     if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                     stack.push(elem1);
@@ -194,7 +192,7 @@ public class OperadorBinario extends PolacaElem {
                         reg1 = SeguimientoRegistros.getInstance().regBC();
                         code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator());
-                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                    } else if (tipo1.equals(REGISTRO)) { //caso reg var
                         reg1 = token1.getLexema(true);
                     }
                     code.append("sub ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
@@ -202,15 +200,13 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                }
-                else if (tipo2.equals(REGISTRO)){
+                } else if (tipo2.equals(REGISTRO)) {
                     if (tipo1.equals(REGISTRO)) { //caso reg reg
                         code.append("sub ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                                 .append(System.lineSeparator());
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                         stack.push(elem1);
-                    }
-                    else if (tipoVar(tipo1)){ //caso var reg
+                    } else if (tipoVar(tipo1)) { //caso var reg
                         reg2 = SeguimientoRegistros.getInstance().regBC();
                         code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator())
@@ -227,10 +223,14 @@ public class OperadorBinario extends PolacaElem {
             case '*':
                 if (tipoVar(tipo2)) {
                     if (tipoVar(tipo1)) { //caso var var
-                        reg1 = SeguimientoRegistros.getInstance().regAD();
+                        reg1 = SeguimientoRegistros.getInstance().regA();
+                        if (reg1.equals("")) {
+                            code.append(SeguimientoRegistros.getInstance().liberarA(stack, null, null));
+                            reg1 = SeguimientoRegistros.getInstance().regA();
+                        }
                         code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator());
-                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                    } else if (tipo1.equals(REGISTRO)) { //caso reg var
                         reg1 = token1.getLexema(true);
                     }
                     code.append("imul ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
@@ -238,10 +238,22 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                }
-                else if (tipo2.equals(REGISTRO)){ //casos var reg - reg reg
+                } else if (tipo2.equals(REGISTRO)) { //casos var reg - reg reg
+                    if (!token1.getLexema(true).equals("eax")) {
+                        if (token2.getLexema(true).equals("eax")) {
+                            ElemSimple aux = elem1;
+                            elem1 = elem2;
+                            elem2 = aux;
+                            token1 = elem1.getToken();
+                            token2 = elem2.getToken();
+                        } else
+                            code.append(SeguimientoRegistros.getInstance().liberarA(stack, token1, null));
+
+                    }
+
                     code.append("imul ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                             .append(System.lineSeparator());
+
                     if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                     stack.push(elem1);
@@ -250,10 +262,14 @@ public class OperadorBinario extends PolacaElem {
             case '/':
                 if (tipoVar(tipo2)) {
                     if (tipoVar(tipo1)) { //caso var var
-                        reg1 = SeguimientoRegistros.getInstance().regAD();
+                        reg1 = SeguimientoRegistros.getInstance().regA();
+                        if (reg1.equals("")) {
+                            code.append(SeguimientoRegistros.getInstance().liberarA(stack, null, null));
+                            reg1 = SeguimientoRegistros.getInstance().regA();
+                        }
                         code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator());
-                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                    } else if (tipo1.equals(REGISTRO)) { //caso reg var
                         reg1 = token1.getLexema(true);
                     }
                     code.append("idiv ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
@@ -261,16 +277,33 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                }
-                else if (tipo2.equals(REGISTRO)){
+                } else if (tipo2.equals(REGISTRO)) {
                     if (tipo1.equals(REGISTRO)) { //caso reg reg
+                        if (!token1.getLexema(true).equals("eax"))
+                            if (token2.getLexema(true).equals("eax")) {
+                                String regAux = SeguimientoRegistros.getInstance().regBC();
+                                code.append("mov ").append(regAux).append(", ").append(token2.getLexema(true)).append(System.lineSeparator())
+                                        .append("mov ").append(token2.getLexema(true)).append(", ").append(token1.getLexema(true)).append(System.lineSeparator())
+                                        .append("mov ").append(token1.getLexema(true)).append(", ").append(regAux).append(System.lineSeparator());
+                                ElemSimple aux = elem1;
+                                elem1 = elem2;
+                                elem2 = aux;
+                                token1 = elem1.getToken();
+                                token2 = elem2.getToken();
+                            }
+                            else
+                                code.append(SeguimientoRegistros.getInstance().liberarA(stack, token1, null));
+
                         code.append("idiv ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                                 .append(System.lineSeparator());
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                         stack.push(elem1);
-                    }
-                    else if (tipoVar(tipo1)){ //caso var reg
-                        reg2 = SeguimientoRegistros.getInstance().regAD();
+                    } else if (tipoVar(tipo1)) { //caso var reg
+                        reg2 = SeguimientoRegistros.getInstance().regA();
+                        if (reg2.equals("")) {
+                            code.append(SeguimientoRegistros.getInstance().liberarA(stack, null, token2));
+                            reg2 = SeguimientoRegistros.getInstance().regA();
+                        }
                         code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator())
                                 .append("idiv ").append(reg2).append(", ").append(token2.getLexema(true))
@@ -294,7 +327,7 @@ public class OperadorBinario extends PolacaElem {
                         reg1 = SeguimientoRegistros.getInstance().regBC();
                         code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator());
-                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                    } else if (tipo1.equals(REGISTRO)) { //caso reg var
                         reg1 = token1.getLexema(true);
                     }
                     code.append("cmp ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
@@ -302,15 +335,13 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                }
-                else if (tipo2.equals(REGISTRO)){
+                } else if (tipo2.equals(REGISTRO)) {
                     if (tipo1.equals(REGISTRO)) { //caso reg reg
                         code.append("cmp ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                                 .append(System.lineSeparator());
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                         stack.push(elem1);
-                    }
-                    else if (tipoVar(tipo1)){ //caso var reg
+                    } else if (tipoVar(tipo1)) { //caso var reg
                         reg2 = SeguimientoRegistros.getInstance().regBC();
                         code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
                                 .append(System.lineSeparator())
@@ -329,7 +360,7 @@ public class OperadorBinario extends PolacaElem {
 
     }
 
-    private boolean tipoVar(String tipo){
+    private boolean tipoVar(String tipo) {
         return tipo.equals(Main.IDENTIFICADOR) || tipo.equals(Main.CONSTANTE);
     }
 

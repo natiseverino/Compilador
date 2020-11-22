@@ -2,6 +2,7 @@ package compilador.codigoIntermedio;
 
 import compilador.Token;
 
+import java.util.Objects;
 import java.util.Stack;
 
 public class ElemSimple extends PolacaElem {
@@ -42,4 +43,10 @@ public class ElemSimple extends PolacaElem {
     public String toString() {
         return token.getLexema(false);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return token.getLexema(true).equals(o);
+    }
+
 }

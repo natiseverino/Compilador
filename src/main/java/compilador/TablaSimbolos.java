@@ -109,7 +109,6 @@ public final class TablaSimbolos {
     public static String getDataAssembler() {
         StringBuilder builder = new StringBuilder();
         for (Token token : simbolos.values()) {
-            token.initAlias();
             String asm = token.getAsm();
             if (!asm.equals(""))
                 builder.append(asm).append(System.lineSeparator());
