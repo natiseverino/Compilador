@@ -1,5 +1,6 @@
 package compilador.codigoIntermedio;
 
+import compilador.Errores;
 import compilador.Main;
 import compilador.TablaSimbolos;
 import compilador.Token;
@@ -34,7 +35,7 @@ public class OperadorBinario extends PolacaElem {
         ElemSimple elem2 = (ElemSimple) stack.pop();
 
         if (!elem1.getTipo().equals(elem2.getTipo())) {
-            System.out.printf(Main.ANSI_RED + "[GC] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea());
+            Errores.addError(String.format("[ASem] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea()));
             System.out.println(elem1.getToken().getLexema(true) + " -> " + elem1.getTipo());
             System.out.println(elem2.getToken().getLexema(true) + " -> " + elem2.getTipo());
             huboError = true;

@@ -28,14 +28,12 @@ public class AnalizadorLexico {
     };
 
     private AccionSemantica[][] accionesSemanticas;
-    private int errores;
 
 
     public AnalizadorLexico(StringBuilder codigoFuente, boolean verbose) {
         this.codigoFuente = codigoFuente;
         this.asignarAS();
         this.verbose = verbose;
-        this.errores = 0;
     }
 
     private void asignarAS() {
@@ -163,24 +161,16 @@ public class AnalizadorLexico {
 
     public void out(String mensaje, int linea){
         if (verbose)
-            System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
+            System.out.printf( Main.ANSI_GRAY + "[AL] | Linea %d: " + mensaje +" %n" + Main.ANSI_RESET, linea);
 
     }
 
     public void error(String mensaje, int linea){
-        errores++;
-        if (verbose)
-            System.out.printf( Main.ANSI_RED + "[AL] | Linea %d: | " + mensaje +" %n" + Main.ANSI_RESET, linea);
-
+        Errores.addError(String.format("[AL] | Linea %d: " + mensaje +" %n", linea));
     }
 
     public void warning(String mensaje, int linea){
-        if (verbose)
-            System.out.printf(Main.ANSI_YELLOW + "[AL] | Linea %d: "+ mensaje + "%n" + Main.ANSI_RESET, linea);
-    }
-
-    public int getErrores(){
-        return errores;
+        Errores.addWarning(String.format("[AL] | Linea %d: "+ mensaje + "%n", linea));
     }
 
     //ACCIONES SEMANTICAS
