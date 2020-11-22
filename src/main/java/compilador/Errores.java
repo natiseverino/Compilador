@@ -41,6 +41,6 @@ public class Errores {
     }
 
     public static int getErrores(){
-        return errors.isEmpty()? 0 : errors.size()-1;
+        return errors.isEmpty()? 0 : errors.size();
     }
 }

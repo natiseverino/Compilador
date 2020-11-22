@@ -46,7 +46,7 @@ public class ElemSimple extends PolacaElem {
 
     @Override
     public boolean equals(Object o) {
-        return token.getLexema(true).equals(o);
+        return token.getLexema(false).equals(o);
     }
 
 }

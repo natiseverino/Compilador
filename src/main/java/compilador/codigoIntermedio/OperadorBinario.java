@@ -154,7 +154,7 @@ public class OperadorBinario extends PolacaElem {
 
     }
 
-    private void codeLongint(ElemSimple elem2, ElemSimple elem1, int op, Stack<PolacaElem> stack, StringBuilder code) {
+    private void codeLongint(ElemSimple elem1, ElemSimple elem2, int op, Stack<PolacaElem> stack, StringBuilder code) {
         String reg1 = "";
         String reg2 = "";
 
