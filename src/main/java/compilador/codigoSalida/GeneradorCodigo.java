@@ -24,17 +24,19 @@ public class GeneradorCodigo {
         codigoIntermedio += polacaInversaProcedimientos.generarCodigo();
         String data = TablaSimbolos.getDataAssembler();
 
+
+
         code.append(".386").append(System.lineSeparator())
                 .append(".model flat, stdcall").append(System.lineSeparator())
                 .append("option casemap :none").append(System.lineSeparator())
                 .append(System.lineSeparator())
+                .append("include \\masm32\\include\\windows.inc").append(System.lineSeparator())
+                .append("include \\masm32\\include\\kernel32.inc").append(System.lineSeparator())
+                .append("include \\masm32\\include\\user32.inc").append(System.lineSeparator())
                 .append("includelib \\masm32\\lib\\kernel32.lib").append(System.lineSeparator())
-                //TODO revisar lo de masm32
                 .append("includelib \\masm32\\lib\\user32.lib").append(System.lineSeparator())
-                .append(System.lineSeparator())
-                .append("include \\masm32\\include\\masm32rt.inc").append(System.lineSeparator())
-                .append("dll_dllcrt0 PROTO C").append(System.lineSeparator())
-                .append("printf PROTO C :VARARG").append(System.lineSeparator())
+//                .append("dll_dllcrt0 PROTO C").append(System.lineSeparator())
+//                .append("printf PROTO C :VARARG").append(System.lineSeparator())
                 .append(".data").append(System.lineSeparator())
                 .append(data)
                 .append("@string_overflow_longint db \"Error: Overflow en suma de enteros largos\", 0")
@@ -56,15 +58,15 @@ public class GeneradorCodigo {
                 .append("jmp label_end")
                 .append(System.lineSeparator())
                 .append("label_overflow_longint:").append(System.lineSeparator())
-                .append("print addr @string_overflow_longint") //TODO probar los prints
+                .append("invoke MessageBox,NULL, addr @string_overflow_longint, MB_OK") //TODO probar los prints
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append("label_overflow_float:").append(System.lineSeparator())
-                .append("print addr @string_overflow_float")
+                .append("invoke MessageBox,NULL,addr @string_overflow_float, MB_OK")
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append("label_recursion_mutua:").append(System.lineSeparator())
-                .append("print addr @string_recursion_mutua")
+                .append("invoke MessageBox,NULL, @string_recursion_mutua, MB_OK")
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append(System.lineSeparator())

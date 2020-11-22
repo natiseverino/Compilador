@@ -3,10 +3,16 @@
 %%b = a / .5;
 
 LONGINT a;
-a = 2_l * 1_l / 4_l ;
+a = 2_l * 1_l * 4_l / 5_l;
+
+OUT(a);
+
+OUT("holi");
+
+OUT(4.);
 
 %%LONGINT i;
-%%FOR (i = 0_l; i< 3_l; UP 1_l ){
+%%FOR (i = 0_l; i< 3_l; 1_l ){
 %%    a = a * 2.0;
 %%    OUT(a);
 %%    OUT("i: ");
