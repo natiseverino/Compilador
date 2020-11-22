@@ -240,20 +240,22 @@ sentencia_control   : FOR '(' inicio_for ';' condicion_for  incr_decr CTE ')' bl
 		    | FOR '('';' condicion_for  incr_decr CTE ')' bloque_for { Errores.addError(String.format("[AS] | Linea %d: Falta asignacion a la variable de control %n",analizadorLexico.getNroLinea()));}
 ;
 
-inicio_for	: ID '=' CTE { $$ = $1;
+inicio_for	: ID '=' cte { $$ = $1;
 			SA3($3.sval);
-			SA1($1.sval);
 			SA1($3.sval);
+			SA1($1.sval);
 			SA2($2.sval);
-			 if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
-                                                            polaca.pushPos(false);
-                                                            polaca.addElem(new EtiquetaElem(polaca.size()), false);
-                                                        }
-                                                        else {
-                                                            polacaProcedimientos.pushPos(ambitos.getAmbitos(), false);
-                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new EtiquetaElem(polacaProcedimientos.getPolacaSize(ambitos.getAmbitos())), false);
-                                                        }
-                                                    }
+			SA1($1.sval);
+			invocacionID($1.sval, Main.VARIABLE);
+			if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
+			    polaca.pushPos(false);
+			    polaca.addElem(new EtiquetaElem(polaca.size()), false);
+			}
+			else {
+			    polacaProcedimientos.pushPos(ambitos.getAmbitos(), false);
+			    polacaProcedimientos.addElem(ambitos.getAmbitos(), new EtiquetaElem(polacaProcedimientos.getPolacaSize(ambitos.getAmbitos())), false);
+			}
+		    }
 		| error '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador de control %n",analizadorLexico.getNroLinea()));}
 		| ID error CTE { Errores.addError(String.format("[AS] | Linea %d: Error, el inicio del for debe ser una asignacion %n",analizadorLexico.getNroLinea()));}
 		| ID '=' error { Errores.addError(String.format("[AS] | Linea %d: Error en la constante de la asignacion %n",analizadorLexico.getNroLinea()));}
@@ -293,23 +295,23 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {   imprimirReglaReconocida("S
                     | OUT '(' error ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Error en la cadena multilínea a imprimir %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
-                    | OUT '(' ID ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
+                    | OUT '(' factor ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
                                                         // TODO: ver como hacer SA1 cuando el id no está declarado o cuando está renombrado con el ámbito
-                                                        invocacionID($3.sval, Main.VARIABLE);
-                                                        SA1($3.sval);
+//                                                        invocacionID($3.sval, Main.VARIABLE);
+//                                                        SA1($3.sval);
                                                         if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
                                                             polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
                                                         else
                                                             polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
                                                     }
-                    | OUT '(' CTE ')' ';'           {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
-                                                        SA1($3.sval);
-                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
-                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-                                                        else
-                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
-                                                    }
-//
+//                    | OUT '(' CTE ')' ';'           {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
+//                                                        SA1($3.sval);
+//                                                        if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
+//                                                            polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+//                                                        else
+//                                                            polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.OUT), false);
+//                                                    }
+
 ;
 
 sentencia_asignacion    : ID '=' expresion ';'  {   imprimirReglaReconocida("Sentencia de asignación", analizadorLexico.getNroLinea());
@@ -317,8 +319,6 @@ sentencia_asignacion    : ID '=' expresion ';'  {   imprimirReglaReconocida("Sen
                                                     String cte = $3.sval;
                                                     Token token = TablaSimbolos.getToken(id);
                                                     if(token != null) {
-                                                        // TODO: hay que agregar el valor en la TS?
-                                                        token.addAtributo("VALOR", cte);
                                                         SA1(id);
                                                         SA2($2.sval);
                                                     }
@@ -735,28 +735,34 @@ public void SA3(String cte){ //chequea que la constante sea LONGINT
 }
 
 public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion
-	Token token1 = TablaSimbolos.getToken(id1);
-	Token token2 = TablaSimbolos.getToken(id2);
+	Token token1 = TablaSimbolos.getToken(id1 + ":" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
+        Token token2 = TablaSimbolos.getToken(id2 + ":" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
 	if (!token1.equals(token2))
 		 Errores.addError(String.format("[AS] | Linea %d: En la sentencia for, la variable inicializada "+ id1 + " no es la misma que la variable utilizada en la condicion %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA5(String id, String cte, String op){ //incremento o decremento la variable del for
-	Token id_t = TablaSimbolos.getToken(id);
+	Token id_t = TablaSimbolos.getToken(id+":" + getAmbitoDeclaracionID(id, Main.VARIABLE));
 	Token cte_t = TablaSimbolos.getToken(cte);
 
+	String lexemaToken = id_t.getLexema(false);
+	Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf(":")));
+	for (Map.Entry<String, Object> atributo : id_t.getAtributos().entrySet()) {
+	    nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
+	}
+
     if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
-        polaca.addElem(new ElemSimple(id_t), false);
+        polaca.addElem(new ElemSimple(nuevoToken), false);
         polaca.addElem(new ElemSimple(cte_t), false);
         polaca.addElem(new OperadorBinario(op), false);
-        polaca.addElem(new ElemSimple(id_t), false);
+        polaca.addElem(new ElemSimple(nuevoToken), false);
         polaca.addElem(new OperadorBinario("="), false);
     }
     else {
-        polacaProcedimientos.addElem(ambitos.getAmbitos(), new ElemSimple(id_t), false);
+        polacaProcedimientos.addElem(ambitos.getAmbitos(), new ElemSimple(nuevoToken), false);
         polacaProcedimientos.addElem(ambitos.getAmbitos(), new ElemSimple(cte_t), false);
         polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorBinario(op), false);
-        polacaProcedimientos.addElem(ambitos.getAmbitos(), new ElemSimple(id_t), false);
+        polacaProcedimientos.addElem(ambitos.getAmbitos(), new ElemSimple(nuevoToken), false);
         polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorBinario("="), false);
     }
 

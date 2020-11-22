@@ -1,18 +1,28 @@
-%%FLOAT a, b;
-%%a = 2.;
-%%b = 1.;
+FLOAT a, b;
+a = 2.;
+b = a / .5;
 
-%%IF (a>b+1.) THEN
+
+LONGINT i;
+FOR (i = 0_l; i< 3_l; UP 1_l ){
+    a = a * 2.0;
+    OUT(a);
+    OUT("i: ");
+    OUT(i);
+}
+
+
+%%IF (a>b-3.) THEN
 %%    b = 2. * a;
 %%ELSE
 %%    a = b;
 %%END_IF;
 
-PROC a(VAR LONGINT b, LONGINT c) NI = 1_l {
-b = 2_l;
-}
-
-LONGINT d, e;
-
-a(d, e);
+%%PROC a(VAR LONGINT b, LONGINT c) NI = 1_l {
+%%b = 2_l;
+%%}
+%%
+%%LONGINT d, e;
+%%
+%%a(d, e);
 

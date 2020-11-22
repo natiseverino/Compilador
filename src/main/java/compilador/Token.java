@@ -22,7 +22,10 @@ public class Token {
         this.idToken = idToken;
         this.tipoToken = tipoToken;
         this.lexema = lexema;
-        this.alias = "";
+        if (tipoToken.equals("REGISTRO")) //registros
+            this.alias = lexema;
+        else
+            this.alias = "";
     }
 
 

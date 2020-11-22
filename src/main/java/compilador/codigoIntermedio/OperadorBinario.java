@@ -14,6 +14,8 @@ public class OperadorBinario extends PolacaElem {
     private String palabra;
     private boolean huboError = false;
 
+    private static final String REGISTRO = "REGISTRO";
+
 
     public OperadorBinario(String palabra, int nroLinea) {
         this.palabra = palabra;
@@ -44,22 +46,11 @@ public class OperadorBinario extends PolacaElem {
 
         if (operador != '=') {
             if (tipo.equals("LONGINT")) {
-                switch (operador) {
-                    //TODO operaciones de enteros largos con seguimiento de registros
-                    case '+':
-                    case '-':
-                    case '*':
-                    case '/':
-                    case '>':
-                    case '<':
-                    case TablaSimbolos.DISTINTO:
-                    case TablaSimbolos.MAYOR_IGUAL:
-                    case TablaSimbolos.MENOR_IGUAL:
-                    case TablaSimbolos.IGUAL:
-                }
+                    codeLongint(elem2, elem1, operador, stack, code);
+
             } else if (tipo.equals("FLOAT")) {
                 ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux());
-                switch(operador){
+                switch (operador) {
                     case '+':
                     case '-':
                     case '*':
@@ -68,7 +59,7 @@ public class OperadorBinario extends PolacaElem {
                 }
                 code.append(generarFloat(elem1, elem2, operador, aux));
 
-                switch (operador){
+                switch (operador) {
                     case '>':
                     case '<':
                     case TablaSimbolos.DISTINTO:
@@ -89,12 +80,19 @@ public class OperadorBinario extends PolacaElem {
                         .append("fstp ").append(id1.getLexema(true))
                         .append(System.lineSeparator());
             } else if (tipo.equals("LONGINT")) {
-                String reg = SeguimientoRegistros.getInstance().regLibre();
-                code.append("mov ").append(reg).append(", ").append(id2.getLexema(true))
-                        .append(System.lineSeparator())
-                        .append("mov ").append(id1.getLexema(true)).append(" ,").append(reg)
-                        .append(System.lineSeparator());
-                SeguimientoRegistros.getInstance().liberar(reg);
+                if (id2.getTipoToken().equals(REGISTRO)){
+                    code.append("mov ").append(id1.getLexema(true)).append(", ").append(id2.getLexema(true))
+                            .append(System.lineSeparator());
+                    SeguimientoRegistros.getInstance().liberar(id2.getLexema(true));
+                }
+                else{
+                    String reg = SeguimientoRegistros.getInstance().regBC();
+                    code.append("mov ").append(reg).append(", ").append(id1.getLexema(true))
+                            .append(System.lineSeparator())
+                            .append("mov ").append(id2.getLexema(true)).append(" ,").append(reg)
+                            .append(System.lineSeparator());
+                    SeguimientoRegistros.getInstance().liberar(reg);
+                }
 
             }
         }
@@ -108,30 +106,30 @@ public class OperadorBinario extends PolacaElem {
 
         switch (op) {
             case '+':
-                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
-                    .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
-                    .append("fadd").append(System.lineSeparator())
-                    .append("fstp ").append(aux.getToken().getLexema(true))
-                    .append(System.lineSeparator());
+                code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fadd").append(System.lineSeparator())
+                        .append("fstp ").append(aux.getToken().getLexema(true))
+                        .append(System.lineSeparator());
                 //TODO chequear overflow
                 break;
             case '-':
-                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fsub").append(System.lineSeparator())
                         .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
                 break;
             case '*':
-                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fmul").append(System.lineSeparator())
                         .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
                 break;
             case '/':
-                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fdiv").append(System.lineSeparator())
                         .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
@@ -142,8 +140,8 @@ public class OperadorBinario extends PolacaElem {
             case TablaSimbolos.MAYOR_IGUAL:
             case TablaSimbolos.MENOR_IGUAL:
             case TablaSimbolos.IGUAL:
-                code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
-                        .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
+                        .append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fcompp").append(System.lineSeparator())
                         .append("fstsw ax").append(System.lineSeparator())
                         .append("sahf").append(System.lineSeparator());
@@ -154,6 +152,185 @@ public class OperadorBinario extends PolacaElem {
 
         return code.toString();
 
+    }
+
+    private void codeLongint(ElemSimple elem2, ElemSimple elem1, int op, Stack<PolacaElem> stack, StringBuilder code) {
+        String reg1= "";
+        String reg2 = "";
+
+        Token token1 = elem1.getToken();
+        Token token2 = elem2.getToken();
+
+        String tipo1 = token1.getTipoToken();
+        String tipo2 = token2.getTipoToken();
+
+        switch (op) {
+            case '+':
+                if (tipoVar(tipo2)) {
+                    if (tipoVar(tipo1)) { //caso var var
+                        reg1 = SeguimientoRegistros.getInstance().regBC();
+                        code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator());
+                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                        reg1 = token1.getLexema(true);
+                    }
+                    code.append("add ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
+                    Token t_reg = new Token(0, REGISTRO, reg1);
+                    t_reg.addAtributo("tipo", "LONGINT");
+                    ElemSimple registro = new ElemSimple(t_reg);
+                    stack.push(registro);
+                }
+                else if (tipo2.equals(REGISTRO)){ //casos var reg - reg reg
+                    code.append("add ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                    if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                    stack.push(elem1);
+                }
+                break;
+            case '-':
+                if (tipoVar(tipo2)) {
+                    if (tipoVar(tipo1)) { //caso var var
+                        reg1 = SeguimientoRegistros.getInstance().regBC();
+                        code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator());
+                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                        reg1 = token1.getLexema(true);
+                    }
+                    code.append("sub ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
+                    Token t_reg = new Token(0, REGISTRO, reg1);
+                    t_reg.addAtributo("tipo", "LONGINT");
+                    ElemSimple registro = new ElemSimple(t_reg);
+                    stack.push(registro);
+                }
+                else if (tipo2.equals(REGISTRO)){
+                    if (tipo1.equals(REGISTRO)) { //caso reg reg
+                        code.append("sub ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        stack.push(elem1);
+                    }
+                    else if (tipoVar(tipo1)){ //caso var reg
+                        reg2 = SeguimientoRegistros.getInstance().regBC();
+                        code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator())
+                                .append("sub ").append(reg2).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        Token t_reg = new Token(0, REGISTRO, reg2);
+                        t_reg.addAtributo("tipo", "LONGINT");
+                        ElemSimple registro = new ElemSimple(t_reg);
+                        stack.push(registro);
+                    }
+                }
+                break;
+            case '*':
+                if (tipoVar(tipo2)) {
+                    if (tipoVar(tipo1)) { //caso var var
+                        reg1 = SeguimientoRegistros.getInstance().regAD();
+                        code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator());
+                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                        reg1 = token1.getLexema(true);
+                    }
+                    code.append("imul ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
+                    Token t_reg = new Token(0, REGISTRO, reg1);
+                    t_reg.addAtributo("tipo", "LONGINT");
+                    ElemSimple registro = new ElemSimple(t_reg);
+                    stack.push(registro);
+                }
+                else if (tipo2.equals(REGISTRO)){ //casos var reg - reg reg
+                    code.append("imul ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
+                            .append(System.lineSeparator());
+                    if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                    stack.push(elem1);
+                }
+                break;
+            case '/':
+                if (tipoVar(tipo2)) {
+                    if (tipoVar(tipo1)) { //caso var var
+                        reg1 = SeguimientoRegistros.getInstance().regAD();
+                        code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator());
+                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                        reg1 = token1.getLexema(true);
+                    }
+                    code.append("idiv ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
+                    Token t_reg = new Token(0, REGISTRO, reg1);
+                    t_reg.addAtributo("tipo", "LONGINT");
+                    ElemSimple registro = new ElemSimple(t_reg);
+                    stack.push(registro);
+                }
+                else if (tipo2.equals(REGISTRO)){
+                    if (tipo1.equals(REGISTRO)) { //caso reg reg
+                        code.append("idiv ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        stack.push(elem1);
+                    }
+                    else if (tipoVar(tipo1)){ //caso var reg
+                        reg2 = SeguimientoRegistros.getInstance().regAD();
+                        code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator())
+                                .append("idiv ").append(reg2).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        Token t_reg = new Token(0, REGISTRO, reg2);
+                        t_reg.addAtributo("tipo", "LONGINT");
+                        ElemSimple registro = new ElemSimple(t_reg);
+                        stack.push(registro);
+                    }
+                }
+                break;
+            case '>':
+            case '<':
+            case TablaSimbolos.DISTINTO:
+            case TablaSimbolos.MAYOR_IGUAL:
+            case TablaSimbolos.MENOR_IGUAL:
+            case TablaSimbolos.IGUAL:
+                if (tipoVar(tipo2)) {
+                    if (tipoVar(tipo1)) { //caso var var
+                        reg1 = SeguimientoRegistros.getInstance().regBC();
+                        code.append("mov ").append(reg1).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator());
+                    } else if (tipo1.equals(REGISTRO)){ //caso reg var
+                        reg1 = token1.getLexema(true);
+                    }
+                    code.append("cmp ").append(reg1).append(", ").append(token2.getLexema(true)).append(System.lineSeparator());
+                    Token t_reg = new Token(0, REGISTRO, reg1);
+                    t_reg.addAtributo("tipo", "LONGINT");
+                    ElemSimple registro = new ElemSimple(t_reg);
+                    stack.push(registro);
+                }
+                else if (tipo2.equals(REGISTRO)){
+                    if (tipo1.equals(REGISTRO)) { //caso reg reg
+                        code.append("cmp ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        stack.push(elem1);
+                    }
+                    else if (tipoVar(tipo1)){ //caso var reg
+                        reg2 = SeguimientoRegistros.getInstance().regBC();
+                        code.append("mov ").append(reg2).append(", ").append(token1.getLexema(true))
+                                .append(System.lineSeparator())
+                                .append("cmp ").append(reg2).append(", ").append(token2.getLexema(true))
+                                .append(System.lineSeparator());
+                        SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
+                        Token t_reg = new Token(0, REGISTRO, reg2);
+                        t_reg.addAtributo("tipo", "LONGINT");
+                        ElemSimple registro = new ElemSimple(t_reg);
+                        stack.push(registro);
+                    }
+                }
+                stack.push(this);
+
+        }
+
+    }
+
+    private boolean tipoVar(String tipo){
+        return tipo.equals(Main.IDENTIFICADOR) || tipo.equals(Main.CONSTANTE);
     }
 
 

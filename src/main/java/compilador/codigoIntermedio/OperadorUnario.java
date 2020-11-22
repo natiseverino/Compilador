@@ -60,7 +60,6 @@ public class OperadorUnario extends PolacaElem {
                     out = token.getAlias();
 
                 return "print addr " + out;
-                //TODO no estoy segura del print addr cuando se imprime una variable
             case INV:
                 elem = (ElemSimple) stack.pop();
                 token = elem.getToken();
