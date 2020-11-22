@@ -474,7 +474,7 @@ public String checkPositivo(String cte) {
         long entero = 0;
 		if (Long.parseLong(cte) >= Main.MAX_LONG) {
 		    entero = Main.MAX_LONG - 1;
-		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
+		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %s - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
 		    String nuevoLexema = String.valueOf(entero);
 		    cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
 		    return nuevoLexema;
@@ -527,8 +527,9 @@ public void cambiarSimbolo(Token token, String cte, String nuevoLexema, String t
 	else
 	  TablaSimbolos.getToken(cte).addAtributo("contador", cont);
 	if (!TablaSimbolos.existe(nuevoLexema)) {
-	    Token nuevoToken = new Token(token.getIdToken(), tipo, nuevoLexema);
+	    Token nuevoToken = new Token(token.getIdToken(), Main.CONSTANTE, nuevoLexema);
 	    nuevoToken.addAtributo("contador", 1);
+	    nuevoToken.addAtributo("tipo", tipo);
 	    TablaSimbolos.add(nuevoToken);
 	} else {
 	    cont = (Integer) (TablaSimbolos.getToken(nuevoLexema).getAtributo("contador")) + 1;
@@ -565,9 +566,9 @@ public void declaracionID(String lexema, String uso, String tipo) {
     }
     else {
         if(uso.equals(Main.VARIABLE))
-            Errores.addError(String.format("[GD] | Linea %d: Variable redeclarada %n", analizadorLexico.getNroLinea()));
+            Errores.addError(String.format("[ASem] | Linea %d: Variable redeclarada %n", analizadorLexico.getNroLinea()));
         else if(uso.equals("Procedimiento"))
-            Errores.addError(String.format("[GD] | Linea %d: Procedimiento redeclarado %n", analizadorLexico.getNroLinea()));
+            Errores.addError(String.format("[ASem] | Linea %d: Procedimiento redeclarado %n", analizadorLexico.getNroLinea()));
     }
 }
 
@@ -607,11 +608,11 @@ public void invocacionID(String lexema, String uso) {
 
 	if (!declarado) {
 	    if (uso.equals(Main.VARIABLE))
-		Errores.addError(String.format("[GD] | Linea %d: Variable %s no declarada %n", analizadorLexico.getNroLinea(), lexema));
+		Errores.addError(String.format("[ASem] | Linea %d: Variable %s no declarada %n", analizadorLexico.getNroLinea(), lexema));
 	    else if (uso.equals("Procedimiento"))
-		Errores.addError(String.format("[GD] | Linea %d: Procedimiento %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+		Errores.addError(String.format("[ASem] | Linea %d: Procedimiento %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
 	    else if (uso.equals("Parametro"))
-		Errores.addError(String.format("[GD] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+		Errores.addError(String.format("[ASem] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
 	}
 
     if(uso.equals("Parametro") && declarado)
@@ -622,19 +623,19 @@ public void invocacionID(String lexema, String uso) {
 
         // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
         if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
-            Errores.addError(String.format("[GD] | Linea %d: Se supera el máximo de invocaciones del procedimiento %n", analizadorLexico.getNroLinea()));
+            Errores.addError(String.format("[ASem] | Linea %d: Se supera el máximo de invocaciones del procedimiento %n", analizadorLexico.getNroLinea()));
         else {
             // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
             List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
             if (parametrosReales.size() != parametrosFormales.size())
-                Errores.addError(String.format("[GD] | Linea %d: La cantidad de parámetros reales no coincide con la cantidad de parámetros formales del procedimiento %n", analizadorLexico.getNroLinea()));
+                Errores.addError(String.format("[ASem] | Linea %d: La cantidad de parámetros reales no coincide con la cantidad de parámetros formales del procedimiento %n", analizadorLexico.getNroLinea()));
             else {
                 // Se chequea, por último, los tipos entre parámetros reales y formales
                 boolean tiposCompatibles = true;
                 for(int i = 0; i < parametrosReales.size(); i++) {
                     String tipoParametroReal = TablaSimbolos.getToken(parametrosReales.get(i)).getAtributo("tipo")+"";
                     if(!parametrosFormales.get(i).contains(tipoParametroReal)) {
-                        Errores.addError(String.format("[GD] | Linea %d: El tipo del parámetro real n° %d no corresponde con el formal %n", analizadorLexico.getNroLinea(), i+1));
+                        Errores.addError(String.format("[ASem] | Linea %d: El tipo del parámetro real n° %d no corresponde con el formal %n", analizadorLexico.getNroLinea(), i+1));
                         tiposCompatibles = false;
                         break;
                     }
