@@ -41,16 +41,16 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "CasosDePrueba/Test_asm.txt";
+        String filePath = "";
         StringBuilder codigoFuente;
 
         String fileNameAsm = "codigosalida.asm";
 
-//        try {
-//            filePath = args[0];
-//        } catch (Exception e) {
-//            throw new Exception("No se ha ingresado un archivo");
-//        }
+        try {
+            filePath = args[0];
+        } catch (Exception e) {
+            throw new Exception("No se ha ingresado un archivo");
+        }
 
         try {
             codigoFuente = FileManager.loadCodigoFuente(filePath);
