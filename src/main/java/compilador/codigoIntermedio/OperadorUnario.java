@@ -63,7 +63,7 @@ public class OperadorUnario extends PolacaElem {
             case INV:
                 elem = (ElemSimple) stack.pop();
                 token = elem.getToken();
-                return "call " + token.getLexema(true);
+                return "call _" + token.getLexema(false);
         }
         return "";
     }

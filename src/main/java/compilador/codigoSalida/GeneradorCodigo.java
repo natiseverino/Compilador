@@ -58,7 +58,7 @@ public class GeneradorCodigo {
                 .append("jmp label_end")
                 .append(System.lineSeparator())
                 .append("label_overflow_longint:").append(System.lineSeparator())
-                .append("invoke MessageBox, NULL, addr @string_overflow_longint, addr @string_overflow_longint, MB_OK") //TODO probar los prints
+                .append("invoke MessageBox, NULL, addr @string_overflow_longint, addr @string_overflow_longint, MB_OK")
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append("label_overflow_float:").append(System.lineSeparator())
