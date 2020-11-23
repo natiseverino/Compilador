@@ -1,0 +1,5 @@
+PROC b() NI = 1_l {
+    LONGINT a;
+}
+
+OUT(a);

@@ -1,0 +1,17 @@
+%% Variable redeclarada
+PROC a() NI = 1_l {}
+LONGINT a;
+
+%% Procedimiento redeclarado
+LONGINT b;
+PROC b() NI = 1_l {}
+
+%% Variable no declarada
+OUT(g);
+
+%% Procedimiento no declarado
+c();
+
+%% Parametro no declarado
+PROC d(LONGINT e) NI = 1_l {}
+d(f);

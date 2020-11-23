@@ -59,7 +59,7 @@ public class OperadorUnario extends PolacaElem {
                 } else
                     out = token.getAlias();
 
-                return "invoke MessageBox,NULL, addr " + out + ", MB_OK";
+                return "invoke MessageBox, NULL, addr " + out + ", addr " + out + ", MB_OK";
             case INV:
                 elem = (ElemSimple) stack.pop();
                 token = elem.getToken();

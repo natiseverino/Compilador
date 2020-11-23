@@ -1,0 +1,15 @@
+LONGINT a, b;
+a = 2_l + 1_l + 4_l - 2_l;
+b = 2_l + 1_l + 4_l - 3_l;
+
+IF(a == 5_l) THEN
+    OUT("a = 5");
+ELSE
+    OUT("a != 5");
+END_IF;
+
+IF(b == 5_l) THEN
+    OUT("b = 5");
+ELSE
+    OUT("b != 5");
+END_IF;

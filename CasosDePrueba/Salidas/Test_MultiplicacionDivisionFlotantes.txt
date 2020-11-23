@@ -1,0 +1,15 @@
+FLOAT a, b;
+a = 2. * 1. * 4. / 2.;
+b = 2. * 1. * 4. / 3.;
+
+IF(a == 4.) THEN
+    OUT("a = 4");
+ELSE
+    OUT("a != 4");
+END_IF;
+
+IF(b == 4.) THEN
+    OUT("b = 4");
+ELSE
+    OUT("b != 4");
+END_IF;

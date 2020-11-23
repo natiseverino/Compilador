@@ -713,7 +713,7 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 423 "gramatica.y"
+//#line 427 "gramatica.y"
 
 private AnalizadorLexico analizadorLexico;
 private int nroUltimaLinea;
@@ -847,15 +847,16 @@ public void declaracionID(String lexema, String uso, String tipo) {
     actualizarContadorID(lexema, true);
     String nuevoLexema = "";
     if(uso.equals("Procedimiento"))
-      nuevoLexema = lexema + ":" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length())-(lexema.length()+1));
+      nuevoLexema = lexema + "@" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length())-(lexema.length()+1));
     else
-      nuevoLexema = lexema + ":" + ambitos.getAmbitos();
+      nuevoLexema = lexema + "@" + ambitos.getAmbitos();
 
     if(!TablaSimbolos.existe(nuevoLexema)) {
         Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), nuevoLexema);
         nuevoToken.addAtributo("uso", uso);
         nuevoToken.addAtributo("tipo", tipo);
         nuevoToken.addAtributo("contador", 0);
+        nuevoToken.addAtributo("ambito", nuevoLexema.substring(lexema.length()+1, nuevoLexema.length()));
         TablaSimbolos.add(nuevoToken);
     }
     else {
@@ -869,7 +870,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
 public String getAmbitoDeclaracionID(String lexema, String uso) {
     // Se chequea que el id esté declarado en el ámbito actual o en los ámbitos que lo contienen
     String ambitosString = ambitos.getAmbitos();
-    ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split(":")));
+    ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
     // Para el caso de la invocación a procedimientos se acota el ámbito actual para excluirlo como parte del ámbito al tener que estar declarado en un ámbito padre
     if(uso.equals("Procedimiento") && !ambitosString.equals("main"))
@@ -877,11 +878,11 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
 
     boolean declarado = false;
     for(int i = 0; i <= ambitosList.size(); i++) {
-      if(TablaSimbolos.existe(lexema + ":" + ambitosString)) {
-        if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + ":" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
+      if(TablaSimbolos.existe(lexema + "@" + ambitosString)) {
+        if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
           declarado = true;
           //if(!uso.equals("Procedimiento"))
-          //  actualizarContadorID(lexema + ":" + ambitosString, false);
+          //  actualizarContadorID(lexema + "@" + ambitosString, false);
           break;
         }
       }
@@ -910,10 +911,10 @@ public void invocacionID(String lexema, String uso) {
 	}
 
     if(uso.equals("Parametro") && declarado)
-        parametrosReales.add(lexema + ":" + ambitosString);
+        parametrosReales.add(lexema + "@" + ambitosString);
 
     if(uso.equals("Procedimiento") && declarado) {
-        Token procedimiento = TablaSimbolos.getToken(lexema + ":" + ambitosString);
+        Token procedimiento = TablaSimbolos.getToken(lexema + "@" + ambitosString);
 
         // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
         if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
@@ -937,7 +938,7 @@ public void invocacionID(String lexema, String uso) {
 
                 if(tiposCompatibles) {
                     SA6(lexema, parametrosFormales, parametrosReales);
-                    actualizarContadorID(lexema + ":" + ambitosString, false);
+                    actualizarContadorID(lexema + "@" + ambitosString, false);
               }
             }
         }
@@ -945,15 +946,15 @@ public void invocacionID(String lexema, String uso) {
     }
 
     if(declarado && !uso.equals("Procedimiento"))
-      actualizarContadorID(lexema + ":" + ambitosString, false);
+      actualizarContadorID(lexema + "@" + ambitosString, false);
     // Se actualiza el contador de referencias
     actualizarContadorID(lexema, true);
 }
 
 public String getLexemaID() {
     String ambitosActuales = ambitos.getAmbitos();
-    String id = ambitosActuales.split(":")[ambitosActuales.split(":").length-1];
-    return(id + ":" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
+    String id = ambitosActuales.split("@")[ambitosActuales.split("@").length-1];
+    return(id + "@" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
 }
 
 
@@ -984,7 +985,7 @@ public void out(String lex){
 public void SA1(String lexema) {  // Añadir factor a la polaca
     String ambitosActuales = ambitos.getAmbitos();
 
-    Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
+    Token token = TablaSimbolos.getToken(lexema + "@" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
 
     if (token == null)
         token = TablaSimbolos.getToken(lexema);
@@ -996,12 +997,12 @@ public void SA1(String lexema) {  // Añadir factor a la polaca
 	elem = new ElemSimple(token, analizadorLexico.getNroLinea());
     else{
       String lexemaToken = token.getLexema(false);
-      if(token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
-        String id = lexemaToken.split(":")[0];
-        lexemaToken = lexemaToken.replace(id+":", "");
-        lexemaToken += ":"+id;
+      if(token.getAtributo("uso") != null && token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
+        String id = lexemaToken.split("@")[0];
+        lexemaToken = lexemaToken.replace(id+"@", "");
+        lexemaToken += "@"+id;
       }
-      Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
+      Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains("@") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf("@")) : lexemaToken);
       for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
         nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
       }
@@ -1030,18 +1031,18 @@ public void SA3(String cte){ //chequea que la constante sea LONGINT
 }
 
 public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion
-	Token token1 = TablaSimbolos.getToken(id1 + ":" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
-        Token token2 = TablaSimbolos.getToken(id2 + ":" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
+	Token token1 = TablaSimbolos.getToken(id1 + "@" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
+        Token token2 = TablaSimbolos.getToken(id2 + "@" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
 	if (!token1.equals(token2))
 		 Errores.addError(String.format("[AS] | Linea %d: En la sentencia for, la variable inicializada "+ id1 + " no es la misma que la variable utilizada en la condicion %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA5(String id, String cte, String op){ //incremento o decremento la variable del for
-	Token id_t = TablaSimbolos.getToken(id+":" + getAmbitoDeclaracionID(id, Main.VARIABLE));
+	Token id_t = TablaSimbolos.getToken(id+"@" + getAmbitoDeclaracionID(id, Main.VARIABLE));
 	Token cte_t = TablaSimbolos.getToken(cte);
 
 	String lexemaToken = id_t.getLexema(false);
-	Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf(":")));
+	Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf("@")));
 	for (Map.Entry<String, Object> atributo : id_t.getAtributos().entrySet()) {
 	    nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
 	}
@@ -1077,7 +1078,7 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
           parametrosCVR.add(parametroFormal + "@" + parametrosReales.get(i));
         }
 
-        parametroFormal = parametroFormal + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema;
+        parametroFormal = parametroFormal + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema;
         SA1(parametroFormal);
         SA1(parametrosReales.get(i));
         SA2("=");
@@ -1094,12 +1095,12 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
            ) {
         String[] param = parametroCVR.split("@");
         SA1(param[1]);
-        SA1(param[0] + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema);
+        SA1(param[0] + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema);
         SA2("=");
       }
     }
 }
-//#line 1031 "Parser.java"
+//#line 1032 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1345,82 +1346,86 @@ case 37:
 {   String cte = val_peek(0).sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
+                            else {
                                 int cteInt = Integer.parseInt(cte);
-                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
                                 if(cteInt < 1 || cteInt > 4)
                                     Errores.addError(String.format("[ASem] | Linea %d: NI no se encuentra en el intervalo [1,4] %n", analizadorLexico.getNroLinea()));
+                                else
+                                    TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                            }
+
                         }
 break;
 case 38:
-//#line 110 "gramatica.y"
+//#line 114 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 break;
 case 39:
-//#line 111 "gramatica.y"
+//#line 115 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 break;
 case 40:
-//#line 112 "gramatica.y"
+//#line 116 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 break;
 case 44:
-//#line 121 "gramatica.y"
+//#line 125 "gramatica.y"
 { imprimirReglaReconocida("Lista de parámetros formales (3)", analizadorLexico.getNroLinea()); }
 break;
 case 45:
-//#line 122 "gramatica.y"
+//#line 126 "gramatica.y"
 { imprimirReglaReconocida("Lista de parámetros formales (2)", analizadorLexico.getNroLinea()); }
 break;
 case 46:
-//#line 123 "gramatica.y"
+//#line 127 "gramatica.y"
 { imprimirReglaReconocida("Lista de parámetros formales (1)", analizadorLexico.getNroLinea()); }
 break;
 case 47:
-//#line 124 "gramatica.y"
+//#line 128 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los primeros dos parámetros formales %n", analizadorLexico.getNroLinea())); }
 break;
 case 48:
-//#line 125 "gramatica.y"
+//#line 129 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los últimos dos parámetros formales %n", analizadorLexico.getNroLinea())); }
 break;
 case 49:
-//#line 126 "gramatica.y"
+//#line 130 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los parámetros formales %n", analizadorLexico.getNroLinea())); }
 break;
 case 50:
-//#line 127 "gramatica.y"
+//#line 131 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Número de parámetros formales permitidos excedido %n", analizadorLexico.getNroLinea())); }
 break;
 case 51:
-//#line 128 "gramatica.y"
+//#line 132 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Parámetro formal incorrecto %n", analizadorLexico.getNroLinea())); }
 break;
 case 52:
-//#line 131 "gramatica.y"
+//#line 135 "gramatica.y"
 { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                 parametrosFormales.add(ultimoTipo + " " + val_peek(0).sval);
                                 declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
-                                TablaSimbolos.getToken(val_peek(0).sval + ":" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
+                                TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
                               }
 break;
 case 53:
-//#line 136 "gramatica.y"
+//#line 140 "gramatica.y"
 { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                     parametrosFormales.add("VAR " + ultimoTipo + " " + val_peek(0).sval);
                                     declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
-                                    TablaSimbolos.getToken(val_peek(0).sval + ":" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
+                                    TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
                                   }
 break;
 case 54:
-//#line 141 "gramatica.y"
+//#line 145 "gramatica.y"
 {  Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n",analizadorLexico.getNroLinea())); }
 break;
 case 55:
-//#line 142 "gramatica.y"
+//#line 146 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n %n",analizadorLexico.getNroLinea())); }
 break;
 case 56:
-//#line 145 "gramatica.y"
+//#line 149 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de selección IF", analizadorLexico.getNroLinea());
                                                                         if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
 									                                        polaca.addElem(new ElemPos(polaca.size()), true);
@@ -1433,7 +1438,7 @@ case 56:
 									                                }
 break;
 case 57:
-//#line 155 "gramatica.y"
+//#line 159 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de selección IF", analizadorLexico.getNroLinea());
                                                                                         if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
                                                                                             polaca.addElem(new ElemPos(polaca.size()), true);
@@ -1446,67 +1451,67 @@ case 57:
                     									                            }
 break;
 case 58:
-//#line 165 "gramatica.y"
+//#line 169 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada THEN  %n",analizadorLexico.getNroLinea()));}
 break;
 case 59:
-//#line 166 "gramatica.y"
+//#line 170 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada THEN  %n",analizadorLexico.getNroLinea()));}
 break;
 case 60:
-//#line 167 "gramatica.y"
+//#line 171 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada ELSE  %n",analizadorLexico.getNroLinea()));}
 break;
 case 61:
-//#line 168 "gramatica.y"
+//#line 172 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
 break;
 case 62:
-//#line 169 "gramatica.y"
+//#line 173 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
 break;
 case 63:
-//#line 170 "gramatica.y"
+//#line 174 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
 break;
 case 64:
-//#line 171 "gramatica.y"
+//#line 175 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias THEN %n",analizadorLexico.getNroLinea()));}
 break;
 case 65:
-//#line 172 "gramatica.y"
+//#line 176 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d:  Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 66:
-//#line 173 "gramatica.y"
+//#line 177 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d:  Falta palabra reservada END_IF y literal ';' %n",nroUltimaLinea));}
 break;
 case 67:
-//#line 174 "gramatica.y"
+//#line 178 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta bloque de sentencias ELSE %n",analizadorLexico.getNroLinea()));}
 break;
 case 68:
-//#line 175 "gramatica.y"
+//#line 179 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en bloque de sentencias ELSE %n",analizadorLexico.getNroLinea()));}
 break;
 case 69:
-//#line 176 "gramatica.y"
+//#line 180 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada END_IF %n",analizadorLexico.getNroLinea()));}
 break;
 case 70:
-//#line 177 "gramatica.y"
+//#line 181 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d:  Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 71:
-//#line 178 "gramatica.y"
+//#line 182 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d:  Falta la condicion de la sentencia IF  %n",nroUltimaLinea));}
 break;
 case 72:
-//#line 179 "gramatica.y"
+//#line 183 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d:  Falta la condicion de la sentencia IF  %n",nroUltimaLinea));}
 break;
 case 73:
-//#line 182 "gramatica.y"
+//#line 186 "gramatica.y"
 {   if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
                                             polaca.pushPos(true);
                                             polaca.addElem(new OperadorUnario(OperadorUnario.Tipo.BF), false);
@@ -1518,27 +1523,27 @@ case 73:
                                     }
 break;
 case 74:
-//#line 191 "gramatica.y"
+//#line 195 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
 break;
 case 75:
-//#line 192 "gramatica.y"
+//#line 196 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
 break;
 case 76:
-//#line 193 "gramatica.y"
+//#line 197 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta condicion %n",analizadorLexico.getNroLinea()));}
 break;
 case 77:
-//#line 194 "gramatica.y"
+//#line 198 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Faltan parentesis %n",analizadorLexico.getNroLinea()));}
 break;
 case 78:
-//#line 195 "gramatica.y"
+//#line 199 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en la condicion %n",analizadorLexico.getNroLinea()));}
 break;
 case 79:
-//#line 199 "gramatica.y"
+//#line 203 "gramatica.y"
 {   if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
                                         polaca.addElem(new ElemPos(polaca.size()+2),true);
                                         polaca.pushPos(true);
@@ -1554,7 +1559,7 @@ case 79:
                                 }
 break;
 case 81:
-//#line 217 "gramatica.y"
+//#line 221 "gramatica.y"
 {   SA3(val_peek(2).sval);
                                                                                                 SA4(val_peek(6).sval , val_peek(4).sval);
                                                                                                 SA5(val_peek(6).sval, val_peek(2).sval, val_peek(3).sval); /* id cte incr_decr*/
@@ -1573,39 +1578,39 @@ case 81:
                                                                                             }
 break;
 case 82:
-//#line 233 "gramatica.y"
+//#line 237 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
 break;
 case 83:
-//#line 234 "gramatica.y"
+//#line 238 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en el inicio de la variable de control %n",analizadorLexico.getNroLinea()));}
 break;
 case 84:
-//#line 235 "gramatica.y"
+//#line 239 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta condición de control en sentencia de control %n",analizadorLexico.getNroLinea()));  }
 break;
 case 85:
-//#line 236 "gramatica.y"
+//#line 240 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta indicar incremento o decremento de la sentencia de control %n",analizadorLexico.getNroLinea())); }
 break;
 case 86:
-//#line 237 "gramatica.y"
+//#line 241 "gramatica.y"
 {  Errores.addError(String.format("[AS] | Linea %d: Falta indicar constante de paso para incremento/decremento en sentencia de control %n",analizadorLexico.getNroLinea()));  }
 break;
 case 87:
-//#line 238 "gramatica.y"
+//#line 242 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
 break;
 case 88:
-//#line 239 "gramatica.y"
+//#line 243 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en el cuerpo de la sentencia de control. Se encontró referencia a sentencia declarativa. %n",analizadorLexico.getNroLinea()));}
 break;
 case 89:
-//#line 240 "gramatica.y"
+//#line 244 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta asignacion a la variable de control %n",analizadorLexico.getNroLinea()));}
 break;
 case 90:
-//#line 243 "gramatica.y"
+//#line 247 "gramatica.y"
 { yyval = val_peek(2);
 			SA3(val_peek(0).sval);
 			SA1(val_peek(0).sval);
@@ -1624,23 +1629,23 @@ case 90:
 		    }
 break;
 case 91:
-//#line 259 "gramatica.y"
+//#line 263 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador de control %n",analizadorLexico.getNroLinea()));}
 break;
 case 92:
-//#line 260 "gramatica.y"
+//#line 264 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error, el inicio del for debe ser una asignacion %n",analizadorLexico.getNroLinea()));}
 break;
 case 93:
-//#line 261 "gramatica.y"
+//#line 265 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en la constante de la asignacion %n",analizadorLexico.getNroLinea()));}
 break;
 case 94:
-//#line 262 "gramatica.y"
+//#line 266 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en la asignacion de control %n",analizadorLexico.getNroLinea()));}
 break;
 case 97:
-//#line 270 "gramatica.y"
+//#line 274 "gramatica.y"
 { yyval =val_peek(1);
   				  if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal)) {
                                         polaca.pushPos(true);
@@ -1653,15 +1658,15 @@ case 97:
                                 }
 break;
 case 98:
-//#line 282 "gramatica.y"
+//#line 286 "gramatica.y"
 { yyval = new ParserVal("+"); }
 break;
 case 99:
-//#line 283 "gramatica.y"
+//#line 287 "gramatica.y"
 { yyval = new ParserVal("-"); }
 break;
 case 100:
-//#line 286 "gramatica.y"
+//#line 290 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
 						  SA1(val_peek(2).sval);
 						  if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
@@ -1671,27 +1676,27 @@ case 100:
 					      }
 break;
 case 101:
-//#line 293 "gramatica.y"
+//#line 297 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
 break;
 case 102:
-//#line 294 "gramatica.y"
+//#line 298 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta elemento a imprimir %n",analizadorLexico.getNroLinea()));}
 break;
 case 103:
-//#line 295 "gramatica.y"
+//#line 299 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Error en la cadena multilínea a imprimir %n",analizadorLexico.getNroLinea()));}
 break;
 case 104:
-//#line 296 "gramatica.y"
+//#line 300 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
 break;
 case 105:
-//#line 297 "gramatica.y"
+//#line 301 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 106:
-//#line 298 "gramatica.y"
+//#line 302 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
                                                         /* TODO: ver como hacer SA1 cuando el id no está declarado o cuando está renombrado con el ámbito*/
 /*                                                        invocacionID($3.sval, Main.VARIABLE);*/
@@ -1703,7 +1708,7 @@ case 106:
                                                     }
 break;
 case 107:
-//#line 317 "gramatica.y"
+//#line 321 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de asignación", analizadorLexico.getNroLinea());
                                                     String id = val_peek(3).sval;
                                                     String cte = val_peek(1).sval;
@@ -1716,63 +1721,63 @@ case 107:
                                                 }
 break;
 case 108:
-//#line 327 "gramatica.y"
+//#line 331 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta lado izquierdo de la asignación %n",analizadorLexico.getNroLinea()));}
 break;
 case 109:
-//#line 328 "gramatica.y"
+//#line 332 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de asignación %n",analizadorLexico.getNroLinea()));}
 break;
 case 110:
-//#line 329 "gramatica.y"
+//#line 333 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta lado derecho de la asignación %n",analizadorLexico.getNroLinea()));}
 break;
 case 111:
-//#line 330 "gramatica.y"
+//#line 334 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 112:
-//#line 333 "gramatica.y"
+//#line 337 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de invocación con lista de parámetros %n", analizadorLexico.getNroLinea());
                                                                 invocacionID(val_peek(4).sval, "Procedimiento");
                                                             }
 break;
 case 113:
-//#line 336 "gramatica.y"
+//#line 340 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de invocación sin parámetros %n", analizadorLexico.getNroLinea());
                                                 invocacionID(val_peek(3).sval, "Procedimiento");
                                             }
 break;
 case 114:
-//#line 339 "gramatica.y"
+//#line 343 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
 break;
 case 115:
-//#line 340 "gramatica.y"
+//#line 344 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' %n",analizadorLexico.getNroLinea()));}
 break;
 case 116:
-//#line 341 "gramatica.y"
+//#line 345 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Parametros invalidos %n",analizadorLexico.getNroLinea()));}
 break;
 case 117:
-//#line 342 "gramatica.y"
+//#line 346 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
 break;
 case 118:
-//#line 343 "gramatica.y"
+//#line 347 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
 break;
 case 119:
-//#line 344 "gramatica.y"
+//#line 348 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 120:
-//#line 345 "gramatica.y"
+//#line 349 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
 break;
 case 121:
-//#line 348 "gramatica.y"
+//#line 352 "gramatica.y"
 {   imprimirReglaReconocida("Lista de parámetros (3)", analizadorLexico.getNroLinea());
                                             invocacionID(val_peek(4).sval, "Parametro");
                                             invocacionID(val_peek(2).sval, "Parametro");
@@ -1780,131 +1785,131 @@ case 121:
                                         }
 break;
 case 122:
-//#line 353 "gramatica.y"
+//#line 357 "gramatica.y"
 {   imprimirReglaReconocida("Lista de parámetros (2) %n", analizadorLexico.getNroLinea());
                                     invocacionID(val_peek(2).sval, "Parametro");
                                     invocacionID(val_peek(0).sval, "Parametro");
                                 }
 break;
 case 123:
-//#line 357 "gramatica.y"
+//#line 361 "gramatica.y"
 {   imprimirReglaReconocida("Lista de parámetros (1) %n", analizadorLexico.getNroLinea());
                                 invocacionID(val_peek(0).sval, "Parametro");
                             }
 break;
 case 124:
-//#line 360 "gramatica.y"
+//#line 364 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Número de parámetros permitidos excedido %n",analizadorLexico.getNroLinea()));}
 break;
 case 125:
-//#line 361 "gramatica.y"
+//#line 365 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Parámetro incorrecto %n",analizadorLexico.getNroLinea()));}
 break;
 case 126:
-//#line 362 "gramatica.y"
+//#line 366 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Faltan literales ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
 break;
 case 127:
-//#line 363 "gramatica.y"
+//#line 367 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
 break;
 case 128:
-//#line 364 "gramatica.y"
+//#line 368 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
 break;
 case 129:
-//#line 365 "gramatica.y"
+//#line 369 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre parámetros %n",analizadorLexico.getNroLinea()));}
 break;
 case 130:
-//#line 369 "gramatica.y"
+//#line 373 "gramatica.y"
 {yyval = val_peek(2); SA2(">=");}
 break;
 case 131:
-//#line 370 "gramatica.y"
+//#line 374 "gramatica.y"
 {yyval = val_peek(2);SA2("<=");}
 break;
 case 132:
-//#line 371 "gramatica.y"
+//#line 375 "gramatica.y"
 {yyval = val_peek(2);SA2(">");}
 break;
 case 133:
-//#line 372 "gramatica.y"
+//#line 376 "gramatica.y"
 {yyval = val_peek(2);SA2("<");}
 break;
 case 134:
-//#line 373 "gramatica.y"
+//#line 377 "gramatica.y"
 {yyval = val_peek(2);SA2("==");}
 break;
 case 135:
-//#line 374 "gramatica.y"
+//#line 378 "gramatica.y"
 {yyval = val_peek(2);SA2("!=");}
 break;
 case 136:
-//#line 378 "gramatica.y"
+//#line 382 "gramatica.y"
 {imprimirReglaReconocida("Suma", analizadorLexico.getNroLinea());
                                      SA2(val_peek(1).sval);}
 break;
 case 137:
-//#line 380 "gramatica.y"
+//#line 384 "gramatica.y"
 {imprimirReglaReconocida("Resta", analizadorLexico.getNroLinea());
                                      SA2(val_peek(1).sval);}
 break;
 case 139:
-//#line 383 "gramatica.y"
+//#line 387 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la suma %n",analizadorLexico.getNroLinea()));}
 break;
 case 140:
-//#line 384 "gramatica.y"
+//#line 388 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la resta %n",analizadorLexico.getNroLinea()));}
 break;
 case 141:
-//#line 385 "gramatica.y"
+//#line 389 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la suma %n",analizadorLexico.getNroLinea()));}
 break;
 case 142:
-//#line 388 "gramatica.y"
+//#line 392 "gramatica.y"
 { yyval = val_peek(2);
 				imprimirReglaReconocida("Multiplicación", analizadorLexico.getNroLinea());
 				SA2(val_peek(1).sval);}
 break;
 case 143:
-//#line 391 "gramatica.y"
+//#line 395 "gramatica.y"
 { yyval = val_peek(2);
         			imprimirReglaReconocida("División", analizadorLexico.getNroLinea());
         			SA2(val_peek(1).sval);}
 break;
 case 144:
-//#line 394 "gramatica.y"
+//#line 398 "gramatica.y"
 {yyval = val_peek(0);}
 break;
 case 145:
-//#line 395 "gramatica.y"
+//#line 399 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
 break;
 case 146:
-//#line 396 "gramatica.y"
+//#line 400 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la division %n",analizadorLexico.getNroLinea()));}
 break;
 case 147:
-//#line 397 "gramatica.y"
+//#line 401 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
 break;
 case 148:
-//#line 398 "gramatica.y"
+//#line 402 "gramatica.y"
 { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la division %n",analizadorLexico.getNroLinea()));}
 break;
 case 149:
-//#line 401 "gramatica.y"
+//#line 405 "gramatica.y"
 {yyval = val_peek(0); SA1(val_peek(0).sval);
 		invocacionID(val_peek(0).sval, Main.VARIABLE);}
 break;
 case 150:
-//#line 403 "gramatica.y"
+//#line 407 "gramatica.y"
 {yyval = val_peek(0); SA1(val_peek(0).sval);}
 break;
 case 151:
-//#line 406 "gramatica.y"
+//#line 410 "gramatica.y"
 {String cte = val_peek(0).sval;
 	   String nuevo = checkPositivo(cte);
 	   if (nuevo != null)
@@ -1914,7 +1919,7 @@ case 151:
            }
 break;
 case 152:
-//#line 413 "gramatica.y"
+//#line 417 "gramatica.y"
 { String cte = val_peek(0).sval;
       		  String nuevo = checkRango(cte);
       		  if (nuevo != null){
@@ -1923,7 +1928,7 @@ case 152:
                               		        }
      	 	}
 break;
-//#line 1849 "Parser.java"
+//#line 1854 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

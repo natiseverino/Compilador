@@ -58,15 +58,15 @@ public class GeneradorCodigo {
                 .append("jmp label_end")
                 .append(System.lineSeparator())
                 .append("label_overflow_longint:").append(System.lineSeparator())
-                .append("invoke MessageBox,NULL, addr @string_overflow_longint, MB_OK") //TODO probar los prints
+                .append("invoke MessageBox, NULL, addr @string_overflow_longint, addr @string_overflow_longint, MB_OK") //TODO probar los prints
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append("label_overflow_float:").append(System.lineSeparator())
-                .append("invoke MessageBox,NULL,addr @string_overflow_float, MB_OK")
+                .append("invoke MessageBox, NULL, addr @string_overflow_float, addr @string_overflow_float, MB_OK")
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append("label_recursion_mutua:").append(System.lineSeparator())
-                .append("invoke MessageBox,NULL, @string_recursion_mutua, MB_OK")
+                .append("invoke MessageBox, NULL, @string_recursion_mutua, @string_recursion_mutua, MB_OK")
                 .append(System.lineSeparator())
                 .append("jmp label_end").append(System.lineSeparator())
                 .append(System.lineSeparator())

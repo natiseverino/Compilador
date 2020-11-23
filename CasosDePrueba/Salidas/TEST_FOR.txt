@@ -1,0 +1,2 @@
+LONGINT a;
+FOR(a=1_l; a<3_l; UP 1_l) { OUT("iteracion"); }

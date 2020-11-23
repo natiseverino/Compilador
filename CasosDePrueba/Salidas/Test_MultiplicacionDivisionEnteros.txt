@@ -1,0 +1,15 @@
+LONGINT a, b;
+a = 2_l * 1_l * 4_l / 2_l;
+b = 2_l * 1_l * 4_l / 3_l;
+
+IF(a == 4_l) THEN
+    OUT("a = 4");
+ELSE
+    OUT("a != 4");
+END_IF;
+
+IF(b == 4_l) THEN
+    OUT("b = 4");
+ELSE
+    OUT("b != 4");
+END_IF;

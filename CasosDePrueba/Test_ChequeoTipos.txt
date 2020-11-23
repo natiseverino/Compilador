@@ -1,0 +1,24 @@
+%% Chequeo de tipos asignaciones
+%%LONGINT a;
+%%FLOAT b;
+
+%%b = 1.;
+%%a = b;
+
+%%LONGINT c;
+%%FLOAT d;
+
+%%c = 1_l;
+%%d = c;
+
+%% Chequeo de tipos operaciones aritméticas
+%%LONGINT e;
+%%FLOAT f;
+
+%%e = e + f;
+
+%% Chequeo de tipos en comparación
+LONGINT g;
+FLOAT h;
+
+IF(g > h) THEN OUT("g es mayor a h"); END_IF;

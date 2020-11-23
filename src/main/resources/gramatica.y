@@ -102,10 +102,14 @@ proc_parametros : '(' lista_parametros_formales ')' {   TablaSimbolos.getToken(g
 proc_ni : NI '=' CTE    {   String cte = $3.sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
+                            else {
                                 int cteInt = Integer.parseInt(cte);
-                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
                                 if(cteInt < 1 || cteInt > 4)
                                     Errores.addError(String.format("[ASem] | Linea %d: NI no se encuentra en el intervalo [1,4] %n", analizadorLexico.getNroLinea()));
+                                else
+                                    TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                            }
+
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -131,12 +135,12 @@ lista_parametros_formales   : parametro_formal ',' parametro_formal ',' parametr
 parametro_formal    : tipo ID { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                 parametrosFormales.add(ultimoTipo + " " + $2.sval);
                                 declaracionID($2.sval, "Parametro", ultimoTipo);
-                                TablaSimbolos.getToken($2.sval + ":" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
+                                TablaSimbolos.getToken($2.sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
                               }
                     | VAR tipo ID { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                     parametrosFormales.add("VAR " + ultimoTipo + " " + $3.sval);
                                     declaracionID($3.sval, "Parametro", ultimoTipo);
-                                    TablaSimbolos.getToken($3.sval + ":" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
+                                    TablaSimbolos.getToken($3.sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
                                   }
                     | error ID {  Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n",analizadorLexico.getNroLinea())); }
                     | VAR error ID { Errores.addError(String.format("[AS] | Linea %d: Error en el tipo del parámetro formal %n %n",analizadorLexico.getNroLinea())); }
@@ -553,15 +557,16 @@ public void declaracionID(String lexema, String uso, String tipo) {
     actualizarContadorID(lexema, true);
     String nuevoLexema = "";
     if(uso.equals("Procedimiento"))
-      nuevoLexema = lexema + ":" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length())-(lexema.length()+1));
+      nuevoLexema = lexema + "@" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length())-(lexema.length()+1));
     else
-      nuevoLexema = lexema + ":" + ambitos.getAmbitos();
+      nuevoLexema = lexema + "@" + ambitos.getAmbitos();
 
     if(!TablaSimbolos.existe(nuevoLexema)) {
         Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), nuevoLexema);
         nuevoToken.addAtributo("uso", uso);
         nuevoToken.addAtributo("tipo", tipo);
         nuevoToken.addAtributo("contador", 0);
+        nuevoToken.addAtributo("ambito", nuevoLexema.substring(lexema.length()+1, nuevoLexema.length()));
         TablaSimbolos.add(nuevoToken);
     }
     else {
@@ -575,7 +580,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
 public String getAmbitoDeclaracionID(String lexema, String uso) {
     // Se chequea que el id esté declarado en el ámbito actual o en los ámbitos que lo contienen
     String ambitosString = ambitos.getAmbitos();
-    ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split(":")));
+    ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
     // Para el caso de la invocación a procedimientos se acota el ámbito actual para excluirlo como parte del ámbito al tener que estar declarado en un ámbito padre
     if(uso.equals("Procedimiento") && !ambitosString.equals("main"))
@@ -583,11 +588,11 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
 
     boolean declarado = false;
     for(int i = 0; i <= ambitosList.size(); i++) {
-      if(TablaSimbolos.existe(lexema + ":" + ambitosString)) {
-        if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + ":" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
+      if(TablaSimbolos.existe(lexema + "@" + ambitosString)) {
+        if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
           declarado = true;
           //if(!uso.equals("Procedimiento"))
-          //  actualizarContadorID(lexema + ":" + ambitosString, false);
+          //  actualizarContadorID(lexema + "@" + ambitosString, false);
           break;
         }
       }
@@ -616,10 +621,10 @@ public void invocacionID(String lexema, String uso) {
 	}
 
     if(uso.equals("Parametro") && declarado)
-        parametrosReales.add(lexema + ":" + ambitosString);
+        parametrosReales.add(lexema + "@" + ambitosString);
 
     if(uso.equals("Procedimiento") && declarado) {
-        Token procedimiento = TablaSimbolos.getToken(lexema + ":" + ambitosString);
+        Token procedimiento = TablaSimbolos.getToken(lexema + "@" + ambitosString);
 
         // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
         if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
@@ -643,7 +648,7 @@ public void invocacionID(String lexema, String uso) {
 
                 if(tiposCompatibles) {
                     SA6(lexema, parametrosFormales, parametrosReales);
-                    actualizarContadorID(lexema + ":" + ambitosString, false);
+                    actualizarContadorID(lexema + "@" + ambitosString, false);
               }
             }
         }
@@ -651,15 +656,15 @@ public void invocacionID(String lexema, String uso) {
     }
 
     if(declarado && !uso.equals("Procedimiento"))
-      actualizarContadorID(lexema + ":" + ambitosString, false);
+      actualizarContadorID(lexema + "@" + ambitosString, false);
     // Se actualiza el contador de referencias
     actualizarContadorID(lexema, true);
 }
 
 public String getLexemaID() {
     String ambitosActuales = ambitos.getAmbitos();
-    String id = ambitosActuales.split(":")[ambitosActuales.split(":").length-1];
-    return(id + ":" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
+    String id = ambitosActuales.split("@")[ambitosActuales.split("@").length-1];
+    return(id + "@" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
 }
 
 
@@ -690,7 +695,7 @@ public void out(String lex){
 public void SA1(String lexema) {  // Añadir factor a la polaca
     String ambitosActuales = ambitos.getAmbitos();
 
-    Token token = TablaSimbolos.getToken(lexema + ":" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
+    Token token = TablaSimbolos.getToken(lexema + "@" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
 
     if (token == null)
         token = TablaSimbolos.getToken(lexema);
@@ -702,12 +707,12 @@ public void SA1(String lexema) {  // Añadir factor a la polaca
 	elem = new ElemSimple(token, analizadorLexico.getNroLinea());
     else{
       String lexemaToken = token.getLexema(false);
-      if(token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
-        String id = lexemaToken.split(":")[0];
-        lexemaToken = lexemaToken.replace(id+":", "");
-        lexemaToken += ":"+id;
+      if(token.getAtributo("uso") != null && token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
+        String id = lexemaToken.split("@")[0];
+        lexemaToken = lexemaToken.replace(id+"@", "");
+        lexemaToken += "@"+id;
       }
-      Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(":") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf(":")) : lexemaToken);
+      Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains("@") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf("@")) : lexemaToken);
       for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
         nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
       }
@@ -736,18 +741,18 @@ public void SA3(String cte){ //chequea que la constante sea LONGINT
 }
 
 public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion
-	Token token1 = TablaSimbolos.getToken(id1 + ":" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
-        Token token2 = TablaSimbolos.getToken(id2 + ":" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
+	Token token1 = TablaSimbolos.getToken(id1 + "@" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
+        Token token2 = TablaSimbolos.getToken(id2 + "@" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
 	if (!token1.equals(token2))
 		 Errores.addError(String.format("[AS] | Linea %d: En la sentencia for, la variable inicializada "+ id1 + " no es la misma que la variable utilizada en la condicion %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA5(String id, String cte, String op){ //incremento o decremento la variable del for
-	Token id_t = TablaSimbolos.getToken(id+":" + getAmbitoDeclaracionID(id, Main.VARIABLE));
+	Token id_t = TablaSimbolos.getToken(id+"@" + getAmbitoDeclaracionID(id, Main.VARIABLE));
 	Token cte_t = TablaSimbolos.getToken(cte);
 
 	String lexemaToken = id_t.getLexema(false);
-	Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf(":")));
+	Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf("@")));
 	for (Map.Entry<String, Object> atributo : id_t.getAtributos().entrySet()) {
 	    nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
 	}
@@ -783,7 +788,7 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
           parametrosCVR.add(parametroFormal + "@" + parametrosReales.get(i));
         }
 
-        parametroFormal = parametroFormal + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema;
+        parametroFormal = parametroFormal + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema;
         SA1(parametroFormal);
         SA1(parametrosReales.get(i));
         SA2("=");
@@ -800,7 +805,7 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
            ) {
         String[] param = parametroCVR.split("@");
         SA1(param[1]);
-        SA1(param[0] + ":" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + ":" + lexema);
+        SA1(param[0] + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema);
         SA2("=");
       }
     }

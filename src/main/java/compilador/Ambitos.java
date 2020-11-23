@@ -33,7 +33,7 @@ public class Ambitos {
         String retorno = new String();
         for (String ambito: ambitosAnidados
              ) {
-            retorno += ambito + ":";
+            retorno += ambito + "@";
         }
         return (retorno.substring(0, retorno.length()-1));
 
