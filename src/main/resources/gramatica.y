@@ -300,7 +300,6 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {   imprimirReglaReconocida("S
                     | OUT '(' CADENA_MULT error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
                     | OUT '(' factor ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
-                                                        // TODO: ver como hacer SA1 cuando el id no está declarado o cuando está renombrado con el ámbito
 //                                                        invocacionID($3.sval, Main.VARIABLE);
 //                                                        SA1($3.sval);
                                                         if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
