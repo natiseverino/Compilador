@@ -378,11 +378,11 @@ condicion   : expresion MAYOR_IGUAL expresion {$$ = $1; SA2(">=");}
 ;
 
 
-expresion   : expresion '+' termino {imprimirReglaReconocida("Suma", analizadorLexico.getNroLinea());
+expresion   : expresion '+' termino {$$=$1;imprimirReglaReconocida("Suma", analizadorLexico.getNroLinea());
                                      SA2($2.sval);}
-            | expresion '-' termino {imprimirReglaReconocida("Resta", analizadorLexico.getNroLinea());
+            | expresion '-' termino {$$=$1;imprimirReglaReconocida("Resta", analizadorLexico.getNroLinea());
                                      SA2($2.sval);}
-            | termino
+            | termino {$$=$1;}
             | expresion '+' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la suma %n",analizadorLexico.getNroLinea()));}
             | expresion '-' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la resta %n",analizadorLexico.getNroLinea()));}
             | error '+' termino { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la suma %n",analizadorLexico.getNroLinea()));}

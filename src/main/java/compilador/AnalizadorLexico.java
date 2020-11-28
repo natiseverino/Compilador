@@ -288,14 +288,15 @@ public class AnalizadorLexico {
 
             //verificar rango
             Token token = null;
+            System.out.println(flotante);
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), Main.CONSTANTE);
                 token.addAtributo("tipo", "FLOAT");
             } else {
                 float nuevo = Main.MAX_FLOAT-1;
-                warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
-                token = addToken(String.valueOf(Main.MAX_FLOAT), Main.CONSTANTE);
+                warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + nuevo, nroLinea);
+                token = addToken(String.valueOf(nuevo), Main.CONSTANTE);
                 token.addAtributo("tipo", "FLOAT");
             }
 
