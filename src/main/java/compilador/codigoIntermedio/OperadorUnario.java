@@ -49,17 +49,19 @@ public class OperadorUnario extends PolacaElem {
             case OUT:
                 ElemSimple elem = (ElemSimple) stack.pop();
                 Token token = elem.getToken();
-                String out = "";
+                String out = token.getLexema(true);
                 if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
                     if (token.getAtributo("uso") != null) {
                         if (token.getAtributo("uso").equals(Main.VARIABLE)) {
-                            out = token.getLexema(true);
+                            return "invoke printf, cfm$(\"%s\\n\"), " + out;
                         }
                     }
-                } else
-                    out = token.getAlias();
+                } else if (token.getTipoToken().equals(Main.CONSTANTE)) {
+                    return "invoke printf, cfm$(\"%s\\n\"), " + out;
+                }
 
                 return "invoke MessageBox, NULL, addr " + out + ", addr " + out + ", MB_OK";
+
             case INV:
                 elem = (ElemSimple) stack.pop();
                 token = elem.getToken();

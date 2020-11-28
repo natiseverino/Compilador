@@ -111,7 +111,7 @@ public class OperadorBinario extends PolacaElem {
                         .append("fadd").append(System.lineSeparator())
                         .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
-                //TODO chequear overflow
+                code.append(overflowFloat(aux));
                 break;
             case '-':
                 code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
@@ -179,12 +179,14 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
+                    code.append(overflowLong(registro));
                 } else if (tipo2.equals(REGISTRO)) { //casos var reg - reg reg
                     code.append("add ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                             .append(System.lineSeparator());
                     if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                     stack.push(elem1);
+                    code.append(overflowLong(elem1));
                 }
                 break;
             case '-':
@@ -274,7 +276,7 @@ public class OperadorBinario extends PolacaElem {
                         reg1 = token1.getLexema(true);
                     }
                     code.append("cdq").append(System.lineSeparator())
-                    .append("idiv ").append(token2.getLexema(true)).append(System.lineSeparator());
+                            .append("idiv ").append(token2.getLexema(true)).append(System.lineSeparator());
                     Token t_reg = new Token(0, REGISTRO, reg1);
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
@@ -292,12 +294,11 @@ public class OperadorBinario extends PolacaElem {
                                 elem2 = aux;
                                 token1 = elem1.getToken();
                                 token2 = elem2.getToken();
-                            }
-                            else
+                            } else
                                 code.append(SeguimientoRegistros.getInstance().liberarA(stack, token1, null));
 
                         code.append("cdq").append(System.lineSeparator())
-                        .append("idiv ").append(token2.getLexema(true))
+                                .append("idiv ").append(token2.getLexema(true))
                                 .append(System.lineSeparator());
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                         stack.push(elem1);
@@ -366,6 +367,29 @@ public class OperadorBinario extends PolacaElem {
 
     private boolean tipoVar(String tipo) {
         return tipo.equals(Main.IDENTIFICADOR) || tipo.equals(Main.CONSTANTE);
+    }
+
+
+    private String overflowFloat(ElemSimple resultado) {
+        StringBuilder code = new StringBuilder();
+        code.append("fld ").append(resultado.getToken().getLexema(true)).append(System.lineSeparator())
+                .append("fld @max_float").append(System.lineSeparator())
+                .append("fcompp").append(System.lineSeparator())
+                .append("fstsw ax").append(System.lineSeparator())
+                .append("sahf").append(System.lineSeparator())
+                .append("jg label label_overflow_float")
+                .append(System.lineSeparator());
+
+        return code.toString();
+    }
+
+    private String overflowLong(ElemSimple resultado) {
+        StringBuilder code = new StringBuilder();
+
+        code.append("cmp ").append(resultado).append(", @max_long").append(System.lineSeparator())
+                .append("jg label label_overflow_longint").append(System.lineSeparator());
+
+        return code.toString();
     }
 
 
