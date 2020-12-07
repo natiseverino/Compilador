@@ -20,7 +20,7 @@ public class GeneradorCodigo {
 
     public String generarCodigo(PolacaInversa polacaInversa, PolacaInversaProcedimientos polacaInversaProcedimientos) {
         StringBuilder code = new StringBuilder();
-        String codigoIntermedio = polacaInversa.generarCodigo();
+        String codigoIntermedio = polacaInversa.generarCodigo(false);
         codigoIntermedio += polacaInversaProcedimientos.generarCodigo();
         String data = TablaSimbolos.getDataAssembler();
 
@@ -55,7 +55,6 @@ public class GeneradorCodigo {
                 .append("start:")
                 .append(System.lineSeparator())
                 .append(codigoIntermedio)
-                .append("jmp label_end")
                 .append(System.lineSeparator())
                 .append(System.lineSeparator())
                 .append("label_overflow_longint:").append(System.lineSeparator())

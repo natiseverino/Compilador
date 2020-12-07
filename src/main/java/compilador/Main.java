@@ -28,7 +28,7 @@ public class Main {
     public static final String PROCEDIMIENTO = "Procedimiento";
 
 
-    public static void guardarArchivo(String txt, String path){
+    public static void guardarArchivo(String txt, String path) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(path));
@@ -41,13 +41,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "";
+        String filePath;
         StringBuilder codigoFuente;
 
-        String fileNameAsm = "codigosalida.asm";
+        String fileNameAsm;
 
         try {
             filePath = args[0];
+            fileNameAsm = filePath.replace(".txt", ".asm");
         } catch (Exception e) {
             throw new Exception("No se ha ingresado un archivo");
         }
@@ -67,23 +68,30 @@ public class Main {
         TablaSimbolos.print();
         Errores.printWarnings();
         Errores.printErrores();
-        polaca.print();
-        polacaProcedimientos.print();
+
+        int errores_polaca = polaca.getErrores()+polacaProcedimientos.getErrores();
+        if (errores_polaca > 0) {
+            System.out.println();
+            System.out.println("Se encontraron " + errores_polaca + " error/es en la generacion de la polaca inversa");
+        }
+        else {
+            polaca.print();
+            polacaProcedimientos.print();
+        }
 
         int errores = Errores.getErrores();
 
         if (errores > 0) {
             System.out.println();
-            System.out.println("Hay " + errores + " sintacticos y lexicos");
+            System.out.println("Hay " + errores + " error/es sintacticos y/o lexicos");
             System.out.println("No se genero el codigo assembler");
-        }
-        else {
+        } else {
 
             String code = GeneradorCodigo.getInstance().generarCodigo(polaca, polacaProcedimientos);
             int gc_errores = polaca.getErrores();
             if (gc_errores > 0) {
                 System.out.println();
-                System.out.println("Hay " + gc_errores + " errores en la generacion de codigo");
+                System.out.println("Hay " + gc_errores + " error/es en la generacion de codigo");
                 System.out.println("No se genero el codigo assembler");
             } else {
                 guardarArchivo(code, fileNameAsm);

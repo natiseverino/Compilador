@@ -82,7 +82,7 @@ public class SeguimientoRegistros {
             //si eax esta usado en algun lado de la pila
             int pos = -1;
             for (int i = 0; i < stack.size(); i++)
-                if (stack.get(i).equals(EAX)) {
+                if ( stack.get(i).getLexema().equals(EAX)) {
                     pos = i;
                     liberar(EAX);
                 }

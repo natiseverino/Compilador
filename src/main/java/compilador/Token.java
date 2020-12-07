@@ -45,7 +45,7 @@ public class Token {
                 this.alias = "@string" + countString;
                 break;
             case Main.IDENTIFICADOR:
-                this.alias = "_"+lexema+"@"+getAtributo("ambito");
+                this.alias = "_"+lexema+"."+getAtributo("ambito");
                 break;
         }
     }
