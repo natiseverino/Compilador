@@ -9,7 +9,7 @@ public class AnalizadorLexico {
 
     private final int[][] estados = {
               //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $  otro
-                { 1,   2,   3,  1,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
+                { 1,   2,   3,   1,   1,   5,   1,   9,  16,  16,  14,          16,         11,  14,  15,   0,    0,    16,  16},
                 { 1,  16,   1,   1,   1,  16,   1,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,   2,  16,   2,  16,  16,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,  16,   3,   4,  16,   6,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
@@ -350,14 +350,12 @@ public class AnalizadorLexico {
             //En caso de las cadenas, donde es necesario eliminar los guiones
             if (lexema.length() > 0) {
                 int ult = lexema.length()-1;
-                if (lexema.charAt(ult) == '-')
+                if (lexema.charAt(ult) == '-' && ultimo == '\n')
                     lexema.replace(ult, ult+1, " ");
             }
             return null;
         }
     }
-
-
 
 
 

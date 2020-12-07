@@ -1,0 +1,25 @@
+%%FOR(a=1.; a<10_l; UP 1.)
+%%{a=b;
+
+%%LONGINT a,b;
+%%FOR(a=1_l; a<10_l; UP 1_l)
+%%{a=b;
+
+%%FLOAT a;
+%%IF (a 1.) THEN
+%%a=-3.;
+%%ELSE
+%%{a=2.;}
+%%END_IF;
+
+%%IF (a 1.) THEN
+%%a=-3.;
+%%
+%%END_IF;
+
+%%FLOAT a,c;
+%%OUT(a)
+
+FOR(a=1.; a<10_l; UP 1.)
+a=b;}
+

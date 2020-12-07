@@ -1,0 +1,9 @@
+LONGINT c, d;
+
+PROC a() NI = 1_l {
+    PROC b() NI = 1_l {
+        c = d;
+        a();
+    }
+    b();
+}
