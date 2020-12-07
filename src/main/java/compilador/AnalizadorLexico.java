@@ -21,7 +21,7 @@ public class AnalizadorLexico {
                 {16,  16,  16,  16,  16,  16,  16,  10,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {10,  10,  10,  10,  10,  10,  10,  10,  10,  10,  10,          10,         10,  10,  10,   0,   10,    16,  10},
                 {11,  11,  11,  11,  11,  11,  11,  11,  11,  12,  11,          11,         16,  11,  11,  16,   11,    16,  11},
-                {11,  11,  11,  11,  11,  11,  11,  11,  11,  11,  11,          11,         11,  11,  11,  13,   11,    16,  11},
+                {11,  11,  11,  11,  11,  11,  11,  11,  11,  11,  11,          11,         16,  11,  11,  13,   11,    16,  11},
                 {11,  11,  11,  11,  11,  11,  11,  11,  11,  11,  11,          11,         16,  11,  11,  11,   11,    16,  11},
                 {16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16},
                 {16,  16,  16,  16,  16,  16,  16,  16,  16,  16,  16,          16,         16,  16,  16,  16,   16,    16,  16}
@@ -40,30 +40,31 @@ public class AnalizadorLexico {
         AccionSemantica AS1 = new AS1();
         AccionSemantica AS2 = new AS2();
         AccionSemantica AS3 = new AS3();
-        AccionSemantica AS4 = new AS4();
+        AccionSemantica AS4 = new AS4("Caracter invalido");
+        AccionSemantica AS4n = new AS4("Constante numerica invalida");
         AccionSemantica AS5 = new AS5();
         AccionSemantica AS6 = new AS6();
         AccionSemantica AS7 = new AS7();
         AccionSemantica AS8 = new AS8();
 
         accionesSemanticas = new AccionSemantica[][] {
-              //  l    L    d    _   "l"   .   "f"   %    +    -    =     * / { } ( ) , ;    "   > <   !   \n   " " \t   $   otro
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS6, AS7, AS7, AS2,         AS7,        AS2, AS2, AS2, AS8,  AS6  , AS6, AS4},
-                {AS2, AS1, AS2, AS2, AS2, AS1, AS2, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
-                {AS1, AS2, AS1, AS2, AS1, AS1, AS1, AS1, AS1, AS1, AS1,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
-                {AS4, AS4, AS2, AS2, AS4, AS2, AS4, AS4, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
-                {AS4, AS4, AS4, AS4, AS3, AS4, AS4, AS4, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
-                {AS4, AS4, AS2, AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
-                {AS5, AS5, AS2, AS5, AS5, AS5, AS2, AS5, AS5, AS5, AS5,         AS5,        AS5, AS5, AS5, AS5,  AS5  , AS5, AS5},
-                {AS5, AS5, AS5, AS5, AS5, AS5, AS5, AS5, AS2, AS2, AS5,         AS5,        AS5, AS5, AS5, AS5,  AS5  , AS5, AS5},
-                {AS5, AS5, AS2, AS5, AS5, AS5, AS5, AS5, AS5, AS5, AS5,         AS5,        AS5, AS5, AS5, AS5,  AS5  , AS5, AS5},
-                {AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS6, AS4, AS4, AS4,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4},
-                {AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6, AS6,         AS6,        AS6, AS6, AS6, AS8,  AS6  , AS6, AS6},
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS4,  AS2  , AS2, AS2},
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS2, AS2, AS2, AS8,  AS2  , AS2, AS2},
-                {AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2, AS2,         AS2,        AS7, AS2, AS2, AS2,  AS2  , AS2, AS2},
-                {AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS1, AS7,         AS1,        AS1, AS1, AS1, AS1,  AS1  , AS1, AS1},
-                {AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS4, AS7,         AS4,        AS4, AS4, AS4, AS4,  AS4  , AS4, AS4}
+              //  l      L     d     _    "l"    .    "f"    %     +     -     =      * / { } ( ) , ;     "    > <    !    \n    " " \t   $    otro
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS6,  AS7,  AS7,  AS2,          AS7,         AS2,  AS2,  AS2,  AS8,   AS6 ,  AS6,  AS4},
+                {AS2,   AS1,  AS2,  AS2,  AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
+                {AS1,   AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
+                {AS4n, AS4n,  AS2,  AS2, AS4n,  AS2, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n, AS4n,  AS4n , AS4n, AS4n},
+                {AS4n, AS4n, AS4n, AS4n,  AS3, AS4n, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n, AS4n,  AS4n , AS4n, AS4n},
+                {AS4,   AS4,  AS2,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4},
+                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS2,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
+                {AS5,   AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS2,  AS2,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
+                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
+                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS6,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4},
+                {AS6,   AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,          AS6,         AS6,  AS6,  AS6,  AS8,   AS6 ,  AS6,  AS6},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS4,   AS2 ,  AS2,  AS2},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS8,   AS2 ,  AS2,  AS2},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS2,   AS2 ,  AS2,  AS2},
+                {AS1,   AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS7,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
+                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS7,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4}
         };
     }
 
@@ -126,7 +127,7 @@ public class AnalizadorLexico {
         if(token != null) {
             Parser.yylval = new ParserVal(token.getLexema(false));
             if (!token.getTipoToken().isEmpty())
-                out(token.getTipoToken() + token.getLexema(false), nroLinea);
+                out(token.getTipoToken() + " " + token.getLexema(false), nroLinea);
             else
                 out(token.getLexema(false), nroLinea);
         }
@@ -233,15 +234,18 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             lexema.append(ultimo);
+            long enteroLargo = 0;
 
-            long enteroLargo = Long.parseLong(lexema.substring(0, lexema.length()-2));
-
+            try {
+                enteroLargo = Long.parseLong(lexema.substring(0, lexema.length() - 2));
+            }catch (NumberFormatException e){
+                error("Longint incorrecto " + lexema, nroLinea);
+            }
 
             //verificar rango
             Token token = null;
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
-                //verificar si
-                // esta en TS y agregar
+                //verificar si esta en TS y agregar
                 token = addToken(lexema.substring(0, lexema.length()-2), Main.CONSTANTE);
                 token.addAtributo("tipo", "LONGINT");
 
@@ -257,10 +261,15 @@ public class AnalizadorLexico {
 
     public class AS4 implements AccionSemantica {
         // Caracter invalido
+        String error;
+
+        public AS4(String mensaje){
+            error = mensaje;
+        }
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
-            error("Caracter inválido: " + ultimo, nroLinea);
+            error(error + ": " + lexema.append(ultimo), nroLinea);
            lexema.setLength(0);
             return null;
         }
@@ -288,7 +297,6 @@ public class AnalizadorLexico {
 
             //verificar rango
             Token token = null;
-            System.out.println(flotante);
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), Main.CONSTANTE);
@@ -348,6 +356,8 @@ public class AnalizadorLexico {
             return null;
         }
     }
+
+
 
 
 
