@@ -56,11 +56,18 @@ public class PolacaInversaProcedimientos {
         for (String procedimiento: polacaProcedimientos.keySet()
              ) {
             builder.append("_"+procedimiento+" proc").append(System.lineSeparator());
-            builder.append(polacaProcedimientos.get(procedimiento).generarCodigo());
+            builder.append(polacaProcedimientos.get(procedimiento).generarCodigo(true));
             builder.append("ret").append(System.lineSeparator());
             builder.append("_"+procedimiento+" endp").append(System.lineSeparator());
         }
 
         return builder.toString();
+    }
+
+    public int getErrores(){
+        int errores = 0;
+        for (PolacaInversa polaca: polacaProcedimientos.values())
+            errores += polaca.getErrores();
+        return errores;
     }
 }

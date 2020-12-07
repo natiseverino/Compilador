@@ -31,6 +31,11 @@ public class ElemSimple extends PolacaElem {
         return false;
     }
 
+    @Override
+    public String getLexema() {
+        return token.getLexema(false);
+    }
+
     public Token getToken() {
         return token;
     }
@@ -44,9 +49,5 @@ public class ElemSimple extends PolacaElem {
         return token.getLexema(false);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return token.getLexema(false).equals(o);
-    }
 
 }

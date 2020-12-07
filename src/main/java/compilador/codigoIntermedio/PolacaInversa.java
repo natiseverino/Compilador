@@ -1,5 +1,6 @@
 package compilador.codigoIntermedio;
 
+import compilador.Errores;
 import compilador.Main;
 
 import java.util.ArrayList;
@@ -25,7 +26,13 @@ public class PolacaInversa {
 
     public void addElem(PolacaElem elem, boolean usaPila){
         if(usaPila)
-            this.elementos.set(this.stack.pop(), elem); //obtengo la posicion de la pila e inserto el elemento ahi
+            if (!this.stack.empty())
+                this.elementos.set(this.stack.pop(), elem); //obtengo la posicion de la pila e inserto el elemento ahi
+            else{
+                //Errores.addError("[PI] Error - Pila de posiciones de vacia \n");
+                errores++;
+            }
+
         else
             this.elementos.add(elem); //agrego el elemento al final
     }
@@ -38,14 +45,19 @@ public class PolacaInversa {
     }
 
     public int popPos(){
-        return this.stack.pop();
+        if (!stack.empty())
+            return this.stack.pop();
+        else {
+            errores++;
+            return -1;
+        }
     }
 
     public int size(){
         return elementos.size();
     }
 
-    public String generarCodigo(){
+    public String generarCodigo(boolean procedimiento){
         StringBuilder builder = new StringBuilder();
         Stack<PolacaElem> stackPol = new Stack<>(); //Stack de elementos de la polaca
         errores = 0;
@@ -59,6 +71,9 @@ public class PolacaInversa {
                 break;
             }
         }
+
+        if(!procedimiento)
+            builder.append("jmp label_end");
 
         if (errores == 0)
             return builder.toString();

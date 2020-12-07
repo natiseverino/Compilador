@@ -1,6 +1,5 @@
 package compilador.codigoIntermedio;
 
-import compilador.Errores;
 import compilador.Main;
 import compilador.TablaSimbolos;
 import compilador.Token;
@@ -51,24 +50,13 @@ public class OperadorBinario extends PolacaElem {
 
             } else if (tipo.equals("FLOAT")) {
                 ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux());
-                switch (operador) {
-                    case '+':
-                    case '-':
-                    case '*':
-                    case '/':
-                        stack.push(aux);
-                }
+                if (operacionAritmetica(operador))
+                    stack.push(aux);
+
                 code.append(generarFloat(elem1, elem2, operador, aux));
 
-                switch (operador) {
-                    case '>':
-                    case '<':
-                    case TablaSimbolos.DISTINTO:
-                    case TablaSimbolos.MAYOR_IGUAL:
-                    case TablaSimbolos.MENOR_IGUAL:
-                    case TablaSimbolos.IGUAL:
-                        stack.push(this);
-                }
+               if (operacionLogica(operador))
+                   stack.push(this);
             }
         } else { //asignaciones
             Token id1 = elem1.getToken();
@@ -405,5 +393,15 @@ public class OperadorBinario extends PolacaElem {
     @Override
     public String toString() {
         return palabra;
+    }
+
+    private boolean operacionAritmetica(int operador){
+        return operador == '+' || operador == '-' || operador == '*' || operador == '/';
+    }
+
+    private boolean operacionLogica(int operador){
+        return operador == '>' || operador == '<' || operador == TablaSimbolos.DISTINTO
+                || operador == TablaSimbolos.IGUAL || operador == TablaSimbolos.MAYOR_IGUAL
+                || operador == TablaSimbolos.MENOR_IGUAL ;
     }
 }

@@ -9,6 +9,10 @@ public abstract class PolacaElem {
     public abstract String generarCodigo(Stack<PolacaElem> stack);
     public abstract boolean error();
 
+    public String getLexema(){
+        return "";
+    }
+
     public int getNroLinea(){
         return nroLinea;
     }
@@ -16,4 +20,5 @@ public abstract class PolacaElem {
     public void setNroLinea(int nroLinea){
         this.nroLinea = nroLinea;
     }
+
 }
