@@ -1022,8 +1022,10 @@ public class Parser {
     }
 
     public void SA3(String cte) { //chequea que la constante sea LONGINT
-        if (!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
-            Errores.addError(String.format("[AS] | Linea %d: Constante no es del tipo entero %n", analizadorLexico.getNroLinea()));
+        Token cte_t = TablaSimbolos.getToken(cte);
+        if (cte_t != null)
+            if (!cte_t.getAtributo("tipo").equals("LONGINT"))
+                Errores.addError(String.format("[AS] | Linea %d: Constante no es del tipo entero %n", analizadorLexico.getNroLinea()));
     }
 
     public void SA4(String id1, String id2) { //reviso que la variable inicializada en el for sea la misma que la de la condicion
