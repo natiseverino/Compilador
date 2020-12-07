@@ -1,4 +1,5 @@
 %% Sentencias reconocidas como sentencias de salida OUT
+LONGINT a;
 OUT("abc-
 def");
 
@@ -6,9 +7,9 @@ OUT("");
 
 OUT("a");
 
-%% Sentencias reconocidas como sentencias de salida OUT con errores
-("a");
+OUT(a);
 
+%% Sentencias reconocidas como sentencias de salida OUT con errores
 OUT"a");
 
 OUT();
