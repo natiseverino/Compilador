@@ -53,7 +53,7 @@ public class OperadorUnario extends PolacaElem {
                 if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
                     if (token.getAtributo("uso") != null) {
                         if (token.getAtributo("uso").equals(Main.VARIABLE)) {
-                            return "invoke printf, cfm$(\"%s\\n\"), " + out;
+                            return "invoke printf, cfm$(\"%i\\n\"), OFFSET " + out;
                         }
                     }
                 } else if (token.getTipoToken().equals(Main.CONSTANTE)) {

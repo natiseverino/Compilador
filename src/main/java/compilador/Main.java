@@ -41,18 +41,18 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath;
+        String filePath = "CasosDePrueba/CorreccionesSegundaEntrega.txt";
         StringBuilder codigoFuente;
 
-        String fileNameAsm;
+        String fileNameAsm = "CasosDePrueba/CorreccionesSegundaEntrega.asm";
 
-        try {
-            filePath = args[0];
-            fileNameAsm = filePath.replace(".txt", ".asm");
-        } catch (Exception e) {
-            throw new Exception("No se ha ingresado un archivo");
-        }
-
+//        try {
+//            filePath = args[0];
+//            fileNameAsm = filePath.replace(".txt", ".asm");
+//        } catch (Exception e) {
+//            throw new Exception("No se ha ingresado un archivo");
+//        }
+//
         try {
             codigoFuente = FileManager.loadCodigoFuente(filePath);
         } catch (Exception e) {

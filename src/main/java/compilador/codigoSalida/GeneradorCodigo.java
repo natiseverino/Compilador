@@ -33,6 +33,7 @@ public class GeneradorCodigo {
                 .append("include \\masm32\\include\\windows.inc").append(System.lineSeparator())
                 .append("include \\masm32\\include\\kernel32.inc").append(System.lineSeparator())
                 .append("include \\masm32\\include\\user32.inc").append(System.lineSeparator())
+                .append("include \\masm32\\include\\masm32rt.inc").append(System.lineSeparator())
                 .append("includelib \\masm32\\lib\\kernel32.lib").append(System.lineSeparator())
                 .append("includelib \\masm32\\lib\\user32.lib").append(System.lineSeparator())
                 .append("dll_dllcrt0 PROTO C").append(System.lineSeparator())

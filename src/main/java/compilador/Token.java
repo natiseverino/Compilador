@@ -45,7 +45,7 @@ public class Token {
                 this.alias = "@string" + countString;
                 break;
             case Main.IDENTIFICADOR:
-                this.alias = "_"+lexema+"."+getAtributo("ambito");
+                this.alias = "_"+lexema+"@"+getAtributo("ambito");
                 break;
         }
     }
@@ -104,7 +104,8 @@ public class Token {
         StringBuilder builder = new StringBuilder();
         switch (this.tipoToken) {
             case Main.IDENTIFICADOR:
-                if (this.getAtributo("uso").equals(Main.VARIABLE))
+                String usoToken = this.getAtributo("uso")+"";
+                if (usoToken.equals(Main.VARIABLE) || usoToken.equals(Main.PARAMETRO))
                     builder.append("_").append(lexema).append(" dd ?");
                 break;
             case Main.CONSTANTE:

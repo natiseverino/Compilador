@@ -73,7 +73,7 @@ public class PolacaInversa {
         }
 
         if(!procedimiento)
-            builder.append("jmp label_end");
+            builder.append("jmp label_end").append(System.lineSeparator()).append(System.lineSeparator());
 
         if (errores == 0)
             return builder.toString();
