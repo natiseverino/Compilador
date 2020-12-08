@@ -99,7 +99,10 @@ public class OperadorBinario extends PolacaElem {
                         .append("fadd").append(System.lineSeparator())
                         .append("fstp ").append(aux.getToken().getLexema(true))
                         .append(System.lineSeparator());
-                code.append(overflowFloat(aux));
+                //chequeo de overflow
+                code.append(System.lineSeparator())
+                        .append(overflowFloat(aux))
+                        .append(System.lineSeparator());
                 break;
             case '-':
                 code.append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
@@ -167,14 +170,18 @@ public class OperadorBinario extends PolacaElem {
                     t_reg.addAtributo("tipo", "LONGINT");
                     ElemSimple registro = new ElemSimple(t_reg);
                     stack.push(registro);
-                    code.append(overflowLong(registro));
+                    code.append(System.lineSeparator());
+                    code.append(overflowLong(registro))
+                            .append(System.lineSeparator());
                 } else if (tipo2.equals(REGISTRO)) { //casos var reg - reg reg
                     code.append("add ").append(token1.getLexema(true)).append(", ").append(token2.getLexema(true))
                             .append(System.lineSeparator());
                     if (tipo1.equals(REGISTRO)) //en caso reg reg libero el segundo
                         SeguimientoRegistros.getInstance().liberar(token2.getLexema(true));
                     stack.push(elem1);
-                    code.append(overflowLong(elem1));
+                    code.append(System.lineSeparator());
+                    code.append(overflowLong(elem1))
+                            .append(System.lineSeparator());
                 }
                 break;
             case '-':
@@ -368,6 +375,14 @@ public class OperadorBinario extends PolacaElem {
                 .append("jg label label_overflow_float")
                 .append(System.lineSeparator());
 
+        code.append("fld ").append(resultado.getToken().getLexema(true)).append(System.lineSeparator())
+                .append("fld @min_float").append(System.lineSeparator())
+                .append("fcompp").append(System.lineSeparator())
+                .append("fstsw ax").append(System.lineSeparator())
+                .append("sahf").append(System.lineSeparator())
+                .append("jl label label_overflow_float")
+                .append(System.lineSeparator());
+
         return code.toString();
     }
 
@@ -375,7 +390,11 @@ public class OperadorBinario extends PolacaElem {
         StringBuilder code = new StringBuilder();
 
         code.append("cmp ").append(resultado).append(", @max_long").append(System.lineSeparator())
-                .append("jg label label_overflow_longint").append(System.lineSeparator());
+                .append("jge label label_overflow_longint").append(System.lineSeparator());
+
+        code.append("cmp ").append(resultado).append(", @min_long").append(System.lineSeparator())
+                .append("jle label label_overflow_longint").append(System.lineSeparator());
+
 
         return code.toString();
     }

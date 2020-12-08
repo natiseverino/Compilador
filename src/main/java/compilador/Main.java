@@ -29,7 +29,7 @@ public class Main {
 
 
     public static void guardarArchivo(String txt, String path) {
-        BufferedWriter writer = null;
+        BufferedWriter writer;
         try {
             writer = new BufferedWriter(new FileWriter(path));
             writer.write(txt);
@@ -41,7 +41,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath;
+        String filePath = "CasosDePrueba/Test.txt";
         StringBuilder codigoFuente;
 
         String fileNameAsm;
@@ -59,36 +59,26 @@ public class Main {
             throw new Exception("No se ha encontrado el archivo " + filePath);
         }
 
-        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, false);
+        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, true);
         PolacaInversa polaca = new PolacaInversa();
         PolacaInversaProcedimientos polacaProcedimientos = new PolacaInversaProcedimientos();
-        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, false);
+        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, true);
         parser.yyparse();
         System.out.println();
         TablaSimbolos.print();
-        Errores.printWarnings();
-        Errores.printErrores();
-
-        int errores_polaca = polaca.getErrores()+polacaProcedimientos.getErrores();
-        if (errores_polaca > 0) {
-            System.out.println();
-            System.out.println("Se encontraron " + errores_polaca + " error/es en la generacion de la polaca inversa");
-        }
-        else {
-            polaca.print();
-            polacaProcedimientos.print();
-        }
 
         int errores = Errores.getErrores();
 
         if (errores > 0) {
             System.out.println();
-            System.out.println("Hay " + errores + " error/es sintacticos y/o lexicos");
+            System.out.println("Se encontraron " + errores + " error/es");
             System.out.println("No se genero el codigo assembler");
         } else {
+            polaca.print();
+            polacaProcedimientos.print();
 
             String code = GeneradorCodigo.getInstance().generarCodigo(polaca, polacaProcedimientos);
-            int gc_errores = polaca.getErrores();
+            int gc_errores = polaca.getErrores() + polacaProcedimientos.getErrores();
             if (gc_errores > 0) {
                 System.out.println();
                 System.out.println("Hay " + gc_errores + " error/es en la generacion de codigo");
@@ -100,5 +90,9 @@ public class Main {
 
         }
 
+        Errores.printWarnings();
+        Errores.printErrores();
     }
+
+
 }

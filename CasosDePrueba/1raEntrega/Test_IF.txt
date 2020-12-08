@@ -41,7 +41,7 @@ IF (a>1.) THEN ELSE a=2.; END_IF;
 IF (a>1.) THEN "abc" END_IF;
 IF (a>1.) THEN "abc" ELSE a=2.; END_IF;
 
-IF (a>1.) THEN a=1.;
+IF (a>1.) THEN a=1.;;
 IF (a>1.) THEN a=1.; END_IF
 
 IF (a>1.) THEN a=1.; {a=2.; b=1.;} END_IF;
