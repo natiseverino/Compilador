@@ -102,14 +102,8 @@ proc_parametros : '(' lista_parametros_formales ')' {   TablaSimbolos.getToken(g
 proc_ni : NI '=' CTE    {   String cte = $3.sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
-                            else {
-                                int cteInt = Integer.parseInt(cte);
-                                if(cteInt < 1 || cteInt > 4)
-                                    Errores.addError(String.format("[ASem] | Linea %d: NI no se encuentra en el intervalo [1,4] %n", analizadorLexico.getNroLinea()));
-                                else
-                                    TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
-                            }
-
+                            else
+                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -618,9 +612,10 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
     String ambitosString = ambitos.getAmbitos();
     ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
-    // Para el caso de la invocación a procedimientos se acota el ámbito actual para excluirlo como parte del ámbito al tener que estar declarado en un ámbito padre
-    if(uso.equals("Procedimiento") && !ambitosString.equals("main"))
-      ambitosString = ambitosString.substring(0, (ambitosString.length())-(ambitosList.get(ambitosList.size()-1).length()+1));
+    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
+        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
+        ambitosList.remove(ambitosList.size()-1);
+    }
 
     boolean declarado = false;
     while(!ambitosList.isEmpty()) {
