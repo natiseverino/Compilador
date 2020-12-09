@@ -31,7 +31,7 @@ import java.util.Map;
 public class Parser
 {
 
-boolean yydebug;        //do I want debug output?
+boolean yydebug = true;        //do I want debug output?
 int yynerrs;            //number of errors so far
 int yyerrflag;          //was there an error?
 int yychar;             //the current working character
@@ -751,6 +751,7 @@ private PolacaInversaProcedimientos polacaProcedimientos;
 private String ultimoTipo;
 private List<String> parametrosFormales = new ArrayList<>();
 private List<String> parametrosReales = new ArrayList<>();
+private int numberOfProcs = 0;
 
 private boolean actualizarTablaSimbolos;
 
@@ -883,6 +884,10 @@ public void declaracionID(String lexema, String uso, String tipo) {
         nuevoToken.addAtributo("tipo", tipo);
         nuevoToken.addAtributo("contador", 0);
         nuevoToken.addAtributo("ambito", nuevoLexema.substring(lexema.length()+1, nuevoLexema.length()));
+        if(uso.equals("Procedimiento")) {
+            this.numberOfProcs++;
+            nuevoToken.addAtributo("numeroProc", numberOfProcs);
+        }
         TablaSimbolos.add(nuevoToken);
     }
     else {
@@ -907,10 +912,10 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
     String ambitosString = ambitos.getAmbitos();
     ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
-    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
-        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
-        ambitosList.remove(ambitosList.size()-1);
-    }
+//    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
+//        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
+//        ambitosList.remove(ambitosList.size()-1);
+//    }
 
     boolean declarado = false;
     while(!ambitosList.isEmpty()) {
@@ -959,7 +964,16 @@ public void invocacionID(String lexema, String uso) {
         // TODO no hay que chequearlo acá
 //        if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
 //            Errores.addError(String.format("[ASem] | Linea %d: Se supera el máximo de invocaciones del procedimiento %n", analizadorLexico.getNroLinea()));
-//        else {
+//        else
+          Token padre = null;
+          if(!ambitosString.equals("main")) {
+              String lexemaPadre = ambitosString.split("@")[ambitosString.split("@").length-1];
+              lexemaPadre = lexemaPadre + "@" + ambitosString.substring(0, (ambitosString.length())-(lexemaPadre.length()+1));
+              padre = TablaSimbolos.getToken(lexemaPadre);
+          }
+          procedimiento.addAtributo("padre", (padre != null) ? padre.getAtributo("numeroProc") : 0);
+
+
             // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
             List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
             if (parametrosReales.size() != parametrosFormales.size())
@@ -1122,8 +1136,8 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
         }
 
         parametroFormal = parametroFormal + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema;
-        SA1(parametroFormal);
         SA1(parametrosReales.get(i));
+        SA1(parametroFormal);
         SA2("=");
     }
 
@@ -1133,17 +1147,18 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
     else
         polacaProcedimientos.addElem(ambitos.getAmbitos(), new OperadorUnario(OperadorUnario.Tipo.INV),false);
 
+    // TODO revisar parametros VAR
     if(!parametrosCVR.isEmpty()) {
       for (String parametroCVR: parametrosCVR
            ) {
         String[] param = parametroCVR.split("@");
-        SA1(param[1]);
         SA1(param[0] + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema);
+        SA1(param[1]);
         SA2("=");
       }
     }
 }
-//#line 1074 "Parser.java"
+//#line 1080 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -2013,7 +2028,7 @@ case 161:
                               		        }
      	 	}
 break;
-//#line 1938 "Parser.java"
+//#line 1944 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

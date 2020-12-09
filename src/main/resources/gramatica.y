@@ -102,8 +102,8 @@ proc_parametros : '(' lista_parametros_formales ')' {   TablaSimbolos.getToken(g
 proc_ni : NI '=' CTE    {   String cte = $3.sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
-                            else
-                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+//                            else
+//                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -456,6 +456,7 @@ private PolacaInversaProcedimientos polacaProcedimientos;
 private String ultimoTipo;
 private List<String> parametrosFormales = new ArrayList<>();
 private List<String> parametrosReales = new ArrayList<>();
+private int numberOfProcs = 0;
 
 private boolean actualizarTablaSimbolos;
 
@@ -588,6 +589,10 @@ public void declaracionID(String lexema, String uso, String tipo) {
         nuevoToken.addAtributo("tipo", tipo);
         nuevoToken.addAtributo("contador", 0);
         nuevoToken.addAtributo("ambito", nuevoLexema.substring(lexema.length()+1, nuevoLexema.length()));
+        if(uso.equals("Procedimiento")) {
+            this.numberOfProcs++;
+            nuevoToken.addAtributo("numeroProc", numberOfProcs);
+        }
         TablaSimbolos.add(nuevoToken);
     }
     else {
@@ -612,10 +617,10 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
     String ambitosString = ambitos.getAmbitos();
     ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
-    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
-        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
-        ambitosList.remove(ambitosList.size()-1);
-    }
+//    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
+//        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
+//        ambitosList.remove(ambitosList.size()-1);
+//    }
 
     boolean declarado = false;
     while(!ambitosList.isEmpty()) {
@@ -660,11 +665,14 @@ public void invocacionID(String lexema, String uso) {
     if(uso.equals("Procedimiento") && declarado) {
         Token procedimiento = TablaSimbolos.getToken(lexema + "@" + ambitosString);
 
-        // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
-        // TODO no hay que chequearlo acá
-//        if(((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
-//            Errores.addError(String.format("[ASem] | Linea %d: Se supera el máximo de invocaciones del procedimiento %n", analizadorLexico.getNroLinea()));
-//        else {
+        Token padre = null;
+          if(!ambitosString.equals("main")) {
+              String lexemaPadre = ambitosString.split("@")[ambitosString.split("@").length-1];
+              lexemaPadre = lexemaPadre + "@" + ambitosString.substring(0, (ambitosString.length())-(lexemaPadre.length()+1));
+              padre = TablaSimbolos.getToken(lexemaPadre);
+          }
+          procedimiento.addAtributo("padre", (padre != null) ? padre.getAtributo("numeroProc") : 0);
+
             // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
             List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
             if (parametrosReales.size() != parametrosFormales.size())
@@ -827,8 +835,8 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
         }
 
         parametroFormal = parametroFormal + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema;
-        SA1(parametroFormal);
         SA1(parametrosReales.get(i));
+        SA1(parametroFormal);
         SA2("=");
     }
 
@@ -842,8 +850,8 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
       for (String parametroCVR: parametrosCVR
            ) {
         String[] param = parametroCVR.split("@");
-        SA1(param[1]);
         SA1(param[0] + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema);
+        SA1(param[1]);
         SA2("=");
       }
     }
