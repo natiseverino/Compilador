@@ -45,7 +45,10 @@ public class Token {
                 this.alias = "@string" + countString;
                 break;
             case Main.IDENTIFICADOR:
-                this.alias = "_"+lexema+"@"+getAtributo("ambito");
+                if(getAtributo("uso").equals(Main.PROCEDIMIENTO))
+                    this.alias = lexema.substring(lexema.lastIndexOf("@")+1) + "@" + getAtributo("ambito");
+                else
+                    this.alias = "_"+lexema+"@"+getAtributo("ambito");
                 break;
         }
     }
@@ -104,8 +107,13 @@ public class Token {
         StringBuilder builder = new StringBuilder();
         switch (this.tipoToken) {
             case Main.IDENTIFICADOR:
-                if (this.getAtributo("uso").equals(Main.VARIABLE))
+                String usoToken = this.getAtributo("uso").toString();
+                if (usoToken.equals(Main.VARIABLE) || usoToken.equals(Main.PARAMETRO))
                     builder.append("_").append(lexema).append(" dd ?");
+                if (usoToken.equals(Main.PROCEDIMIENTO)) {
+                    builder.append("_").append(lexema).append("@inv").append(" dd 0").append(System.lineSeparator());
+                    builder.append("@").append(lexema).append("@max_inv").append(" dd ").append(getAtributo("max. invocaciones"));
+                }
                 break;
             case Main.CONSTANTE:
                 builder.append(alias).append(" dd ").append(lexema);
