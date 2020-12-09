@@ -44,8 +44,8 @@ public class OperadorBinario extends PolacaElem {
 
         if (!elem1.getTipo().equals(elem2.getTipo())) {
             System.out.printf(Main.ANSI_RED + "[GC] | Linea %d: Tipos incompatibles %n" + Main.ANSI_RESET, elem1.getNroLinea());
-            System.out.println(elem1.getToken().getLexema(true) + " -> " + elem1.getTipo());
-            System.out.println(elem2.getToken().getLexema(true) + " -> " + elem2.getTipo());
+            System.out.println(elem1.getToken().getLexema(false) + " -> " + elem1.getTipo());
+            System.out.println(elem2.getToken().getLexema(false) + " -> " + elem2.getTipo());
             huboError = true;
             return "";
         }
@@ -381,7 +381,7 @@ public class OperadorBinario extends PolacaElem {
                 .append("fld @max_float").append(System.lineSeparator())
                 .append("fcompp").append(System.lineSeparator())
                 .append("fstsw ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
-                .append("mov ax").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
+                .append("mov ax, ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("sahf").append(System.lineSeparator())
                 .append("jae label_overflow_float")
                 .append(System.lineSeparator());
@@ -390,7 +390,7 @@ public class OperadorBinario extends PolacaElem {
                 .append("fld @min_float").append(System.lineSeparator())
                 .append("fcompp").append(System.lineSeparator())
                 .append("fstsw ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
-                .append("mov ax").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
+                .append("mov ax, ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("sahf").append(System.lineSeparator())
                 .append("jbe label_overflow_float")
                 .append(System.lineSeparator());

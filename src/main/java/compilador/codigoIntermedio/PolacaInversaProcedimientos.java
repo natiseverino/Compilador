@@ -8,6 +8,7 @@ import java.util.Map;
 public class PolacaInversaProcedimientos {
     private Map<String, PolacaInversa> polacaProcedimientos;
 
+
     public PolacaInversaProcedimientos() {
         this.polacaProcedimientos = new HashMap<>();
     }
@@ -46,11 +47,12 @@ public class PolacaInversaProcedimientos {
     public void print(){
         if(!polacaProcedimientos.isEmpty()) {
             System.out.println(Main.ANSI_BOLD_WHITE + ">> POLACA INVERSA PROCEDIMIENTOS" + Main.ANSI_RESET);
-            for (String procedimiento: polacaProcedimientos.keySet()
-                 ) {
-                System.out.println("Proc.: " + procedimiento);
-                System.out.println(polacaProcedimientos.get(procedimiento).toString());
-                System.out.println();
+            for (String procedimiento: polacaProcedimientos.keySet()) {
+                if (polacaProcedimientos.get(procedimiento).getErrores() == 0) {
+                    System.out.println("Proc.: " + procedimiento);
+                    System.out.println(polacaProcedimientos.get(procedimiento).toString());
+                    System.out.println();
+                }
             }
         }
     }

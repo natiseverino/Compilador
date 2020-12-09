@@ -30,10 +30,10 @@ public class Ambitos {
     }
 
     public String getAmbitos() {
-        String retorno = new String();
+        StringBuilder retorno = new StringBuilder();
         for (String ambito: ambitosAnidados
              ) {
-            retorno += ambito + "@";
+            retorno.append(ambito).append("@");
         }
         return (retorno.substring(0, retorno.length()-1));
 

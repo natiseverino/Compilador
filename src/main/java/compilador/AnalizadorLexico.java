@@ -37,35 +37,42 @@ public class AnalizadorLexico {
         this.verbose = verbose;
     }
 
+    private enum TipoError{
+        CARACTER_INVALIDO,
+        CONSTANTE_NUMERICA_INVALIDA,
+        CADENA_INCORRECTA
+    }
+
     private void asignarAS() {
         AccionSemantica AS1 = new AS1();
         AccionSemantica AS2 = new AS2();
         AccionSemantica AS3 = new AS3();
-        AccionSemantica AS4 = new AS4("Caracter invalido");
-        AccionSemantica AS4n = new AS4("Constante numerica invalida");
+        AccionSemantica AS4 = new AS4(TipoError.CARACTER_INVALIDO);
+        AccionSemantica AS4n = new AS4(TipoError.CONSTANTE_NUMERICA_INVALIDA);
+        AccionSemantica AS4c = new AS4(TipoError.CADENA_INCORRECTA);
         AccionSemantica AS5 = new AS5();
         AccionSemantica AS6 = new AS6();
         AccionSemantica AS7 = new AS7();
         AccionSemantica AS8 = new AS8();
 
         accionesSemanticas = new AccionSemantica[][] {
-              //  l      L     d     _    "l"    .    "f"    %     +     -     =      * / { } ( ) , ;     "    > <    !    \n    " " \t   $    otro
-                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS6,  AS7,  AS7,  AS2,          AS7,         AS2,  AS2,  AS2,  AS8,   AS6 ,  AS6,  AS4},
-                {AS2,   AS1,  AS2,  AS2,  AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
-                {AS1,   AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
-                {AS4n, AS4n,  AS2,  AS2, AS4n,  AS2, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n, AS4n,  AS4n , AS4n, AS4n},
-                {AS4n, AS4n, AS4n, AS4n,  AS3, AS4n, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n, AS4n,  AS4n , AS4n, AS4n},
-                {AS4,   AS4,  AS2,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4},
-                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS2,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
-                {AS5,   AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS2,  AS2,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
-                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,  AS5,   AS5 ,  AS5,  AS5},
-                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS6,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4},
-                {AS6,   AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,          AS6,         AS6,  AS6,  AS6,  AS8,   AS6 ,  AS6,  AS6},
-                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS4,   AS2 ,  AS2,  AS2},
-                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS8,   AS2 ,  AS2,  AS2},
-                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS2,   AS2 ,  AS2,  AS2},
-                {AS1,   AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS7,          AS1,         AS1,  AS1,  AS1,  AS1,   AS1 ,  AS1,  AS1},
-                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS7,          AS4,         AS4,  AS4,  AS4,  AS4,   AS4 ,  AS4,  AS4}
+              //  l      L     d     _    "l"    .    "f"    %     +     -     =      * / { } ( ) , ;     "    > <    !     \n    " " \t   $    otro
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS6,  AS7,  AS7,  AS2,          AS7,         AS2,  AS2,  AS2,   AS8,   AS6,   AS6,  AS4},
+                {AS2,   AS1,  AS2,  AS2,  AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,   AS1,   AS1,   AS1,  AS1},
+                {AS1,   AS2,  AS1,  AS2,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,          AS1,         AS1,  AS1,  AS1,   AS1,   AS1,   AS1,  AS1},
+                {AS4n, AS4n,  AS2,  AS2, AS4n,  AS2, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n,  AS4n,  AS4n,  AS4n, AS4n},
+                {AS4n, AS4n, AS4n, AS4n,  AS3, AS4n, AS4n, AS4n, AS4n, AS4n, AS4n,         AS4n,        AS4n, AS4n, AS4n,  AS4n,  AS4n,  AS4n, AS4n},
+                {AS4,   AS4,  AS2,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,   AS4,   AS4,   AS4,  AS4},
+                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS2,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,   AS5,   AS5,   AS5,  AS5},
+                {AS5,   AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS2,  AS2,  AS5,          AS5,         AS5,  AS5,  AS5,   AS5,   AS5,   AS5,  AS5},
+                {AS5,   AS5,  AS2,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,  AS5,          AS5,         AS5,  AS5,  AS5,   AS5,   AS5,   AS5,  AS5},
+                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS6,  AS4,  AS4,  AS4,          AS4,         AS4,  AS4,  AS4,   AS4,   AS4,   AS4,  AS4},
+                {AS6,   AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,  AS6,          AS6,         AS6,  AS6,  AS6,   AS8,   AS6,   AS6,  AS6},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,  AS4c,   AS2,   AS2,  AS2},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,   AS8,   AS2,   AS2,  AS2},
+                {AS2,   AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,  AS2,          AS2,         AS7,  AS2,  AS2,   AS2,   AS2,   AS2,  AS2},
+                {AS1,   AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS1,  AS7,          AS1,         AS1,  AS1,  AS1,   AS1,   AS1,   AS1,  AS1},
+                {AS4,   AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS4,  AS7,          AS4,         AS4,  AS4,  AS4,   AS4,   AS4,   AS4,  AS4}
         };
     }
 
@@ -202,7 +209,7 @@ public class AnalizadorLexico {
             if(lexema.length() > 20) {
                 String lexemaAnt = lexema.toString();
                 lexema = new StringBuilder(lexema.substring(0, 20));
-                warning("Identificador con más de 20 caracteres: + " + lexemaAnt + "Se trunca a: "+ lexema,nroLinea);
+                warning("Identificador con más de 20 caracteres: + " + lexemaAnt + " - Se trunca a: "+ lexema,nroLinea);
              }
 
 
@@ -262,16 +269,20 @@ public class AnalizadorLexico {
 
     public class AS4 implements AccionSemantica {
         // Caracter invalido
-        String error;
+        TipoError error;
 
-        public AS4(String mensaje){
+        public AS4(TipoError mensaje){
             error = mensaje;
         }
 
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             error(error + ": " + lexema.append(ultimo), nroLinea);
-           lexema.setLength(0);
+            if (error.equals(TipoError.CADENA_INCORRECTA))
+                codigoFuente.insert(0, "\"");
+            if (error.equals(TipoError.CONSTANTE_NUMERICA_INVALIDA))
+                codigoFuente.insert(0, ultimo);
+            lexema.setLength(0);
             return null;
         }
     }

@@ -133,10 +133,11 @@ public final class TablaSimbolos {
                     String atributosAdicionales = (maxInvocaciones != null) ? "NI: " + maxInvocaciones.toString() : "";
 
                     List<String> parametros = (List) simbolos.get(simbolo).getAtributo("parametros");
-                    if (!parametros.isEmpty()) {
-                        String infoParametros = String.join(", ", parametros);
-                        atributosAdicionales += " / Parametros: " + infoParametros;
-                    }
+                    if (parametros != null)
+                        if (!parametros.isEmpty()) {
+                            String infoParametros = String.join(", ", parametros);
+                            atributosAdicionales += " / Parametros: " + infoParametros;
+                        }
 
                     System.out.printf("%-1s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s %n", simbolos.get(simbolo).getIdToken(), simbolos.get(simbolo).getTipoToken(), simbolos.get(simbolo).getLexema(false), (uso != null) ? uso : "-", (tipo != null) ? tipo : "-", simbolos.get(simbolo).getAtributo("contador"), atributosAdicionales);
                 } else if (uso.equals("Parametro")) {

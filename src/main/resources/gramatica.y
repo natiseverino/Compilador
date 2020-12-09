@@ -95,8 +95,11 @@ proc_encabezado : PROC ID   {   ambitos.agregarAmbito($2.sval);
 proc_ni : NI '=' CTE    {   String cte = $3.sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
-                            else
-                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                            else{
+                            String lexemaID = getLexemaID();
+			    if (lexemaID != null)
+				TablaSimbolos.getToken(lexemaID).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                        }
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -110,18 +113,26 @@ proc_cuerpo : '{' lista_sentencias '}'
 ;
 
 lista_parametros_formales   : '(' parametro_formal ',' parametro_formal ',' parametro_formal ')'    {   imprimirReglaReconocida("Lista de parámetros formales (3)", analizadorLexico.getNroLinea());
-                                                                                                        TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                                                                                                        String lexemaID = getLexemaID();
+												    	if (lexemaID != null)
+														TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                                                                                                         parametrosFormales.clear();
                                                                                                     }
                             | '(' parametro_formal ',' parametro_formal ')' {   imprimirReglaReconocida("Lista de parámetros formales (2)", analizadorLexico.getNroLinea());
-                                                                                TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                                                                                String lexemaID = getLexemaID();
+										    if (lexemaID != null)
+											TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                                                                                 parametrosFormales.clear();
                                                                             }
                             | '(' parametro_formal ')'  {   imprimirReglaReconocida("Lista de parámetros formales (1)", analizadorLexico.getNroLinea());
-                                                            TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                                                            String lexemaID = getLexemaID();
+								if (lexemaID != null)
+								    TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                                                             parametrosFormales.clear();
                                                         }
-                            | '(' ')' { TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales)); }
+                            | '(' ')' { String lexemaID = getLexemaID();
+					    if (lexemaID != null)
+						TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales)); }
                             | '(' parametro_formal parametro_formal ',' parametro_formal ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los primeros dos parámetros formales %n", analizadorLexico.getNroLinea())); }
                             | '(' parametro_formal ',' parametro_formal parametro_formal ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los últimos dos parámetros formales %n", analizadorLexico.getNroLinea())); }
                             | '(' parametro_formal parametro_formal ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ',' entre los parámetros formales %n", analizadorLexico.getNroLinea())); }
@@ -378,9 +389,9 @@ expresion   : expresion '+' termino {$$=$1;imprimirReglaReconocida("Suma", anali
             | expresion '-' termino {$$=$1;imprimirReglaReconocida("Resta", analizadorLexico.getNroLinea());
                                      SA2($2.sval);}
             | termino {$$=$1;}
-            | expresion '+' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la suma %n",analizadorLexico.getNroLinea()));}
-            | expresion '-' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la resta %n",analizadorLexico.getNroLinea()));}
-            | error '+' termino { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la suma %n",analizadorLexico.getNroLinea()));}
+            | expresion '+' error { Errores.addError(String.format("[AS] | Linea %d: Error en el segundo operando en la suma %n",analizadorLexico.getNroLinea()));}
+            | expresion '-' error { Errores.addError(String.format("[AS] | Linea %d: Error en el segundo operando en la resta %n",analizadorLexico.getNroLinea()));}
+            | error '+' termino { Errores.addError(String.format("[AS] | Linea %d: Error en el primer operando en la suma %n",analizadorLexico.getNroLinea()));}
 ;
 
 termino : termino '*' factor { $$ = $1;
@@ -390,10 +401,10 @@ termino : termino '*' factor { $$ = $1;
         			imprimirReglaReconocida("División", analizadorLexico.getNroLinea());
         			SA2($2.sval);}
         | factor {$$ = $1;}
-        | termino '*' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
-        | termino '/' error { Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la division %n",analizadorLexico.getNroLinea()));}
-        | error '*' factor { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
-        | error '/' factor { Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la division %n",analizadorLexico.getNroLinea()));}
+        | termino '*' error { Errores.addError(String.format("[AS] | Linea %d: Error en el segundo operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
+        | termino '/' error { Errores.addError(String.format("[AS] | Linea %d: Error en el segundo operando en la division %n",analizadorLexico.getNroLinea()));}
+        | error '*' factor { Errores.addError(String.format("[AS] | Linea %d: Error en el primer operando en la multiplicación %n",analizadorLexico.getNroLinea()));}
+        | error '/' factor { Errores.addError(String.format("[AS] | Linea %d: Error en el primer operando en la division %n",analizadorLexico.getNroLinea()));}
 ;
 
 factor  : ID {$$ = $1; SA1($1.sval);
@@ -508,7 +519,7 @@ public String checkRango(String cte) {
 		flotante = Float.parseFloat(cte);
 	    } else {
 		flotante = Main.MAX_FLOAT-1;
-		 Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, flotante));
+		 Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %s - Se cambia por: %f %n", analizadorLexico.getNroLinea(), cte, flotante));
 	    }
 	    if (flotante != 0f) {
 		String nuevoLexema = "-" + flotante;

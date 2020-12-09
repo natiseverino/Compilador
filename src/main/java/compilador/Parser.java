@@ -820,7 +820,7 @@ public class Parser {
                 flotante = Float.parseFloat(cte);
             } else {
                 flotante = Main.MAX_FLOAT - 1;
-                Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, flotante));
+                Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %s - Se cambia por: %f %n", analizadorLexico.getNroLinea(), cte, flotante));
             }
             if (flotante != 0f) {
                 String nuevoLexema = "-" + flotante;
@@ -992,7 +992,10 @@ public class Parser {
     public String getLexemaID() {
         String ambitosActuales = ambitos.getAmbitos();
         String id = ambitosActuales.split("@")[ambitosActuales.split("@").length - 1];
-        return (id + "@" + ambitosActuales.substring(0, (ambitosActuales.length()) - (id.length() + 1)));
+        if (!id.equals("main"))
+            return (id + "@" + ambitosActuales.substring(0, (ambitosActuales.length()) - (id.length() + 1)));
+        else
+            return null;
     }
 
 
@@ -1349,8 +1352,11 @@ public class Parser {
                     String cte = val_peek(0).sval;
                     if (!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                         Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
-                    else
-                        TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                    else{
+                        String lexemaID = getLexemaID();
+                        if (lexemaID != null)
+                            TablaSimbolos.getToken(lexemaID).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                    }
                 }
                 break;
                 case 32:
@@ -1375,7 +1381,9 @@ public class Parser {
 //#line 112 "gramatica.y"
                 {
                     imprimirReglaReconocida("Lista de parámetros formales (3)", analizadorLexico.getNroLinea());
-                    TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                    String lexemaID = getLexemaID();
+                    if (lexemaID != null)
+                        TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                     parametrosFormales.clear();
                 }
                 break;
@@ -1383,7 +1391,9 @@ public class Parser {
 //#line 116 "gramatica.y"
                 {
                     imprimirReglaReconocida("Lista de parámetros formales (2)", analizadorLexico.getNroLinea());
-                    TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                    String lexemaID = getLexemaID();
+                    if (lexemaID != null)
+                        TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                     parametrosFormales.clear();
                 }
                 break;
@@ -1391,14 +1401,18 @@ public class Parser {
 //#line 120 "gramatica.y"
                 {
                     imprimirReglaReconocida("Lista de parámetros formales (1)", analizadorLexico.getNroLinea());
-                    TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                    String lexemaID = getLexemaID();
+                    if (lexemaID != null)
+                        TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                     parametrosFormales.clear();
                 }
                 break;
                 case 41:
 //#line 124 "gramatica.y"
                 {
-                    TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
+                    String lexemaID = getLexemaID();
+                    if (lexemaID != null)
+                        TablaSimbolos.getToken(lexemaID).addAtributo("parametros", new ArrayList<>(parametrosFormales));
                 }
                 break;
                 case 42:
@@ -2073,19 +2087,19 @@ public class Parser {
                 case 139:
 //#line 381 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la suma %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  segundo operando en la suma %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 140:
 //#line 382 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la resta %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  segundo operando en la resta %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 141:
 //#line 383 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la suma %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  primer operando en la suma %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 142:
@@ -2113,25 +2127,25 @@ public class Parser {
                 case 145:
 //#line 393 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la multiplicación %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  segundo operando en la multiplicación %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 146:
 //#line 394 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el segundo operando en la division %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  segundo operando en la division %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 147:
 //#line 395 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la multiplicación %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  primer operando en la multiplicación %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 148:
 //#line 396 "gramatica.y"
                 {
-                    Errores.addError(String.format("[AS] | Linea %d: Falta el primer operando en la division %n", analizadorLexico.getNroLinea()));
+                    Errores.addError(String.format("[AS] | Linea %d: Error en el  primer operando en la division %n", analizadorLexico.getNroLinea()));
                 }
                 break;
                 case 149:
