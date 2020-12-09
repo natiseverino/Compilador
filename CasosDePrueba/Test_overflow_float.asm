@@ -15,13 +15,13 @@ printf PROTO C :VARARG
 .data
 @float1 dd 3.0E38
 @float4 dd -6.0E37
-@aux4 dd ?
+@aux4 dw ?
 _b@main dd ?
 _a@main dd ?
 @float3 dd -3.0E38
 @aux3 dd ?
 @float2 dd 5.0E37
-@aux2 dd ?
+@aux2 dw ?
 @aux1 dd ?
 @string_overflow_longint db "Error: Overflow en suma de enteros largos", 0
 @string_overflow_float db "Error: Overflow en suma de flotantes", 0

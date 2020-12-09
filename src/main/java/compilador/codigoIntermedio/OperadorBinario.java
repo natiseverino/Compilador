@@ -58,7 +58,7 @@ public class OperadorBinario extends PolacaElem {
                 codeLongint(elem2, elem1, operador, stack, code);
 
             } else if (tipo.equals(Main.FLOAT)) {
-                ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux());
+                ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux("dd"));
                 if (operacionAritmetica(operador))
                     stack.push(aux);
 
@@ -140,6 +140,7 @@ public class OperadorBinario extends PolacaElem {
             case TablaSimbolos.MAYOR_IGUAL:
             case TablaSimbolos.MENOR_IGUAL:
             case TablaSimbolos.IGUAL:
+                aux.getToken().addAtributo("size", "dw");
                 code.append("fld ").append(elem1.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fld ").append(elem2.getToken().getLexema(true)).append(System.lineSeparator())
                         .append("fcompp ").append(System.lineSeparator())
@@ -376,7 +377,7 @@ public class OperadorBinario extends PolacaElem {
 
     private String overflowFloat(ElemSimple resultado) {
         StringBuilder code = new StringBuilder();
-        ElemSimple aux_comp = new ElemSimple(VariableAuxiliar.getAux());
+        ElemSimple aux_comp = new ElemSimple(VariableAuxiliar.getAux("dw"));
         code.append("fld ").append(resultado.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("fld @max_float").append(System.lineSeparator())
                 .append("fcompp").append(System.lineSeparator())

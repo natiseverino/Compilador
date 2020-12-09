@@ -122,7 +122,7 @@ public class Token {
                 builder.append(alias).append(" db ").append(lexema).append(", 0");
                 break;
             case "AUX":
-                builder.append(lexema).append(" dd ?");
+                builder.append(lexema).append(" ").append(getAtributo("size")).append(" ?");
                 break;
         }
 

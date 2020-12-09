@@ -13,16 +13,16 @@ dll_dllcrt0 PROTO C
 printf PROTO C :VARARG
 
 .data
-@aux7 dd ?
-@aux11 dd ?
+@aux7 dw ?
+@aux11 dw ?
 @aux6 dd ?
-@aux12 dd ?
+@aux12 dw ?
 @aux5 dd ?
 @string4 db "b != 5", 0
-@aux4 dd ?
+@aux4 dw ?
 _b@main dd ?
 _a@main dd ?
-@aux9 dd ?
+@aux9 dw ?
 @aux8 dd ?
 @aux10 dd ?
 @string1 db "a = 5", 0
@@ -34,7 +34,7 @@ _a@main dd ?
 @string2 db "a != 5", 0
 @aux3 dd ?
 @string3 db "b = 5", 0
-@aux2 dd ?
+@aux2 dw ?
 @aux1 dd ?
 @string_overflow_longint db "Error: Overflow en suma de enteros largos", 0
 @string_overflow_float db "Error: Overflow en suma de flotantes", 0

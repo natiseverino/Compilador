@@ -14,13 +14,13 @@ printf PROTO C :VARARG
 
 .data
 @string4 db "b != 4", 0
-@aux7 dd ?
+@aux7 dw ?
 @aux6 dd ?
 @aux5 dd ?
 @aux4 dd ?
 _b@main dd ?
 _a@main dd ?
-@aux8 dd ?
+@aux8 dw ?
 @string1 db "a = 4", 0
 @float2 dd 1.0
 @float1 dd 2.0
