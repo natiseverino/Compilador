@@ -1,42 +1,26 @@
 %% Sentencias reconocidas como sentencias de declaración de procedimientos
 
-PROC a() NI = 1. {b=1.;}
+PROC a() NI = 1_l {LONGINT x; x=1_l;}
 
-PROC a(LONGINT b) NI = 1. {b=1.;}
+PROC b(LONGINT x) NI = 1_l {x=1_l;}
 
-PROC a(LONGINT b, FLOAT c) NI = 1. {b=1.;}
+PROC c(LONGINT x, FLOAT y) NI = 1_l {x=1_l;}
 
-PROC a(LONGINT b, FLOAT c, LONGINT d) NI = 1. {b=1.;}
+PROC d(VAR LONGINT x, FLOAT y, LONGINT z) NI = 1_l {x=1_l;}
 
 %% Sentencias reconocidas como sentencias de declaración de procedimientos con errores
-a() NI = 1. {b=1.;}
-a(LONGINT b) NI = 1. {b=1.;}
+PROC f() = 1_l {LONGINT x; x=1_l;}
+PROC g(LONGINT x) = 1_l {x=1_l;}
 
-PROC () NI = 1. {b=1.;}
-PROC (LONGINT b) NI = 1. {b=1.;}
+PROC h() NI 1_l {LONGINT x; x=1_l;}
+PROC i(LONGINT x) NI 1_l {x=1_l;}
 
-PROC "a"() NI = 1. {b=1.;}
-PROC "a"(LONGINT b) NI = 1. {b=1.;}
+PROC j() NI = {LONGINT x; x=1_l;}
+PROC k(LONGINT x) NI = {x=1_l;}
 
-PROC a) NI = 1. {b=1.;}
-PROC aLONGINT b) NI = 1. {b=1.;}
+//TODO revisar
+PROC l() NI = 1_l {LONGINT x; x=1_l;
+PROC m(LONGINT x) NI = 1_l {x=1_l;
 
-PROC a("b") NI = 1. {b=1.;}
-
-PROC a( NI = 1. {b=1.;}
-PROC a(LONGINT b NI = 1. {b=1.;}
-
-PROC a() = 1. {b=1.;}
-PROC a(LONGINT b) = 1. {b=1.;}
-
-PROC a() NI 1. {b=1.;}
-PROC a(LONGINT b) NI 1. {b=1.;}
-
-PROC a() NI = {b=1.;}
-PROC a(LONGINT b) NI = {b=1.;}
-
-PROC a() NI = 1. b=1.;}
-PROC a(LONGINT b) NI = 1. b=1.;}
-
-PROC a() NI = 1. {}
-PROC a(LONGINT b) NI = 1. {}
+PROC n() NI = 1. {}
+PROC o(LONGINT x) NI = 1. {}

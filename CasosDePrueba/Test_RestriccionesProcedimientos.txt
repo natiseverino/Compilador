@@ -1,11 +1,19 @@
 %% Tipo incorrecto para constante NI
-PROC a() NI = 1. {}
+%%PROC a() NI = 1. {}
 
-%% Valor de la constante NI fuera del intervalo permitido
-PROC b() NI = 5_l {}
 
 %% NI procedimiento superado
 PROC c() NI = 1_l {}
 
 c();
 c();
+
+%% Recursion mutua
+PROC b() NI=2_l{
+    PROC d() NI=1_l{
+        b();
+    }
+    d();
+}
+
+b();

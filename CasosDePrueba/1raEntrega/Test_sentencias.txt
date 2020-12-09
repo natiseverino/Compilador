@@ -1,15 +1,17 @@
+PROC funcion() NI = 1_l{
+    OUT("funcion");
+}
+
 LONGINT a;
 a = 25_l;
 IF (a > 5_l) THEN
-    a = a + 1.0;
+    a = a + 1_l;
 END_IF;
 FLOAT b, c;
 b = 2.0;
 funcion();
 
-FOR(a=1.; a<10_l; UP 1.) {
+FOR(a=1_l; a<10_l; UP 1_l) {
 a = 5_l;
 b = -2.0;
-FLOAT d;
-
 }

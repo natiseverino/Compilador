@@ -1,5 +1,6 @@
 %% Sentencias reconocidas como sentencias de salida OUT
 LONGINT a;
+a = 2_l;
 OUT("abc-
 def");
 

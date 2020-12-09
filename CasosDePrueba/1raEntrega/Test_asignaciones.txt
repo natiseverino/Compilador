@@ -1,13 +1,11 @@
 %% Sentencias reconocidas como asignaciones
+FLOAT a,b,c;
 a = b;
 a = 1. + c;
 
 %% Sentencias reconocidas como asignaciones con errores
 = b;
 = 1. + c;
-
-a b;
-a 1. + c;
 
 a = ;
 

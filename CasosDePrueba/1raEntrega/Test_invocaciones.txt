@@ -1,29 +1,33 @@
 %% Sentencias reconocidas como sentencias de invocación a procedimientos
-inv(a);
-inv(a,b);
-inv(a,2.0,c);
-inv();
+PROC inv1(FLOAT x) NI = 1_l {}
+PROC inv2(FLOAT x, FLOAT y) NI = 1_l {}
+PROC inv3(FLOAT x, FLOAT y, FLOAT z) NI = 1_l {}
+PROC inv4() NI = 1_l{}
+
+FLOAT a,b,c;
+
+inv1(a);
+inv2(a,b);
+inv3(a,b,c);
+inv4();
 
 %% Sentencias reconocidas como sentencias de invocación a procedimientos con errores
-(a);
-();
+inv1 a);
+inv4 );
 
-inv a);
-inv );
+inv1("a");
 
-inv("a");
+inv1(a;
+inv4(;
 
-inv(a;
-inv(;
+inv1(a)
+inv4()
 
-inv(a)
-inv()
+inv3(a,b,c,d,e);
 
-inv(a,b,c,d,e);
+inv3(a,b,);
 
-inv(a,b,);
-
-inv(a 4_l 5.0);
-inv(a, 4_l 5.0);
-inv(a 4_l, 5.0);
-inv(a b);
+inv3(a b c);
+inv3(a, b c);
+inv3(a b, c);
+inv2(a b);

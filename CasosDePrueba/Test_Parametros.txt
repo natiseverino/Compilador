@@ -15,3 +15,5 @@ PROC c() NI = 1_l { }
 
 c(f);
 
+%% Pasaje de procedimiento como funcion
+c(a);

@@ -6,17 +6,21 @@ END_IF;
 
 IF (a>1.) THEN
 a=-3.;
-ELSE a=2.;
-END_IF;
-
-IF (a>1.) THEN
-{a=1.;}
-END_IF;
-
-IF (a>1.) THEN
-{ a=1.;}
 ELSE
-{b=2.;}
+a=2.;
+END_IF;
+
+IF (a>1.) THEN
+{ a=1.;
+  b=2.;}
+END_IF;
+
+IF (a>1.) THEN
+{ a=1.;
+  b=a+b;}
+ELSE
+{ b=2.;
+  a=2* b;}
 END_IF;
 
 %% Sentencias de selección IF con errores

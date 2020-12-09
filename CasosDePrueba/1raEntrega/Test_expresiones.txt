@@ -1,17 +1,18 @@
 %% Sentencias reconocidas como expresiones
+FLOAT a,b;
+LONGINT c;
 a = a+b;
 a = a-b;
 a = 2.0 * 4.0;
-a = 4_l / 2_l;
-a = a + b * 5.0 - 1_l;
+c = 4_l / 2_l;
+a = a + b * 5.0 - 1.;
 a = -6.0;
 
 %% Sentencias reconocidas como expresiones con errores
 a = a + "cadena";
-a = a + ;
+a = "cadena" + a;
 a = a - "cadena";
-a = "cadena" - a;
-a = 4.0 / ;
+a = a / "cadena";
 a = "cadena" / a;
 a = a * "cadena";
-a =  * a;
+a = "cadena" * a;
