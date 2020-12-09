@@ -30,7 +30,6 @@ public class Main {
     public static final String LONGINT = "LONGINT";
 
 
-
     public static void guardarArchivo(String txt, String path) {
         BufferedWriter writer;
         try {
@@ -47,13 +46,22 @@ public class Main {
         String filePath = "CasosDePrueba/Test.txt";
         StringBuilder codigoFuente;
 
-        String fileNameAsm;
-
-        try {
-            filePath = args[0];
-            fileNameAsm = filePath.replace(".txt", ".asm");
-        } catch (Exception e) {
-            throw new Exception("No se ha ingresado un archivo");
+        String fileNameAsm = "";
+        Config config = Config.getInstance();
+        if (args != null && args.length > 0) {
+            try {
+                filePath = args[0];
+                fileNameAsm = filePath.replace(".txt", ".asm");
+                for (int i = 1; i < args.length; i++) {
+                    config.setConfig(args[i]);
+                    if (!config.isUltimoReconocido()) {
+                        System.out.println("No se reconocio el argumento " + config.getUltimoArg());
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                throw new Exception("No se ha ingresado un archivo");
+            }
         }
 
         try {
@@ -62,13 +70,16 @@ public class Main {
             throw new Exception("No se ha encontrado el archivo " + filePath);
         }
 
-        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, true);
+        AnalizadorLexico al = new AnalizadorLexico(codigoFuente, config.mostrarL());
         PolacaInversa polaca = new PolacaInversa();
         PolacaInversaProcedimientos polacaProcedimientos = new PolacaInversaProcedimientos();
-        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, true);
+        Parser parser = new Parser(al, false, polaca, polacaProcedimientos, config.mostrarS());
         parser.yyparse();
-        System.out.println();
-        TablaSimbolos.print();
+
+        if (config.mostrarTS()) {
+            System.out.println();
+            TablaSimbolos.print();
+        }
 
         int errores = Errores.getErrores();
 
@@ -77,8 +88,10 @@ public class Main {
             System.out.println("Se encontraron " + errores + " error/es");
             System.out.println("No se genero el codigo assembler");
         } else {
-            polaca.print();
-            polacaProcedimientos.print();
+            if (config.mostrarP()) {
+                polaca.print();
+                polacaProcedimientos.print();
+            }
 
             String code = GeneradorCodigo.getInstance().generarCodigo(polaca, polacaProcedimientos);
             int gc_errores = polaca.getErrores() + polacaProcedimientos.getErrores();
