@@ -1,17 +1,19 @@
-%% Tipo de parámetros reales y formales no coincidentes
-PROC a(LONGINT b) NI = 1_l { }
+LONGINT h, i;
 
-FLOAT d;
-a(d);
+%% Tipo de parámetros reales y formales no coincidentes
+%%PROC a(LONGINT b) NI = 1_l { h=i; }
+%%
+%%FLOAT d;
+%%a(d);
 
 %% Cantidad de parámetros reales y formales no coincidentes
-PROC b() NI = 1_l { }
-
-FLOAT e;
-b(e);
+%%PROC b() NI = 1_l { h=i; }
+%%
+%%FLOAT e;
+%%b(e);
 
 %% Parámetro real no declarado
-PROC c() NI = 1_l { }
+PROC c() NI = 1_l { h=i; }
 
 c(f);
 

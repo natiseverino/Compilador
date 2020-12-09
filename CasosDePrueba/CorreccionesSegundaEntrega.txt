@@ -1,8 +1,15 @@
+%%OUT("esta es otra cadena -
+%%incorrecta-");
+
 %%FOR(a=1.; a<10_l; UP 1.)
 %%{a=b;
 
 %%LONGINT a,b;
 %%FOR(a=1_l; a<10_l; UP 1_l)
+%%{a=b;
+
+%%LONGINT a,b;
+%%FOR(a=1_; a<10_l; UP 1_l)
 %%{a=b;
 
 %%FLOAT a;
@@ -17,9 +24,142 @@
 %%
 %%END_IF;
 
+%%IF () THEN
+%%a=-3.;
+%%ELSE
+%%{a=2.;}
+%%END_IF;
+
 %%FLOAT a,c;
 %%OUT(a)
 
-FOR(a=1.; a<10_l; UP 1.)
-a=b;}
+%%FLOAT b;
+%%PROC a()  {
+%%
+%%b=1.;
+%%}
 
+%%FLOAT b;
+%%PROC a()  1. {
+%%
+%%b=1.;
+%%}
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC a(LONGINT d) NI = 1. {
+%%OUT(d);
+%%d=1.;
+%%}
+%%
+%%a(b);
+%%OUT(b);
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC a(LONGINT d) NI = 1_l {
+%%OUT(d);
+%%d=1.;
+%%}
+%%
+%%a(b);
+%%OUT(b);
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC e() NI = 5_l {
+%%OUT(b);
+%%}
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC e() NI = 3_l {
+%%OUT("LALA");
+%%}
+%%
+%%e();
+%%OUT("LALA");
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC e(LONGINT d) NI = 1_l {
+%%OUT(d);
+%%d=1_l;
+%%}
+%%
+%%e(b);
+%%OUT(b);
+
+%%FLOAT a,b,c;
+%%
+%%a = -3.;
+%%b = -2.;
+%%
+%%IF (a < b) THEN
+%%OUT("A MENOR QUE B");
+%%ELSE
+%%OUT("A MAYOR IGUAL QUE B");
+%%END_IF;
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC e() NI = 1_l {
+%%OUT("LALA");
+%%}
+%%
+%%e();
+%%
+%%IF(2_l < 3_l) THEN
+%%e();
+%%END_IF;
+
+%%LONGINT a,b,c;
+%%
+%%a = 3_l;
+%%b = 2_l;
+%%
+%%PROC e() NI = 1_l {
+%%OUT("LALA");
+%%}
+%%
+%%FOR(a=1_l; a<10_l; UP 1_l) {
+%%OUT(a);
+%%e();
+%%}
+
+LONGINT a,b,c;
+
+a = 3_l;
+b = 2_l;
+
+PROC e(LONGINT d) NI = 1_l {
+OUT("LALA");
+d = 3_l;
+
+PROC e2(LONGINT d) NI = 1_l {
+OUT("LALA");
+d = 3_l;
+e(d);
+}
+
+}
+
+e(b);

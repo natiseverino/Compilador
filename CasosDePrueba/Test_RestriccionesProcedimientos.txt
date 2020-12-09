@@ -1,9 +1,10 @@
-%% Tipo incorrecto para constante NI
-%%PROC a() NI = 1. {}
+LONGINT h, i;
 
+%% Tipo incorrecto para constante NI
+%%PROC a() NI = 1. { h=i; }
 
 %% NI procedimiento superado
-PROC c() NI = 1_l {}
+PROC c() NI = 1_l { h=i; }
 
 c();
 c();

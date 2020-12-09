@@ -1,18 +1,28 @@
+LONGINT h, i;
+
+%% Nombre variable pertenece al procedimiento
+%%PROC a() NI = 1_l { h=i; }
+%%LONGINT a;
+
 %% Variable redeclarada
-PROC a() NI = 1_l {}
-LONGINT a;
+%%LONGINT a;
+%%FLOAT a;
+
+%% Nombre procedimiento pertenece a variable
+%%LONGINT b;
+%%PROC b() NI = 1_l { h=i; }
 
 %% Procedimiento redeclarado
-LONGINT b;
-PROC b() NI = 1_l {}
+%%PROC a() NI = 1_l { h=i; }
+%%PROC a() NI = 5_l { h=i; }
 
 %% Variable no declarada
-OUT(g);
+%%OUT(g);
 
 %% Procedimiento no declarado
-c();
+%%c();
 
 %% Parametro no declarado
-PROC d(LONGINT e) NI = 1_l {}
+PROC d(LONGINT e) NI = 1_l { h=i; }
 d(f);
 
