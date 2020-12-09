@@ -1,6 +1,6 @@
 %% esto es un comentario
 LONGINT identificador_con_muchos_caracteres, _id_empieza_con_guion_bajo, entero_largo_positivo,
-        fuera_de_rango1, fuera_de_rango2;
+        fuera_de_rango1, fuera_de_rango2, numero_mal;
 
 FLOAT fuera_de_rango3, fuera_de_rango4;
 
@@ -24,3 +24,5 @@ fuera_de_rango2 = -2147483649_l;
 
 fuera_de_rango3 = 3.f+39;
 fuera_de_rango4 = -1.f-40;
+
+numero_mal = 1_;
