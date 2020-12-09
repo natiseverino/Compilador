@@ -83,6 +83,7 @@ declaracion_procedimiento   : proc_encabezado lista_parametros_formales proc_ni 
                                                                                                 ambitos.eliminarAmbito(actualizarTablaSimbolos);
                                                                                     }
                             | proc_encabezado lista_parametros_formales proc_cuerpo { Errores.addError(String.format("[AS] | Linea %d: Falta declarar el número de invocaciones permitido en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
+                            | proc_encabezado error proc_ni proc_cuerpo { Errores.addError(String.format("[AS] | Linea %d: Faltan declarar los parametros en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 ;
 
 proc_encabezado : PROC ID   {   ambitos.agregarAmbito($2.sval);
@@ -101,12 +102,13 @@ proc_ni : NI '=' CTE    {   String cte = $3.sval;
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI '=' error { Errores.addError(String.format("[AS] | Linea %d: Falta constante NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
+        | CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI y literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 ;
 
 proc_cuerpo : '{' lista_sentencias '}'
-            | error lista_sentencias '}'
-            | '{' error '}'
-            //| '{' lista_sentencias error
+            | lista_sentencias '}' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '{' en el cuerpo del procedimiento %n", analizadorLexico.getNroLinea())); }
+            | '{' error '}' { Errores.addError(String.format("[AS] | Linea %d: Error en las sentencias del cuerpo del procedimiento %n", analizadorLexico.getNroLinea())); }
+            | '{' lista_sentencias error { Errores.addError(String.format("[AS] | Linea %d: Falta literal '}' en el cuerpo del procedimiento %n", analizadorLexico.getNroLinea())); }
 ;
 
 lista_parametros_formales   : '(' parametro_formal ',' parametro_formal ',' parametro_formal ')'    {   imprimirReglaReconocida("Lista de parámetros formales (3)", analizadorLexico.getNroLinea());
@@ -652,6 +654,7 @@ public void invocacionID(String lexema, String uso) {
 
             // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
             List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
+            if(parametrosFormales == null) return;
             if (parametrosReales.size() != parametrosFormales.size())
                 Errores.addError(String.format("[ASem] | Linea %d: La cantidad de parámetros reales no coincide con la cantidad de parámetros formales del procedimiento %n", analizadorLexico.getNroLinea()));
             else {
@@ -734,7 +737,7 @@ public void SA3(String cte){ //chequea que la constante sea LONGINT
 	Token cte_t = TablaSimbolos.getToken(cte);
         if (cte_t != null)
 	 if (!cte_t.getAtributo("tipo").equals("LONGINT"))
- 		 Errores.addError(String.format("[AS] | Linea %d: Constante no es del tipo entero %n",analizadorLexico.getNroLinea()));
+ 		 Errores.addError(String.format("[ASem] | Linea %d: Constante no es del tipo entero %n",analizadorLexico.getNroLinea()));
 }
 
 public void SA4(String id1, String id2){ //reviso que la variable inicializada en el for sea la misma que la de la condicion

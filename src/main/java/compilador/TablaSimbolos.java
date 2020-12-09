@@ -133,7 +133,7 @@ public final class TablaSimbolos {
                     String atributosAdicionales = (maxInvocaciones != null) ? "NI: " + maxInvocaciones.toString() : "";
 
                     List<String> parametros = (List) simbolos.get(simbolo).getAtributo("parametros");
-                    if (!parametros.isEmpty()) {
+                    if (parametros != null && !parametros.isEmpty()) {
                         String infoParametros = String.join(", ", parametros);
                         atributosAdicionales += " / Parametros: " + infoParametros;
                     }
