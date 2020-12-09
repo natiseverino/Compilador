@@ -3,7 +3,6 @@ package compilador;
 import compilador.codigoIntermedio.PolacaInversa;
 import compilador.codigoIntermedio.PolacaInversaProcedimientos;
 import compilador.codigoSalida.GeneradorCodigo;
-import compilador.codigoSalida.GeneradorCodigo;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -43,10 +42,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         TablaSimbolos.init();
-        String filePath = "CasosDePrueba/Test.txt";
+        String filePath = null;
         StringBuilder codigoFuente;
 
-        String fileNameAsm = "";
+        String fileNameAsm = null;
         Config config = Config.getInstance();
         if (args != null && args.length > 0) {
             try {
@@ -85,7 +84,7 @@ public class Main {
 
         if (errores > 0) {
             System.out.println();
-            System.out.println("Se encontraron " + errores + " error/es");
+            System.out.println(Main.ANSI_RED + "Se encontraron " + errores + " error/es" + Main.ANSI_RESET);
             System.out.println("No se genero el codigo assembler");
         } else {
             if (config.mostrarP()) {
@@ -97,7 +96,7 @@ public class Main {
             int gc_errores = polaca.getErrores() + polacaProcedimientos.getErrores();
             if (gc_errores > 0) {
                 System.out.println();
-                System.out.println("Hay " + gc_errores + " error/es en la generacion de codigo");
+                System.out.println(Main.ANSI_RED + "Hay " + gc_errores + " error/es en la generacion de codigo" + Main.ANSI_RESET);
                 System.out.println("No se genero el codigo assembler");
             } else {
                 guardarArchivo(code, fileNameAsm);

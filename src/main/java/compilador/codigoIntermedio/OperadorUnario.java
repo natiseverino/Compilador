@@ -78,8 +78,8 @@ public class OperadorUnario extends PolacaElem {
 
     private String print(String tipo, String out) {
         if (tipo.equals(Main.FLOAT)) {
-            return "invoke printf, cfm$(\"%f\"), " + out;
-        } else return "invoke printf, cfm$(\"%d\"), " + out;
+            return "invoke printf, cfm$(\"%f \\n\"), " + out;
+        } else return "invoke printf, cfm$(\"%d \\n\"), " + out;
     }
 
     @Override
