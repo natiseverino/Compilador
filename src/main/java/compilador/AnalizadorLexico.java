@@ -1,5 +1,6 @@
 package compilador;
 
+
 public class AnalizadorLexico {
 
 
@@ -247,12 +248,12 @@ public class AnalizadorLexico {
             if(enteroLargo >= 0 && enteroLargo <= Main.MAX_LONG) {
                 //verificar si esta en TS y agregar
                 token = addToken(lexema.substring(0, lexema.length()-2), Main.CONSTANTE);
-                token.addAtributo("tipo", "LONGINT");
+                token.addAtributo("tipo", Main.LONGINT);
 
             } else {
                 warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
                 token = addToken(String.valueOf(Main.MAX_LONG), Main.CONSTANTE);
-                token.addAtributo("tipo", "LONGINT");
+                token.addAtributo("tipo", Main.LONGINT);
             }
 
             return token;
@@ -300,12 +301,12 @@ public class AnalizadorLexico {
             if(( Main.MIN_FLOAT < flotante && flotante < Main.MAX_FLOAT) || flotante == 0 ) {
                 //verificar si esta en TS y agregar
                 token = addToken(String.valueOf(flotante), Main.CONSTANTE);
-                token.addAtributo("tipo", "FLOAT");
+                token.addAtributo("tipo", Main.FLOAT);
             } else {
                 float nuevo = Main.MAX_FLOAT-1;
                 warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + nuevo, nroLinea);
                 token = addToken(String.valueOf(nuevo), Main.CONSTANTE);
-                token.addAtributo("tipo", "FLOAT");
+                token.addAtributo("tipo", Main.FLOAT);
             }
 
             return token;

@@ -1,5 +1,6 @@
 package compilador.codigoSalida;
 
+import compilador.Main;
 import compilador.TablaSimbolos;
 import compilador.Token;
 
@@ -13,7 +14,7 @@ public class VariableAuxiliar {
         String alias = "@aux"+count;
         Token token = new Token(TablaSimbolos.getId("aux"), AUX, alias);
         token.addAtributo("uso", "aux");
-        token.addAtributo("tipo", "FLOAT");
+        token.addAtributo("tipo", Main.FLOAT);
         token.setAlias(alias);
         TablaSimbolos.add(token);
         return token;

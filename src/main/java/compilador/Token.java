@@ -32,10 +32,10 @@ public class Token {
     public void initAlias() {
         switch (this.tipoToken) {
             case Main.CONSTANTE:
-                if (getAtributo("tipo").equals("LONGINT")) {
+                if (getAtributo("tipo").equals(Main.LONGINT)) {
                     countLongint++;
                     this.alias = "@long" + countLongint;
-                } else if (getAtributo("tipo").equals("FLOAT")) {
+                } else if (getAtributo("tipo").equals(Main.FLOAT)) {
                     countFloat++;
                     this.alias = "@float" + countFloat;
                 }
@@ -45,7 +45,7 @@ public class Token {
                 this.alias = "@string" + countString;
                 break;
             case Main.IDENTIFICADOR:
-                this.alias = "_"+lexema+"."+getAtributo("ambito");
+                this.alias = "_"+lexema+"@"+getAtributo("ambito");
                 break;
         }
     }

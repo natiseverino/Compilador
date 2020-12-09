@@ -26,6 +26,9 @@ public class Main {
     public static final String CADENA = "CADENA_MULT";
     public static final String PARAMETRO = "Parametro";
     public static final String PROCEDIMIENTO = "Procedimiento";
+    public static final String FLOAT = "FLOAT";
+    public static final String LONGINT = "LONGINT";
+
 
 
     public static void guardarArchivo(String txt, String path) {

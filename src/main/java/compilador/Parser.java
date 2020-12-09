@@ -779,13 +779,13 @@ public class Parser {
     public String checkPositivo(String cte) {
         Token token = TablaSimbolos.getToken(cte);
         String tipo = (String) token.getAtributo("tipo");
-        if (tipo.equals("LONGINT")) {
+        if (tipo.equals(Main.LONGINT)) {
             long entero = 0;
             if (Long.parseLong(cte) >= Main.MAX_LONG) {
                 entero = Main.MAX_LONG - 1;
                 Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %s - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
                 String nuevoLexema = String.valueOf(entero);
-                cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
+                cambiarSimbolo(token, cte, nuevoLexema, Main.LONGINT);
                 return nuevoLexema;
             }
         }
@@ -797,7 +797,7 @@ public class Parser {
         Token token = TablaSimbolos.getToken(cte);
         String tipo = (String) token.getAtributo("tipo");
 
-        if (tipo.equals("LONGINT")) {
+        if (tipo.equals(Main.LONGINT)) {
             long entero = 0;
             String nuevoLexema = null;
             if (Long.parseLong(cte) <= Main.MAX_LONG) {
@@ -807,11 +807,11 @@ public class Parser {
                 Errores.addWarning(String.format("[AS] | Linea %d: Entero largo negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
             }
             nuevoLexema = "-" + entero;
-            cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
+            cambiarSimbolo(token, cte, nuevoLexema, Main.LONGINT);
             return nuevoLexema;
 
         }
-        if (tipo.equals("FLOAT")) {
+        if (tipo.equals(Main.FLOAT)) {
             float flotante = 0f;
             if ((Main.MIN_FLOAT < Float.parseFloat(cte) && Float.parseFloat(cte) < Main.MAX_FLOAT)) {
                 flotante = Float.parseFloat(cte);
@@ -821,7 +821,7 @@ public class Parser {
             }
             if (flotante != 0f) {
                 String nuevoLexema = "-" + flotante;
-                cambiarSimbolo(token, cte, nuevoLexema, "FLOAT");
+                cambiarSimbolo(token, cte, nuevoLexema, Main.FLOAT);
                 return nuevoLexema;
             }
         }
@@ -861,9 +861,9 @@ public class Parser {
         actualizarContadorID(lexema, true);
         String nuevoLexema = "";
         if (uso.equals("Procedimiento"))
-            nuevoLexema = lexema + "." + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length()) - (lexema.length() + 1));
+            nuevoLexema = lexema + "@" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length()) - (lexema.length() + 1));
         else
-            nuevoLexema = lexema + "." + ambitos.getAmbitos();
+            nuevoLexema = lexema + "@" + ambitos.getAmbitos();
 
         if (!TablaSimbolos.existe(nuevoLexema)) {
             Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), nuevoLexema);
@@ -883,7 +883,7 @@ public class Parser {
     public String getAmbitoDeclaracionID(String lexema, String uso) {
         // Se chequea que el id esté declarado en el ámbito actual o en los ámbitos que lo contienen
         String ambitosString = ambitos.getAmbitos();
-        ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("\\.")));
+        ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
         // Para el caso de la invocación a procedimientos se acota el ámbito actual para excluirlo como parte del ámbito al tener que estar declarado en un ámbito padre
         if (uso.equals("Procedimiento") && !ambitosString.equals("main"))
@@ -891,11 +891,11 @@ public class Parser {
 
         boolean declarado = false;
         while (!ambitosList.isEmpty()) {
-            if (TablaSimbolos.existe(lexema + "." + ambitosString)) {
-                if ((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + "." + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
+            if (TablaSimbolos.existe(lexema + "@" + ambitosString)) {
+                if ((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
                     declarado = true;
                     //if(!uso.equals("Procedimiento"))
-                    //  actualizarContadorID(lexema + "." + ambitosString, false);
+                    //  actualizarContadorID(lexema + "@" + ambitosString, false);
                     break;
                 }
             } else {
@@ -925,10 +925,10 @@ public class Parser {
         }
 
         if (uso.equals("Parametro") && declarado)
-            parametrosReales.add(lexema + "." + ambitosString);
+            parametrosReales.add(lexema + "@" + ambitosString);
 
         if (uso.equals("Procedimiento") && declarado) {
-            Token procedimiento = TablaSimbolos.getToken(lexema + "." + ambitosString);
+            Token procedimiento = TablaSimbolos.getToken(lexema + "@" + ambitosString);
 
             // Si se trata de un procedimiento que se encuentra declarado, se chequea el número de invocaciones respecto del máximo permitido
             if (((Integer) procedimiento.getAtributo("contador") + 1) > (Integer) procedimiento.getAtributo("max. invocaciones"))
@@ -952,7 +952,7 @@ public class Parser {
 
                     if (tiposCompatibles) {
                         SA6(lexema, parametrosFormales, parametrosReales);
-                        actualizarContadorID(lexema + "." + ambitosString, false);
+                        actualizarContadorID(lexema + "@" + ambitosString, false);
                     }
                 }
             }
@@ -960,15 +960,15 @@ public class Parser {
         }
 
         if (declarado && !uso.equals("Procedimiento"))
-            actualizarContadorID(lexema + "." + ambitosString, false);
+            actualizarContadorID(lexema + "@" + ambitosString, false);
         // Se actualiza el contador de referencias
         actualizarContadorID(lexema, true);
     }
 
     public String getLexemaID() {
         String ambitosActuales = ambitos.getAmbitos();
-        String id = ambitosActuales.split("\\.")[ambitosActuales.split("\\.").length - 1];
-        return (id + "." + ambitosActuales.substring(0, (ambitosActuales.length()) - (id.length() + 1)));
+        String id = ambitosActuales.split("@")[ambitosActuales.split("@").length - 1];
+        return (id + "@" + ambitosActuales.substring(0, (ambitosActuales.length()) - (id.length() + 1)));
     }
 
 
@@ -986,7 +986,7 @@ public class Parser {
                     }
                 } else
                     Errores.addError(String.format("[AS] | Linea %d: Variable " + lex + " no declarada %n", analizadorLexico.getNroLinea()));
-            } else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
+            } else if (token.getTipoToken().equals(Main.LONGINT) || token.getTipoToken().equals(Main.FLOAT))
                 System.out.println(token.getLexema(false) + "\n");
         }
     }
@@ -995,7 +995,7 @@ public class Parser {
     public void SA1(String lexema) {  // Añadir factor a la polaca
         String ambitosActuales = ambitos.getAmbitos();
 
-        Token token = TablaSimbolos.getToken(lexema + "." + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
+        Token token = TablaSimbolos.getToken(lexema + "@" + getAmbitoDeclaracionID(lexema, Main.VARIABLE));
 
         if (token == null)
             token = TablaSimbolos.getToken(lexema);
@@ -1008,11 +1008,11 @@ public class Parser {
         else {
             String lexemaToken = token.getLexema(false);
             if (token.getAtributo("uso") != null && token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
-                String id = lexemaToken.split("\\.")[0];
-                lexemaToken = lexemaToken.replace(id + ".", "");
-                lexemaToken += "." + id;
+                String id = lexemaToken.split("@")[0];
+                lexemaToken = lexemaToken.replace(id + "@", "");
+                lexemaToken += "@" + id;
             }
-            Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains(".") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf(".")) : lexemaToken);
+            Token nuevoToken = new Token(token.getIdToken(), token.getTipoToken(), (lexemaToken.contains("@") && !token.getAtributo("uso").equals(Main.PROCEDIMIENTO)) ? lexemaToken.substring(0, lexemaToken.indexOf("@")) : lexemaToken);
             for (Map.Entry<String, Object> atributo : token.getAtributos().entrySet()) {
                 nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
             }
@@ -1038,24 +1038,24 @@ public class Parser {
     public void SA3(String cte) { //chequea que la constante sea LONGINT
         Token cte_t = TablaSimbolos.getToken(cte);
         if (cte_t != null)
-            if (!cte_t.getAtributo("tipo").equals("LONGINT"))
+            if (!cte_t.getAtributo("tipo").equals(Main.LONGINT))
                 Errores.addError(String.format("[AS] | Linea %d: Constante no es del tipo entero %n", analizadorLexico.getNroLinea()));
     }
 
     public void SA4(String id1, String id2) { //reviso que la variable inicializada en el for sea la misma que la de la condicion
-        Token token1 = TablaSimbolos.getToken(id1 + "." + getAmbitoDeclaracionID(id1, Main.VARIABLE));
-        Token token2 = TablaSimbolos.getToken(id2 + "." + getAmbitoDeclaracionID(id2, Main.VARIABLE));
+        Token token1 = TablaSimbolos.getToken(id1 + "@" + getAmbitoDeclaracionID(id1, Main.VARIABLE));
+        Token token2 = TablaSimbolos.getToken(id2 + "@" + getAmbitoDeclaracionID(id2, Main.VARIABLE));
         if (token1 != null && token2 != null)
             if (!token1.equals(token2))
                 Errores.addError(String.format("[AS] | Linea %d: En la sentencia for, la variable inicializada " + id1 + " no es la misma que la variable utilizada en la condicion %n", analizadorLexico.getNroLinea()));
     }
 
     public void SA5(String id, String cte, String op) { //incremento o decremento la variable del for
-        Token id_t = TablaSimbolos.getToken(id + "." + getAmbitoDeclaracionID(id, Main.VARIABLE));
+        Token id_t = TablaSimbolos.getToken(id + "@" + getAmbitoDeclaracionID(id, Main.VARIABLE));
         Token cte_t = TablaSimbolos.getToken(cte);
         if (id_t != null) {
             String lexemaToken = id_t.getLexema(false);
-            Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf(".")));
+            Token nuevoToken = new Token(id_t.getIdToken(), id_t.getTipoToken(), lexemaToken.substring(0, lexemaToken.indexOf("@")));
             for (Map.Entry<String, Object> atributo : id_t.getAtributos().entrySet()) {
                 nuevoToken.addAtributo(atributo.getKey(), atributo.getValue());
             }
@@ -1088,10 +1088,10 @@ public class Parser {
 
             if (parametroFormal.contains("VAR ")) {
                 parametroFormal = parametroFormal.replace("VAR ", "");
-                parametrosCVR.add(parametroFormal + "." + parametrosReales.get(i));
+                parametrosCVR.add(parametroFormal + "@" + parametrosReales.get(i));
             }
 
-            parametroFormal = parametroFormal + "." + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "." + lexema;
+            parametroFormal = parametroFormal + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema;
             SA1(parametroFormal);
             SA1(parametrosReales.get(i));
             SA2("=");
@@ -1106,9 +1106,9 @@ public class Parser {
         if (!parametrosCVR.isEmpty()) {
             for (String parametroCVR : parametrosCVR
             ) {
-                String[] param = parametroCVR.split("\\.");
+                String[] param = parametroCVR.split("@");
                 SA1(param[1]);
-                SA1(param[0] + "." + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "." + lexema);
+                SA1(param[0] + "@" + getAmbitoDeclaracionID(lexema, Main.PROCEDIMIENTO) + "@" + lexema);
                 SA2("=");
             }
         }
@@ -1343,7 +1343,7 @@ public class Parser {
 //#line 104 "gramatica.y"
                 {
                     String cte = val_peek(0).sval;
-                    if (!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
+                    if (!TablaSimbolos.getToken(cte).getAtributo("tipo").equals(Main.LONGINT))
                         Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
                     else {
                         int cteInt = Integer.parseInt(cte);
@@ -1433,7 +1433,7 @@ public class Parser {
                     imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                     parametrosFormales.add(ultimoTipo + " " + val_peek(0).sval);
                     declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
-                    TablaSimbolos.getToken(val_peek(0).sval + "." + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
+                    TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
                 }
                 break;
                 case 48:
@@ -1442,7 +1442,7 @@ public class Parser {
                     imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                     parametrosFormales.add("VAR " + ultimoTipo + " " + val_peek(0).sval);
                     declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
-                    TablaSimbolos.getToken(val_peek(0).sval + "." + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
+                    TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
                 }
                 break;
                 case 49:
