@@ -876,7 +876,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
     Token token = TablaSimbolos.getToken(lexema);
     actualizarContadorID(lexema, true);
     String nuevoLexema = "";
-    if(uso.equals("Procedimiento"))
+    if(uso.equals(Main.PROCEDIMIENTO))
       nuevoLexema = lexema + "@" + ambitos.getAmbitos().substring(0, (ambitos.getAmbitos().length())-(lexema.length()+1));
     else
       nuevoLexema = lexema + "@" + ambitos.getAmbitos();
@@ -887,7 +887,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
         nuevoToken.addAtributo("tipo", tipo);
         nuevoToken.addAtributo("contador", 0);
         nuevoToken.addAtributo("ambito", nuevoLexema.substring(lexema.length()+1, nuevoLexema.length()));
-        if(uso.equals("Procedimiento")) {
+        if(uso.equals(Main.PROCEDIMIENTO)) {
             this.numberOfProcs++;
             nuevoToken.addAtributo("numeroProc", numberOfProcs);
         }
@@ -901,7 +901,7 @@ public void declaracionID(String lexema, String uso, String tipo) {
             else if(usoTokenExistente.equals(Main.PROCEDIMIENTO))
                 Errores.addError(String.format("[ASem] | Linea %d: El nombre de la variable declarada pertenece a un procedimiento declarado en el mismo ambito %n", analizadorLexico.getNroLinea()));
         }
-        else if(uso.equals("Procedimiento")) {
+        else if(uso.equals(Main.PROCEDIMIENTO)) {
             if(usoTokenExistente.equals(Main.PROCEDIMIENTO))
                 Errores.addError(String.format("[ASem] | Linea %d: Procedimiento redeclarado %n", analizadorLexico.getNroLinea()));
             else if(usoTokenExistente.equals(Main.VARIABLE))
@@ -915,7 +915,7 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
     String ambitosString = ambitos.getAmbitos();
     ArrayList<String> ambitosList = new ArrayList<>(Arrays.asList(ambitosString.split("@")));
 
-//    if(uso.equals("Procedimiento") && !ambitosString.equals("main")) {
+//    if(uso.equals(Main.PROCEDIMIENTO) && !ambitosString.equals("main")) {
 //        ambitosString = ambitosString.substring(0, (ambitosString.length()) - (ambitosList.get(ambitosList.size() - 1).length() + 1));
 //        ambitosList.remove(ambitosList.size()-1);
 //    }
@@ -923,9 +923,9 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
     boolean declarado = false;
     while(!ambitosList.isEmpty()) {
       if(TablaSimbolos.existe(lexema + "@" + ambitosString)) {
-        if((uso.equals("Parametro") && !TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals("Procedimiento")) || !uso.equals("Parametro")) {
+        if((uso.equals(Main.PARAMETRO) && !TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals(Main.PROCEDIMIENTO)) || !uso.equals(Main.PARAMETRO)) {
           declarado = true;
-          //if(!uso.equals("Procedimiento"))
+          //if(!uso.equals(Main.PROCEDIMIENTO))
           //  actualizarContadorID(lexema + "@" + ambitosString, false);
           break;
         }
@@ -955,52 +955,57 @@ public void invocacionID(String lexema, String uso) {
 	if (!declarado) {
 	    if (uso.equals(Main.VARIABLE))
 		Errores.addError(String.format("[ASem] | Linea %d: Variable %s no declarada %n", analizadorLexico.getNroLinea(), lexema));
-	    else if (uso.equals("Procedimiento"))
-		Errores.addError(String.format("[ASem] | Linea %d: Procedimiento %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
-	    else if (uso.equals("Parametro"))
-		Errores.addError(String.format("[ASem] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+	    else if (uso.equals(Main.PROCEDIMIENTO))
+        Errores.addError(String.format("[ASem] | Linea %d: Procedimiento %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
+        else if (uso.equals(Main.PARAMETRO))
+        Errores.addError(String.format("[ASem] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
 	}
 
-    if(uso.equals("Parametro") && declarado)
+    if(uso.equals(Main.PARAMETRO))
         parametrosReales.add(lexema + "@" + ambitosString);
 
-    if(uso.equals("Procedimiento") && declarado) {
+    if(uso.equals(Main.PROCEDIMIENTO) && declarado) {
         Token procedimiento = TablaSimbolos.getToken(lexema + "@" + ambitosString);
 
         Token padre = null;
-          if(!ambitosString.equals("main")) {
-              String lexemaPadre = ambitosString.split("@")[ambitosString.split("@").length-1];
-              lexemaPadre = lexemaPadre + "@" + ambitosString.substring(0, (ambitosString.length())-(lexemaPadre.length()+1));
-              padre = TablaSimbolos.getToken(lexemaPadre);
-          }
-          procedimiento.addAtributo("padre", (padre != null) ? padre.getAtributo("numeroProc") : 0);
+        if(!ambitosString.equals("main")) {
+            String lexemaPadre = ambitosString.split("@")[ambitosString.split("@").length-1];
+            lexemaPadre = lexemaPadre + "@" + ambitosString.substring(0, (ambitosString.length())-(lexemaPadre.length()+1));
+            padre = TablaSimbolos.getToken(lexemaPadre);
+        }
+        procedimiento.addAtributo("padre", (padre != null) ? padre.getAtributo("numeroProc") : 0);
 
-            // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
-            List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
-            if(parametrosFormales == null) return;
-            if (parametrosReales.size() != parametrosFormales.size())
-                Errores.addError(String.format("[ASem] | Linea %d: La cantidad de parámetros reales no coincide con la cantidad de parámetros formales del procedimiento %n", analizadorLexico.getNroLinea()));
-            else {
-                // Se chequea, por último, los tipos entre parámetros reales y formales
-                boolean tiposCompatibles = true;
-                for(int i = 0; i < parametrosReales.size(); i++) {
-                    String tipoParametroReal = TablaSimbolos.getToken(parametrosReales.get(i)).getAtributo("tipo")+"";
-                    if(!parametrosFormales.get(i).contains(tipoParametroReal)) {
-                        Errores.addError(String.format("[ASem] | Linea %d: El tipo del parámetro real n° %d no corresponde con el formal %n", analizadorLexico.getNroLinea(), i+1));
-                        tiposCompatibles = false;
-                        break;
-                    }
+        // Si se trata de un procedimiento que se encuentra declarado, se chequea además que la cantidad de parámetros reales correspondan a los formales
+        List<String> parametrosFormales = (List) procedimiento.getAtributo("parametros");
+        if(parametrosFormales == null) return;
+        if (parametrosReales.size() != parametrosFormales.size())
+            Errores.addError(String.format("[ASem] | Linea %d: La cantidad de parámetros reales no coincide con la cantidad de parámetros formales del procedimiento %n", analizadorLexico.getNroLinea()));
+        else {
+            // Se chequea, por último, los tipos entre parámetros reales y formales
+            boolean tiposCompatibles = true;
+            for(int i = 0; i < parametrosReales.size(); i++) {
+                Token parametroReal = TablaSimbolos.getToken(parametrosReales.get(i));
+                if(parametroReal != null) {
+                  String tipoParametroReal = parametroReal.getAtributo("tipo")+"";
+                  if(!parametrosFormales.get(i).contains(tipoParametroReal)) {
+                    Errores.addError(String.format("[ASem] | Linea %d: El tipo del parámetro real n° %d no corresponde con el formal %n", analizadorLexico.getNroLinea(), i+1));
+                    tiposCompatibles = false;
+                    break;
+                  }
                 }
-
-                if(tiposCompatibles) {
-                    SA6(lexema, parametrosFormales, parametrosReales);
-                    actualizarContadorID(lexema + "@" + ambitosString, false);
-              }
+                else
+                  tiposCompatibles = false;
             }
+
+            if(tiposCompatibles) {
+                SA6(lexema, parametrosFormales, parametrosReales);
+                actualizarContadorID(lexema + "@" + ambitosString, false);
+          }
+        }
         parametrosReales.clear();
     }
 
-    if(declarado && !uso.equals("Procedimiento"))
+    if(declarado && !uso.equals(Main.PROCEDIMIENTO))
       actualizarContadorID(lexema + "@" + ambitosString, false);
     // Se actualiza el contador de referencias
     actualizarContadorID(lexema, true);
@@ -1135,7 +1140,7 @@ public void SA6(String lexema, List<String> parametrosFormales, List<String> par
       }
     }
 }
-//#line 1067 "Parser.java"
+//#line 1072 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1347,7 +1352,7 @@ break;
 case 30:
 //#line 89 "gramatica.y"
 {   ambitos.agregarAmbito(val_peek(0).sval);
-                                declaracionID(val_peek(0).sval, "Procedimiento", null);
+                                declaracionID(val_peek(0).sval, Main.PROCEDIMIENTO, null);
                             }
 break;
 case 31:
@@ -1440,7 +1445,7 @@ case 50:
 //#line 134 "gramatica.y"
 { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                 parametrosFormales.add(ultimoTipo + " " + val_peek(0).sval);
-                                declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
+                                declaracionID(val_peek(0).sval, Main.PARAMETRO, ultimoTipo);
                                 TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CV");
                               }
 break;
@@ -1448,7 +1453,7 @@ case 51:
 //#line 139 "gramatica.y"
 { imprimirReglaReconocida("Parámetro formal", analizadorLexico.getNroLinea());
                                     parametrosFormales.add("VAR " + ultimoTipo + " " + val_peek(0).sval);
-                                    declaracionID(val_peek(0).sval, "Parametro", ultimoTipo);
+                                    declaracionID(val_peek(0).sval, Main.PARAMETRO, ultimoTipo);
                                     TablaSimbolos.getToken(val_peek(0).sval + "@" + ambitos.getAmbitos()).addAtributo("tipo pasaje", "CVR");
                                   }
 break;
@@ -1793,13 +1798,13 @@ break;
 case 115:
 //#line 333 "gramatica.y"
 {   imprimirReglaReconocida("Sentencia de invocación con lista de parámetros", analizadorLexico.getNroLinea());
-                                                                invocacionID(val_peek(4).sval, "Procedimiento");
+                                                                invocacionID(val_peek(4).sval, Main.PROCEDIMIENTO);
                                                             }
 break;
 case 116:
 //#line 336 "gramatica.y"
-{   imprimirReglaReconocida("Sentencia de invocación sin parámetros %n", analizadorLexico.getNroLinea());
-                                                invocacionID(val_peek(3).sval, "Procedimiento");
+{   imprimirReglaReconocida("Sentencia de invocación sin parámetros", analizadorLexico.getNroLinea());
+                                                invocacionID(val_peek(3).sval, Main.PROCEDIMIENTO);
                                             }
 break;
 case 117:
@@ -1833,22 +1838,22 @@ break;
 case 124:
 //#line 348 "gramatica.y"
 {   imprimirReglaReconocida("Lista de parámetros (3)", analizadorLexico.getNroLinea());
-                                            invocacionID(val_peek(4).sval, "Parametro");
-                                            invocacionID(val_peek(2).sval, "Parametro");
-                                            invocacionID(val_peek(0).sval, "Parametro");
+                                            invocacionID(val_peek(4).sval, Main.PARAMETRO);
+                                            invocacionID(val_peek(2).sval, Main.PARAMETRO);
+                                            invocacionID(val_peek(0).sval, Main.PARAMETRO);
                                         }
 break;
 case 125:
 //#line 353 "gramatica.y"
-{   imprimirReglaReconocida("Lista de parámetros (2) %n", analizadorLexico.getNroLinea());
-                                    invocacionID(val_peek(2).sval, "Parametro");
-                                    invocacionID(val_peek(0).sval, "Parametro");
+{   imprimirReglaReconocida("Lista de parámetros (2)", analizadorLexico.getNroLinea());
+                                    invocacionID(val_peek(2).sval, Main.PARAMETRO);
+                                    invocacionID(val_peek(0).sval, Main.PARAMETRO);
                                 }
 break;
 case 126:
 //#line 357 "gramatica.y"
-{   imprimirReglaReconocida("Lista de parámetros (1) %n", analizadorLexico.getNroLinea());
-                                invocacionID(val_peek(0).sval, "Parametro");
+{   imprimirReglaReconocida("Lista de parámetros (1)", analizadorLexico.getNroLinea());
+                                invocacionID(val_peek(0).sval, Main.PARAMETRO);
                             }
 break;
 case 127:
@@ -1986,7 +1991,7 @@ case 155:
                               		        }
      	 	}
 break;
-//#line 1912 "Parser.java"
+//#line 1917 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

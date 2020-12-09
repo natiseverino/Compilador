@@ -1,11 +1,10 @@
-%% Tipo incorrecto para constante NI
-PROC a() NI = 1. {}
+LONGINT h, i;
 
-%% Valor de la constante NI fuera del intervalo permitido
-PROC b() NI = 5_l {}
+%% Tipo incorrecto para constante NI
+%%PROC a() NI = 1. { h=i; }
 
 %% NI procedimiento superado
-PROC c() NI = 1_l {}
+PROC c() NI = 1_l { h=i; }
 
 c();
 c();
