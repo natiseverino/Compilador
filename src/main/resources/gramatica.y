@@ -91,22 +91,12 @@ proc_encabezado : PROC ID   {   ambitos.agregarAmbito($2.sval);
                | PROC error { Errores.addError(String.format("[AS] | Linea %d: Error en el identificador en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
 ;
 
-//proc_parametros : '(' lista_parametros_formales ')' {   TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales));
-//                                                        parametrosFormales.clear();
-//                                                    }
-//                | '(' ')' { TablaSimbolos.getToken(getLexemaID()).addAtributo("parametros", new ArrayList<>(parametrosFormales)); }
-//                | error lista_parametros_formales ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-//                | error ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal '(' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-//                | '(' error ')' { Errores.addError(String.format("[AS] | Linea %d: Error en la lista de parámetros formales en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-//                | '(' lista_parametros_formales { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-//                | '(' error { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
-//;
 
 proc_ni : NI '=' CTE    {   String cte = $3.sval;
                             if(!TablaSimbolos.getToken(cte).getAtributo("tipo").equals("LONGINT"))
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
-//                            else
-//                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
+                            else
+                                TablaSimbolos.getToken(getLexemaID()).addAtributo("max. invocaciones", Integer.parseInt(cte));
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -614,6 +604,10 @@ public String getAmbitoDeclaracionID(String lexema, String uso) {
           //  actualizarContadorID(lexema + "@" + ambitosString, false);
           break;
         }
+        else if (TablaSimbolos.getToken(lexema + "@" + ambitosString).getAtributo("uso").equals(Main.PROCEDIMIENTO)) {
+	    Errores.addError(String.format("[ASem] | Linea %d: No es posible pasar un procedimiento como parametro %n", analizadorLexico.getNroLinea()));
+	    break;
+	}
       }
       else {
         if(!ambitosString.equals("main")) {
@@ -691,30 +685,6 @@ public String getLexemaID() {
     String id = ambitosActuales.split("@")[ambitosActuales.split("@").length-1];
     return(id + "@" + ambitosActuales.substring(0, (ambitosActuales.length())-(id.length()+1)));
 }
-
-
-
-
-
-public void out(String lex){
-       Token token = TablaSimbolos.getToken(lex);
-               if (token != null) {
-                   if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
-                       if (token.getAtributo("uso") != null) {
-                           if (token.getAtributo("uso").equals(Main.VARIABLE)) {
-                               Object valor = token.getAtributo("VALOR");
-                               if (valor != null)
-                                   System.out.println(token.getAtributo("VALOR") + "\n");
-                               else
-                                    Errores.addError(String.format("[AS] | Linea %d: Variable " + lex + " no inicializada %n",analizadorLexico.getNroLinea()));
-                           }
-                       } else
-                            Errores.addError(String.format("[AS] | Linea %d: Variable " + lex + " no declarada %n",analizadorLexico.getNroLinea()));
-                   }else if (token.getTipoToken().equals("LONGINT") || token.getTipoToken().equals("FLOAT"))
-                       System.out.println(token.getLexema(false) + "\n");
-               }
-}
-
 
 
 public void SA1(String lexema) {  // Añadir factor a la polaca
