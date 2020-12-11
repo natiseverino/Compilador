@@ -58,7 +58,7 @@ public class OperadorBinario extends PolacaElem {
                 codeLongint(elem2, elem1, operador, stack, code);
 
             } else if (tipo.equals(Main.FLOAT)) {
-                ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux("dd"));
+                ElemSimple aux = new ElemSimple(VariableAuxiliar.getAux("dq"));
                 if (operacionAritmetica(operador))
                     stack.push(aux);
 
@@ -379,8 +379,7 @@ public class OperadorBinario extends PolacaElem {
         StringBuilder code = new StringBuilder();
         ElemSimple aux_comp = new ElemSimple(VariableAuxiliar.getAux("dw"));
         code.append("fld ").append(resultado.getToken().getLexema(true)).append(System.lineSeparator())
-                .append("fld @max_float").append(System.lineSeparator())
-                .append("fcompp").append(System.lineSeparator())
+                .append("fcomp @max_float").append(System.lineSeparator())
                 .append("fstsw ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("mov ax, ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("sahf").append(System.lineSeparator())
@@ -388,8 +387,7 @@ public class OperadorBinario extends PolacaElem {
                 .append(System.lineSeparator());
 
         code.append("fld ").append(resultado.getToken().getLexema(true)).append(System.lineSeparator())
-                .append("fld @min_float").append(System.lineSeparator())
-                .append("fcompp").append(System.lineSeparator())
+                .append("fcomp @min_float").append(System.lineSeparator())
                 .append("fstsw ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("mov ax, ").append(aux_comp.getToken().getLexema(true)).append(System.lineSeparator())
                 .append("sahf").append(System.lineSeparator())

@@ -98,9 +98,13 @@ proc_ni : NI '=' CTE    {   String cte = $3.sval;
                                 Errores.addError(String.format("[ASem] | Linea %d: Tipo incorrecto de CTE NI %n" + Main.ANSI_RESET, analizadorLexico.getNroLinea()));
                             else{
                             String lexemaID = getLexemaID();
-			    if (lexemaID != null)
-				TablaSimbolos.getToken(lexemaID).addAtributo("max. invocaciones", Integer.parseInt(cte));
-                        }
+			    try {
+				if (lexemaID != null)
+				    TablaSimbolos.getToken(lexemaID).addAtributo("max. invocaciones", Integer.parseInt(cte));
+				} catch (NumberFormatException e) {
+					Errores.addError(String.format("[AS] | Linea %d: Error en la constante numerica", analizadorLexico.getNroLinea()));
+				}
+			    }
                         }
         | '=' CTE { Errores.addError(String.format("[AS] | Linea %d: Falta palabra reservada NI en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
         | NI error CTE { Errores.addError(String.format("[AS] | Linea %d: Falta literal '=' en sentencia de declaración de procedimiento %n", analizadorLexico.getNroLinea())); }
@@ -378,13 +382,18 @@ lista_parametros    : ID ',' ID ',' ID  {   imprimirReglaReconocida("Lista de pa
 
 
 
-condicion   : expresion MAYOR_IGUAL expresion {$$ = $1; SA2(">=");}
-		| expresion MENOR_IGUAL expresion{$$ = $1;SA2("<=");}
-		| expresion '>' expresion {$$ = $1;SA2(">");}
-		| expresion '<' expresion {$$ = $1;SA2("<");}
-		| expresion IGUAL expresion {$$ = $1;SA2("==");}
-		| expresion DISTINTO  expresion {$$ = $1;SA2("!=");}
+condicion   : expresion comparador expresion {$$ = $1; SA2($2.sval);}
+		| expresion comparador error {Errores.addError(String.format("[AS] | Linea %d: Falta segundo operando de la comparacion %n",analizadorLexico.getNroLinea())); }
+		|  error comparador expresion {Errores.addError(String.format("[AS] | Linea %d: Falta primer operando de la comparacion %n",analizadorLexico.getNroLinea())); }
+
 ;
+
+comparador : MAYOR_IGUAL {$$ = new ParserVal(">=");}
+	| MENOR_IGUAL {$$ = new ParserVal("<=");}
+ 	| '>' {$$ = $1;}
+	| '<' {$$ = $1;}
+	| IGUAL {$$ = new ParserVal("==");}
+	| DISTINTO {$$ = new ParserVal("!=");}
 
 expresion   : expresion '+' termino {$$=$1;imprimirReglaReconocida("Suma", analizadorLexico.getNroLinea());
                                      SA2($2.sval);}
@@ -479,58 +488,69 @@ private int yylex(){
         return 0;
 }
 
-public String checkPositivo(String cte) {
-	Token token = TablaSimbolos.getToken(cte);
-    String tipo = (String) token.getAtributo("tipo");
-    if(tipo.equals("LONGINT")) {
-        long entero = 0;
-		if (Long.parseLong(cte) >= Main.MAX_LONG) {
-		    entero = Main.MAX_LONG - 1;
-		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %s - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
-		    String nuevoLexema = String.valueOf(entero);
-		    cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
-		    return nuevoLexema;
-		}
-	}
-	return cte;
-}
+    public String checkPositivo(String cte) {
+        Token token = TablaSimbolos.getToken(cte);
+        String tipo = (String) token.getAtributo("tipo");
+        if (tipo.equals("LONGINT")) {
+            long entero = 0;
+            try {
+                if (Long.parseLong(cte) >= Main.MAX_LONG) {
+                    entero = Main.MAX_LONG - 1;
+                    Errores.addWarning(String.format("[AS] | Linea %d: Entero largo positivo fuera de rango: %s - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
+                    String nuevoLexema = String.valueOf(entero);
+                    cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
+                    return nuevoLexema;
+                }
+            }catch(NumberFormatException e){
+                Errores.addError(String.format("[AS] | Linea %d: Error en la constante numerica", analizadorLexico.getNroLinea()));
+            }
+            }
+            return cte;
+    }
 
 
+    public String checkRango(String cte) {
+        Token token = TablaSimbolos.getToken(cte);
+        String tipo = (String) token.getAtributo("tipo");
 
-public String checkRango(String cte) {
-	Token token = TablaSimbolos.getToken(cte);
-	String tipo = (String) token.getAtributo("tipo");
+        if (tipo.equals("LONGINT")) {
+            long entero = 0;
+            String nuevoLexema = null;
+            try {
+                if (Long.parseLong(cte) <= Main.MAX_LONG) {
+                    entero = Long.parseLong(cte);
+                } else {
+                    entero = Main.MAX_LONG;
+                    Errores.addWarning(String.format("[AS] | Linea %d: Entero largo negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
+                }
+            }catch (NumberFormatException e){
+                Errores.addError(String.format("[AS] | Linea %d: Error en la constante numerica", analizadorLexico.getNroLinea()));
+            }
+            nuevoLexema = "-" + entero;
+            cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
+            return nuevoLexema;
 
-	if (tipo.equals("LONGINT")) {
-	    long entero = 0;
-	    String nuevoLexema = null;
-		if (Long.parseLong(cte) <= Main.MAX_LONG) {
-		    entero = Long.parseLong(cte);
-		} else {
-		    entero = Main.MAX_LONG;
-		     Errores.addWarning(String.format("[AS] | Linea %d: Entero largo negativo fuera de rango: %d - Se cambia por: %d %n", analizadorLexico.getNroLinea(), cte, entero));
-		}
-		nuevoLexema = "-" + entero;
-		cambiarSimbolo(token, cte, nuevoLexema, "LONGINT");
-		return nuevoLexema;
-
-	}
-	if (tipo.equals("FLOAT")) {
-	    float flotante = 0f;
-	    if ((Main.MIN_FLOAT < Float.parseFloat(cte) && Float.parseFloat(cte) < Main.MAX_FLOAT)) {
-		flotante = Float.parseFloat(cte);
-	    } else {
-		flotante = Main.MAX_FLOAT-1;
-		 Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %s - Se cambia por: %f %n", analizadorLexico.getNroLinea(), cte, flotante));
-	    }
-	    if (flotante != 0f) {
-		String nuevoLexema = "-" + flotante;
-		cambiarSimbolo(token, cte, nuevoLexema, "FLOAT");
-		return nuevoLexema;
-	    }
-	}
-	return null;
-}
+        }
+        if (tipo.equals("FLOAT")) {
+            float flotante = 0f;
+            try {
+                if ((Main.MIN_FLOAT < Float.parseFloat(cte) && Float.parseFloat(cte) < Main.MAX_FLOAT)) {
+                    flotante = Float.parseFloat(cte);
+                } else {
+                    flotante = Main.MAX_FLOAT - 1;
+                    Errores.addWarning(String.format("[AS] | Linea %d: Flotante negativo fuera de rango: %s - Se cambia por: %f %n", analizadorLexico.getNroLinea(), cte, flotante));
+                }
+            }catch(NumberFormatException e){
+                Errores.addError(String.format("[AS] | Linea %d: Error en la constante numerica", analizadorLexico.getNroLinea()));
+            }
+            if (flotante != 0f) {
+                String nuevoLexema = "-" + flotante;
+                cambiarSimbolo(token, cte, nuevoLexema, "FLOAT");
+                return nuevoLexema;
+            }
+        }
+        return null;
+    }
 
 public void cambiarSimbolo(Token token, String cte, String nuevoLexema, String tipo){
 	int cont = (Integer) (TablaSimbolos.getToken(cte).getAtributo("contador")) - 1;
@@ -648,6 +668,14 @@ public void invocacionID(String lexema, String uso) {
         else if (uso.equals(Main.PARAMETRO))
         Errores.addError(String.format("[ASem] | Linea %d: Parametro real %s no declarado %n", analizadorLexico.getNroLinea(), lexema));
 	}
+
+    Token token = TablaSimbolos.getToken(lexema+ "@" + ambitosString);
+    if (token != null) {
+	String uso_real = token.getAtributo("uso") != null? token.getAtributo("uso").toString() : "";
+	if (uso_real.equals(Main.VARIABLE) && uso.equals(Main.PROCEDIMIENTO))
+	    Errores.addError(String.format("[ASem] | Linea %d: La variable \"%s\" no es un procedimiento %n", analizadorLexico.getNroLinea(), lexema));
+    }
+
 
     if(uso.equals(Main.PARAMETRO))
         parametrosReales.add(lexema + "@" + ambitosString);

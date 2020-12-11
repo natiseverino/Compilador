@@ -53,7 +53,7 @@ public class OperadorUnario extends PolacaElem {
                 String out = token.getLexema(true);
                 if (token.getTipoToken().equals(Main.IDENTIFICADOR)) {
                     if (token.getAtributo("uso") != null) {
-                        if (token.getAtributo("uso").equals(Main.VARIABLE)) {
+                        if (token.getAtributo("uso").equals(Main.VARIABLE) || token.getAtributo("uso").equals(Main.PARAMETRO)) {
                             return print(token.getAtributo("tipo").toString(), out);
                         }
                     }

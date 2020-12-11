@@ -247,7 +247,7 @@ public class AnalizadorLexico {
             try {
                 enteroLargo = Long.parseLong(lexema.substring(0, lexema.length() - 2));
             }catch (NumberFormatException e){
-                error("Longint incorrecto " + lexema, nroLinea);
+                error("Error en la constante numerica " + lexema, nroLinea);
             }
 
             //verificar rango
@@ -304,7 +304,7 @@ public class AnalizadorLexico {
                 flotante = Float.parseFloat(lex);
             }
             catch (NumberFormatException e){
-                error("Flotante incorrecto " + lexema, nroLinea);
+                error("Error en la constante numerica " + lexema, nroLinea);
             }
 
             //verificar rango

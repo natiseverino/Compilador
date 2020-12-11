@@ -109,14 +109,20 @@ public class Token {
             case Main.IDENTIFICADOR:
                 String usoToken = this.getAtributo("uso").toString();
                 if (usoToken.equals(Main.VARIABLE) || usoToken.equals(Main.PARAMETRO))
-                    builder.append("_").append(lexema).append(" dd ?");
+                    if (atributos.get("tipo").equals(Main.LONGINT))
+                        builder.append("_").append(lexema).append(" dd ?");
+                    else if (atributos.get("tipo").equals(Main.FLOAT))
+                        builder.append("_").append(lexema).append(" dq ?");
                 if (usoToken.equals(Main.PROCEDIMIENTO)) {
                     builder.append("_").append(lexema).append("@inv").append(" dd 0").append(System.lineSeparator());
                     builder.append("@").append(lexema).append("@max_inv").append(" dd ").append(getAtributo("max. invocaciones"));
                 }
                 break;
             case Main.CONSTANTE:
-                builder.append(alias).append(" dd ").append(lexema);
+                if (atributos.get("tipo").equals(Main.LONGINT))
+                    builder.append(alias).append(" dd ").append(lexema);
+                else if (atributos.get("tipo").equals(Main.FLOAT))
+                    builder.append(alias).append(" dq ").append(lexema);
                 break;
             case Main.CADENA:
                 builder.append(alias).append(" db ").append(lexema).append(", 0");
