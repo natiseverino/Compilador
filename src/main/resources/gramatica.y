@@ -316,7 +316,10 @@ sentencia_salida    : OUT '(' CADENA_MULT ')' ';' {   imprimirReglaReconocida("S
                     | OUT '(' error ')' ';' { Errores.addError(String.format("[AS] | Linea %d: Error en la cadena multilínea a imprimir %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT error ';' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ')' %n",analizadorLexico.getNroLinea()));}
                     | OUT '(' CADENA_MULT ')' { Errores.addError(String.format("[AS] | Linea %d: Falta literal ';' %n",nroUltimaLinea));}
-                    | OUT '(' factor ')' ';'            {   imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
+                    | OUT '(' factor ')' ';'            {   Token factor = TablaSimbolos.getToken(val_peek(2).sval+"@"+getAmbitoDeclaracionID(val_peek(2).sval, Main.VARIABLE));
+                                                                if(factor != null && factor.getAtributo("uso").equals(Main.PROCEDIMIENTO))
+                                                                    Errores.addError(String.format("[ASem] | Linea %d: No se permiten imprimir procedimientos %n",analizadorLexico.getNroLinea()));
+                                                            imprimirReglaReconocida("Sentencia de salida OUT", analizadorLexico.getNroLinea());
 //                                                        invocacionID($3.sval, Main.VARIABLE);
 //                                                        SA1($3.sval);
                                                         if(ambitos.getAmbitos().equals(Ambitos.ambitoGlobal))
@@ -571,12 +574,14 @@ public void cambiarSimbolo(Token token, String cte, String nuevoLexema, String t
 
 public void actualizarContadorID(String lexema, boolean decremento) {
     Token token = TablaSimbolos.getToken(lexema);
-    int cont = (decremento) ? (Integer)(token.getAtributo("contador")) - 1 : (Integer) (token.getAtributo("contador")) + 1;
-    if(cont == 0)
-        TablaSimbolos.remove(lexema);
-    else {
-        TablaSimbolos.getToken(lexema).removeAtributo("contador");
-        TablaSimbolos.getToken(lexema).addAtributo("contador", cont);
+    if(token != null) {
+        int cont = (decremento) ? (Integer) (token.getAtributo("contador")) - 1 : (Integer) (token.getAtributo("contador")) + 1;
+        if (cont == 0)
+            TablaSimbolos.remove(lexema);
+        else {
+            TablaSimbolos.getToken(lexema).removeAtributo("contador");
+            TablaSimbolos.getToken(lexema).addAtributo("contador", cont);
+        }
     }
 }
 

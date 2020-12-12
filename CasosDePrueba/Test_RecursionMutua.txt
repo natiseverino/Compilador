@@ -1,6 +1,6 @@
 LONGINT c, d;
 
-PROC a() NI = 1_l {
+PROC a() NI = 2_l {
     PROC b() NI = 1_l {
         c = d;
         a();

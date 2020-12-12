@@ -19,7 +19,7 @@ public class Main {
     public static final long MAX_LONG = 2147483648L;
     public static final float MAX_FLOAT = 3.40282347e+38f;
     public static final float MIN_FLOAT = 1.17549435e-38f;
-    public static final String VARIABLE = "VARIABLE";
+    public static final String VARIABLE = "Variable";
     public static final String CONSTANTE = "CONSTANTE";
     public static final String IDENTIFICADOR = "IDENTIFICADOR";
     public static final String CADENA = "CADENA_MULT";

@@ -29,8 +29,8 @@ _a@main dd ?
 @string_recursion_mutua db "Error: Recursion mutua no permitida", 0
 @string_ni_exceeded db "Error: Se ha superado el maximo de invocaciones del procedimiento", 0
 
-@max_float dd 3.40282347E38
-@min_float dd -3.40282347E38
+@max_float dq 3.40282347E38
+@min_float dq -3.40282347E38
 @last_proc_father dd 0
 
 .code

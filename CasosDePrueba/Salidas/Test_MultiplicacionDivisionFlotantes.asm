@@ -15,29 +15,29 @@ printf PROTO C :VARARG
 .data
 @string4 db "b != 4", 0
 @aux7 dw ?
-@aux6 dd ?
-@aux5 dd ?
-@aux4 dd ?
-_b@main dd ?
-_a@main dd ?
+@aux6 dq ?
+@aux5 dq ?
+@aux4 dq ?
+_b@main dq ?
+_a@main dq ?
 @aux8 dw ?
 @string1 db "a = 4", 0
-@float2 dd 1.0
-@float1 dd 2.0
-@float4 dd 3.0
-@float3 dd 4.0
+@float2 dq 1.0
+@float1 dq 2.0
+@float4 dq 3.0
+@float3 dq 4.0
 @string3 db "b = 4", 0
-@aux3 dd ?
+@aux3 dq ?
 @string2 db "a != 4", 0
-@aux2 dd ?
-@aux1 dd ?
+@aux2 dq ?
+@aux1 dq ?
 @string_overflow_longint db "Error: Overflow en suma de enteros largos", 0
 @string_overflow_float db "Error: Overflow en suma de flotantes", 0
 @string_recursion_mutua db "Error: Recursion mutua no permitida", 0
 @string_ni_exceeded db "Error: Se ha superado el maximo de invocaciones del procedimiento", 0
 
-@max_float dd 3.40282347E38
-@min_float dd -3.40282347E38
+@max_float dq 3.40282347E38
+@min_float dq -3.40282347E38
 @last_proc_father dd 0
 
 .code

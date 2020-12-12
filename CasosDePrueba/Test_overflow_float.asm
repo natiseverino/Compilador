@@ -13,23 +13,23 @@ dll_dllcrt0 PROTO C
 printf PROTO C :VARARG
 
 .data
-@float1 dd 3.0E38
-@float4 dd -6.0E37
+@float1 dq 3.0E38
+@float4 dq -6.0E37
 @aux4 dw ?
-_b@main dd ?
-_a@main dd ?
-@float3 dd -3.0E38
-@aux3 dd ?
-@float2 dd 5.0E37
+_b@main dq ?
+_a@main dq ?
+@float3 dq -3.0E38
+@aux3 dq ?
+@float2 dq 5.0E37
 @aux2 dw ?
-@aux1 dd ?
+@aux1 dq ?
 @string_overflow_longint db "Error: Overflow en suma de enteros largos", 0
 @string_overflow_float db "Error: Overflow en suma de flotantes", 0
 @string_recursion_mutua db "Error: Recursion mutua no permitida", 0
 @string_ni_exceeded db "Error: Se ha superado el maximo de invocaciones del procedimiento", 0
 
-@max_float dd 3.40282347E38
-@min_float dd -3.40282347E38
+@max_float dq 3.40282347E38
+@min_float dq -3.40282347E38
 @last_proc_father dd 0
 
 .code
@@ -46,15 +46,13 @@ fadd
 fstp @aux1
 
 fld @aux1
-fld @max_float
-fcompp
+fcomp @max_float
 fstsw @aux2
 mov ax, @aux2
 sahf
 jae label_overflow_float
 fld @aux1
-fld @min_float
-fcompp
+fcomp @min_float
 fstsw @aux2
 mov ax, @aux2
 sahf
@@ -76,15 +74,13 @@ fadd
 fstp @aux3
 
 fld @aux3
-fld @max_float
-fcompp
+fcomp @max_float
 fstsw @aux4
 mov ax, @aux4
 sahf
 jae label_overflow_float
 fld @aux3
-fld @min_float
-fcompp
+fcomp @min_float
 fstsw @aux4
 mov ax, @aux4
 sahf

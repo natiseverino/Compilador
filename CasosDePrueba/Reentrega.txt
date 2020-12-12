@@ -1,72 +1,69 @@
-LONGINT a;
-IF (a <) THEN
-    x=-3.;
-ELSE
-    {a=2.;}
-END_IF;
+%%LONGINT a;
+%%IF (a <) THEN
+%%x=-3.;
+%%ELSE
+%%{a=2.;}
+%%END_IF;
 
+%%LONGINT a,b,c;
 %%
-LONGINT a,b,c;
-a = -3_l;
-b = -2_l;
-
-PROC d(LONGINT c) NI = 1. {
-    OUT(d);
-    d=1.;
-}
-
-a(b);
-OUT(b);
-
+%%a = -3_l;
+%%b = -2_l;
 %%
-LONGINT a,b,c;
-a = -3_l;
-b = -2_l;
-
-PROC d(LONGINT c) NI = 1_l {
-    OUT(d);
-    d=1.;
-}
-
-a(b);
-OUT(b);
-
+%%PROC d(LONGINT c) NI = 1. {
+%%OUT(d);
+%%d=1.;
+%%}
 %%
+%%a(b);
+%%OUT(b);
 
-
-LONGINT a,b,c;
-A = -3_l;
-b = -2_l;
-
-PROC d(LONGINT c) NI = 1_l {
-    OUT(c);
-    c=1.;
-}
-
-a(b);
-OUT(b);
-
+%%LONGINT a,b,c;
 %%
-LONGINT a,b,c;
-a = -3_l;
-b = -2_l;
-
-PROC d(LONGINT c) NI = 1_l {
-    OUT(c);
-    c=1_l;
-}
-
-a(b);
-OUT(b);
-
+%%a = -3_l;
+%%b = -2_l;
 %%
+%%PROC d(LONGINT c) NI = 1_l {
+%%OUT(d);
+%%d=1.;
+%%}
+%%
+%%a(b);
+%%OUT(b);
+
+%%LONGINT a,b,c;
+%%
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC d(LONGINT c) NI = 1_l {
+%%OUT(c);
+%%c=1.;
+%%}
+%%
+%%a(b);
+%%OUT(b);
+
+%%LONGINT a,b,c;
+%%a = -3_l;
+%%b = -2_l;
+%%
+%%PROC d(LONGINT c) NI = 1_l {
+%%    OUT(c);
+%%    c=1_l;
+%%}
+%%
+%%a(b);
+%%OUT(b);
+
 LONGINT a,b,c;
+
 a = -3_l;
 b = -2_l;
 
 PROC e(LONGINT d) NI = 1_l {
-    OUT(d);
-    d=1_l;
+OUT(d);
+d=1_l;
 }
 
 e(b);

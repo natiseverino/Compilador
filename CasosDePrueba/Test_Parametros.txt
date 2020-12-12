@@ -13,9 +13,10 @@ LONGINT h, i;
 %%b(e);
 
 %% Parámetro real no declarado
-PROC c() NI = 1_l { h=i; }
-
-c(f);
+%%PROC c() NI = 1_l { h=i; }
+%%
+%%c(f);
 
 %% Pasaje de procedimiento como funcion
+PROC a(LONGINT b) NI = 1_l { h=i; }
 c(a);
