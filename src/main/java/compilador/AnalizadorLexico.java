@@ -248,7 +248,8 @@ public class AnalizadorLexico {
                 enteroLargo = Long.parseLong(lexema.substring(0, lexema.length() - 2));
             }catch (NumberFormatException e){
                 enteroLargo = Main.MAX_LONG+1;
-                //error("Error en la constante numerica " + lexema, nroLinea);
+                //warning("Entero largo fuera de rango: " + lexema.substring(0, lexema.length()-2) + " - Se cambia por: " + Main.MAX_LONG, nroLinea);
+
             }
 
             //verificar rango
@@ -279,8 +280,11 @@ public class AnalizadorLexico {
         @Override
         public Token execute(StringBuilder lexema, char ultimo) {
             error(error + ": " + lexema.append(ultimo), nroLinea);
-            if (error.equals(TipoError.CADENA_INCORRECTA))
+            if (error.equals(TipoError.CADENA_INCORRECTA)) {
                 codigoFuente.insert(0, "\"");
+                if (ultimo == '\n')
+                    nroLinea++;
+            }
             if (error.equals(TipoError.CONSTANTE_NUMERICA_INVALIDA))
                 codigoFuente.insert(0, ultimo);
             lexema.setLength(0);
@@ -305,8 +309,9 @@ public class AnalizadorLexico {
                 flotante = Float.parseFloat(lex);
             }
             catch (NumberFormatException e){
-                flotante = Main.MAX_FLOAT+1;
-                //error("Error en la constante numerica " + lexema, nroLinea);
+                flotante = Main.MAX_FLOAT-1;
+                warning("Flotante fuera de rango: " + lexema + " - Se cambia por: " + flotante, nroLinea);
+
             }
 
             //verificar rango

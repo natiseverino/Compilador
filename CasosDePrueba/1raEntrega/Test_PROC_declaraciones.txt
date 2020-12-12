@@ -18,9 +18,7 @@ PROC i(LONGINT x) NI 1_l {x=1_l;}
 PROC j() NI = {LONGINT x; x=1_l;}
 PROC k(LONGINT x) NI = {x=1_l;}
 
-//TODO revisar
-PROC l() NI = 1_l {LONGINT x; x=1_l;
-PROC m(LONGINT x) NI = 1_l {x=1_l;
+PROC l() NI = 1. {}
+PROC m(LONGINT x) NI = 1. {}
 
-PROC n() NI = 1. {}
-PROC o(LONGINT x) NI = 1. {}
+PROC n() NI = 1_l LONGINT x;}

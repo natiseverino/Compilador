@@ -1,8 +1,8 @@
 %% Sentencias reconocidas como sentencias de invocación a procedimientos
-PROC inv1(FLOAT x) NI = 1_l {}
-PROC inv2(FLOAT x, FLOAT y) NI = 1_l {}
-PROC inv3(FLOAT x, FLOAT y, FLOAT z) NI = 1_l {}
-PROC inv4() NI = 1_l{}
+PROC inv1(FLOAT x) NI = 1_l {x =1.;}
+PROC inv2(FLOAT x, FLOAT y) NI = 1_l {x =1.;}
+PROC inv3(FLOAT x, FLOAT y, FLOAT z) NI = 1_l {x =1.;}
+PROC inv4() NI = 1_l{OUT("hola");}
 
 FLOAT a,b,c;
 

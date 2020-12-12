@@ -20,7 +20,7 @@ IF (a>1.) THEN
   b=a+b;}
 ELSE
 { b=2.;
-  a=2* b;}
+  a= 2. * b;}
 END_IF;
 
 %% Sentencias de selección IF con errores
